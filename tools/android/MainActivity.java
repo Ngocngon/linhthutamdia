@@ -3,6 +3,9 @@ package vn.linhthu.tamdia;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.WindowManager;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -17,14 +20,17 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        // Giữ màn hình sáng khi chơi
+        // Áp cờ cửa sổ + immersive TRƯỚC khi tải trang, để trang chỉ tính bố cục một lần
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         if (android.os.Build.VERSION.SDK_INT >= 28) {
+            // Không vẽ vào vùng khoét camera: chắc chắn vừa khung hơn là tràn viền
             getWindow().getAttributes().layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_NEVER;
         }
         goImmersive();
+        super.onCreate(savedInstanceState);
+        goImmersive();
+        configureWebView();
         // Nút Back: bấm 2 lần trong 2 giây mới thoát
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -38,6 +44,21 @@ public class MainActivity extends BridgeActivity {
                 }
             }
         });
+    }
+
+    private void configureWebView() {
+        if (getBridge() == null || getBridge().getWebView() == null) return;
+        WebView wv = getBridge().getWebView();
+        WebSettings ws = wv.getSettings();
+        ws.setTextZoom(100);                 // bỏ phóng chữ theo cỡ chữ hệ thống
+        ws.setUseWideViewPort(true);
+        ws.setLoadWithOverviewMode(false);
+        ws.setSupportZoom(false);
+        ws.setBuiltInZoomControls(false);
+        ws.setDisplayZoomControls(false);
+        wv.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        wv.setHorizontalScrollBarEnabled(false);
+        wv.setVerticalScrollBarEnabled(false);
     }
 
     @Override

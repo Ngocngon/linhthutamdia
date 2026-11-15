@@ -38,6 +38,9 @@ jobs:
       - name: Cài phụ thuộc
         run: npm install --no-audit --no-fund
 
+      - name: Vá www cho vỏ Android
+        run: python3 tools/android/patch_www.py
+
       - name: Tạo dự án Android
         run: |
           npx cap add android
