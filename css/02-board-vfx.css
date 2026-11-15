@@ -84,7 +84,12 @@ body.rm .au,body.rm .au *{animation:none!important}
 .bigc>.art.cut{left:-14%;top:-16%;width:128%;height:112%}
 .hexav .art.cut{width:150%;height:150%;object-position:50% 0;margin-top:30%}
 .dki .art.cut{object-position:50% 0;object-fit:cover}
-.loc .in{background:linear-gradient(180deg,rgba(6,6,30,0) 0%,rgba(6,6,30,.15) 35%,rgba(6,6,30,.82) 100%),var(--li,none) center/cover no-repeat,radial-gradient(120% 80% at 50% 0,color-mix(in srgb,var(--lc,#6a6cf0) 85%,#fff),color-mix(in srgb,var(--lc,#6a6cf0) 35%,#000))}
+.loc .in{position:relative;overflow:hidden;background:linear-gradient(180deg,rgba(6,6,30,0) 0%,rgba(6,6,30,.15) 35%,rgba(6,6,30,.84) 100%),var(--li,none) 50% 45%/118% auto no-repeat,radial-gradient(120% 80% at 50% 0,color-mix(in srgb,var(--lc,#6a6cf0) 85%,#fff),color-mix(in srgb,var(--lc,#6a6cf0) 35%,#000))}
+.locw:not(.hid) .loc .in{animation:locLivePan 9.5s ease-in-out infinite alternate}
+.locw:not(.hid) .loc .in::before{content:"";position:absolute;inset:-30%;pointer-events:none;background:linear-gradient(115deg,transparent 36%,color-mix(in srgb,var(--lc,#7fe8ff) 34%,rgba(255,255,255,.26)) 50%,transparent 64%);transform:translateX(-110%) rotate(8deg);animation:locLiveSheen 5.6s ease-in-out infinite}
+@keyframes locLivePan{0%{background-position:center,46% 36%,center;background-size:auto,116% auto,auto}50%{background-position:center,54% 52%,center;background-size:auto,126% auto,auto}100%{background-position:center,49% 62%,center;background-size:auto,120% auto,auto}}
+@keyframes locLiveSheen{0%,56%{transform:translateX(-115%) rotate(8deg);opacity:0}72%{opacity:.85}100%{transform:translateX(125%) rotate(8deg);opacity:0}}
+body.rm .locw:not(.hid) .loc .in,body.rm .locw:not(.hid) .loc .in::before{animation:none!important}
 .loc .ln,.loc .lt{text-shadow:0 1px 0 #000,0 0 5px #000,0 0 9px #000}
 .art.cut{image-rendering:auto;filter:drop-shadow(0 2px 1.5px rgba(0,0,0,.65))}
 /* ===== hình trong khung; chỉ Vô Cực mới tràn khung (động) ===== */
@@ -304,8 +309,8 @@ body.rm .fxportal,body.rm .tbn,body.rm .mc.land,body.rm .pw.lchg{animation:none!
 .hand .hc.press::after{background-position:calc(50% + var(--ry,0deg)*4) 0;animation:none}
 .pw.tick{animation:pwtick .45s cubic-bezier(.3,1.6,.5,1)}
 @keyframes pwtick{0%{transform:translateX(-50%) scale(1)}40%{transform:translateX(-50%) scale(1.45);filter:brightness(1.8)}100%{transform:translateX(-50%) scale(1)}}
-.locw.new{animation:locflip .8s cubic-bezier(.2,.9,.3,1.15)}
-@keyframes locflip{0%{transform:perspective(600px) rotateX(92deg) scale(.9);filter:brightness(3)}55%{transform:perspective(600px) rotateX(-14deg) scale(1.05);filter:brightness(1.6)}100%{transform:none;filter:none}}
+.locw.new{animation:locflip 1.32s cubic-bezier(.18,.88,.26,1.12)}
+@keyframes locflip{0%{transform:perspective(680px) rotateX(92deg) scale(.78);filter:brightness(3.2) drop-shadow(0 0 24px var(--lc,#7fe8ff));opacity:.2}36%{transform:perspective(680px) rotateX(-16deg) scale(1.13);filter:brightness(1.85) drop-shadow(0 0 28px var(--lc,#7fe8ff));opacity:1}68%{transform:perspective(680px) rotateX(6deg) scale(1.04);filter:brightness(1.25)}100%{transform:none;filter:none;opacity:1}}
 .lane.won .locw{animation:lwon 1.4s ease-in-out infinite;z-index:3}
 @keyframes lwon{0%,100%{filter:drop-shadow(0 0 10px #ffd65a) brightness(1.1)}50%{filter:drop-shadow(0 0 28px #ffd65a) drop-shadow(0 0 50px #ff9a2b) brightness(1.35)}}
 .lane.lost .locw,.lane.lost .side{filter:grayscale(.75) brightness(.6);transition:filter .6s}

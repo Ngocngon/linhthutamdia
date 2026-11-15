@@ -85,8 +85,8 @@ function renderLobby(){misDay();try{const rb=document.querySelector('.lb-nav [da
   $("lbStat").textContent=`Đã chơi ${store.st.g} ván · thắng ${store.st.w} · có ${OWN.size}/${E.COLLECT.length} thẻ`;
   $("lbArenaN").textContent=ARENAS[store.arena][0];$("lbDeckIc").innerHTML=artFace(t);$("lbDeckIc").style.setProperty("--hc",HC[C[t].h]);$("lbDeckIc").style.background=BACKS[dBack(d)][1];$("lbDeckName").textContent=d.n;
   $("lbPlay").textContent=live&&(G.turn>1||G.q.p.length)?"Tiếp tục":"Chơi";$("lbStake").innerHTML=`<span class="gmi">${icn("gems")}</span><b>${store.gems}</b><small>Ngọc</small>`;renderBnr();}
-function showLobby(){closeAll();renderLobby();$("lobby").classList.add("on");if(window.BGM)BGM.setMode("lobby");}
-function playNow(){const k=store.deck.join();if(!G||G.phase==="over"||G.online||(G.turn===1&&!G.q.p.length&&gameDeck!==k)){closeAll();mmBot(nm=>{newGame();$("foeName").textContent=nm;closeAll();$("lobby").classList.remove("on");resetTimer(true);render();dealIn();startShow();banner("LƯỢT 1/6","");if(window.BGM)BGM.syncGame(G);if(typeof gpuLocReveal==="function")setTimeout(()=>gpuLocReveal(0),260);});return;}closeAll();$("lobby").classList.remove("on");resetTimer(true);render();if(window.BGM)BGM.syncGame(G);}
+function showLobby(){closeAll();renderLobby();$("lobby").classList.add("on");if(window.BGM)BGM.setMode("lobby");if(typeof syncBoardFieldVfx==="function")syncBoardFieldVfx();}
+function playNow(){if(window.BGM)BGM.stop();const k=store.deck.join();if(!G||G.phase==="over"||G.online||(G.turn===1&&!G.q.p.length&&gameDeck!==k)){closeAll();mmBot(nm=>{newGame();$("foeName").textContent=nm;closeAll();$("lobby").classList.remove("on");if(window.BGM)BGM.syncGame(G);resetTimer(true);render();dealIn();startShow();banner("LƯỢT 1/6","");if(typeof gpuLocReveal==="function")setTimeout(()=>gpuLocReveal(0),320);});return;}closeAll();$("lobby").classList.remove("on");if(window.BGM)BGM.syncGame(G);resetTimer(true);render();}
 function resetF(){F.dang="ALL";F.he="ALL";F.cost=0;F.text="";F.foc=null;$("deckSearch").value="";}
 function openCol(){F.col=true;draft=new Set(store.deck);resetF();renderDeck();$("ovDeck").classList.add("on");}
 function openEdit(i){editIdx=i;F.col=false;const dd=store.decks[i];draft=new Set(dd?dd.ids:[]);$("deckName").value=dd?dd.n:"Bộ bài "+(i+1);draftB=dd?dBack(dd):(BACKS[store.back]?store.back:"b0");paintBack();$("bkRow").hidden=true;$("btnBack").setAttribute("aria-expanded","false");resetF();F.dang="OWN";renderDeck();$("ovDecks").classList.remove("on");$("ovDeck").classList.add("on");}
@@ -102,6 +102,7 @@ function toggleFav(k){const i=store.fav.indexOf(k);if(i>=0)store.fav.splice(i,1)
 const norm=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/đ/g,"d").replace(/Đ/g,"D").toLowerCase();
 const seenRev=new Set(),prevPow=new Map(),seenLoc=new Set(),seenStg=new Set();let prevLd=[];
 if(!store.spdV2){store.spdV2=1;store.spd="vua";if(store.bgm===undefined)store.bgm=true;if(store.bgmVol===undefined)store.bgmVol=55;save();}
+if(!store.bgmV4){store.bgmV4=1;store.battleBgm=false;save();}
 const SPDV={cham:1.3,vua:1.0,nhanh:0.78};let SPD=SPDV[store.spd]||1.0;const fxT=(f,ms,...a)=>setTimeout(f,(+ms||0)*SPD,...a);
 let FXHOLD=0,FX_UNTIL=0;
 function holdFx(ms){const d=(+ms||0);if(d>0)FX_UNTIL=Math.max(FX_UNTIL,performance.now()+d*SPD+28);}

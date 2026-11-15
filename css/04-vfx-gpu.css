@@ -116,8 +116,8 @@ body .loc .in {
 }
 .locw.new,
 .locw.gpu-loc-rev {
-  animation: gpuLocFlip3D 0.52s cubic-bezier(0.2, 0.95, 0.3, 1) both !important;
-  z-index: 15 !important;
+  animation: locflip 1.32s cubic-bezier(0.18, 0.88, 0.26, 1.12) both !important;
+  z-index: 16 !important;
 }
 
 /* Huy hiệu sức mạnh lục giác kim loại / cam lửa khi dẫn điểm (chuẩn Marvel Snap) */
@@ -224,19 +224,20 @@ body .bn.right.urgent:not(:disabled) {
   to { transform: translate(-50%, -50%) scale(1.24); }
 }
 
-/* ===== HỆ THỐNG THÔNG BÁO NỬA TRÊN CHIẾN ĐỊA (PHẦN SÂN ĐỐI THỦ) ===== */
+/* ===== HỆ THỐNG NHÃN RA CHIÊU SIÊU GỌN (1 VIÊN NGẮN GỌN, KHÔNG CHE SÂN) ===== */
 #oppNotifHost {
   position: fixed;
   left: var(--opp-left, 50vw);
-  top: calc(var(--opp-top, 88px) + 4px);
-  width: var(--opp-w, min(94vw, 430px));
+  top: calc(var(--opp-top, 82px) - 2px);
+  width: auto;
+  max-width: min(76vw, 272px);
   transform: translate3d(-50%, 0, 0);
   z-index: 44;
   pointer-events: none !important;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
 }
 body.rm #oppNotifHost {
   display: none !important;
@@ -248,51 +249,57 @@ body.rm #oppNotifHost {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  max-width: 96%;
-  padding: 5px 14px 5px 11px;
+  gap: 4px;
+  max-width: 100%;
+  padding: 2.5px 9px 2.5px 7px;
   border-radius: 999px;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--nc) 22%, rgba(8, 11, 38, 0.92)), rgba(8, 11, 38, 0.9) 45%, color-mix(in srgb, var(--nc) 16%, rgba(8, 11, 38, 0.92)));
-  border: 1px solid color-mix(in srgb, var(--nc) 72%, rgba(255, 255, 255, 0.35));
+  background: rgba(7, 10, 34, 0.86);
+  border: 1px solid color-mix(in srgb, var(--nc) 68%, rgba(255, 255, 255, 0.3));
   box-shadow:
-    0 6px 18px rgba(0, 0, 0, 0.65),
-    0 0 16px color-mix(in srgb, var(--nc) 38%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+    0 3px 10px rgba(0, 0, 0, 0.55),
+    0 0 10px color-mix(in srgb, var(--nc) 32%, transparent);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
   color: #f6f8ff;
   font-family: var(--f-body), system-ui, sans-serif;
-  font-size: clamp(11.5px, 3.2vw, 13.5px);
+  font-size: 10.5px;
   font-weight: 800;
-  line-height: 1.25;
-  letter-spacing: 0.02em;
-  text-align: center;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95);
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95);
   pointer-events: none !important;
   will-change: transform, opacity;
 }
 .opp-ntf::before {
   content: "";
   flex: none;
-  width: 7px;
-  height: 7px;
-  border-radius: 2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 1.5px;
   transform: rotate(45deg);
   background: #ffffff;
-  box-shadow: 0 0 8px 2px var(--nc), 0 0 0 1.5px var(--nc);
+  box-shadow: 0 0 5px 1px var(--nc);
 }
 .opp-ntf .ntf-src {
   color: #ffe38a;
   font-weight: 900;
+  max-width: 118px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .opp-ntf .ntf-sep {
-  opacity: 0.7;
-  margin: 0 2px;
+  opacity: 0.75;
+  margin: 0 1px;
   color: var(--nc);
 }
 .opp-ntf .ntf-act {
   color: #ffffff;
+  max-width: 126px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .opp-ntf b {
   color: #ffe38a;
@@ -447,9 +454,11 @@ body:has(#lobby:not(.on)) #toastX.on {
   will-change: transform, opacity;
 }
 .fxg > .mc,
-.fxg > .hc {
+.fxg > .hc,
+.fxg > .lc {
   position: absolute !important;
   inset: 0 !important;
+  display: block !important;
   width: 100% !important;
   height: 100% !important;
   max-width: none !important;
@@ -457,10 +466,26 @@ body:has(#lobby:not(.on)) #toastX.on {
   transform: none !important;
   animation: none !important;
   transition: none !important;
+  border-radius: 9px;
   box-shadow:
     0 14px 26px rgba(0, 0, 0, 0.72),
     0 0 0 1.5px rgba(255, 255, 255, 0.78),
     0 0 18px var(--hc, rgba(127, 232, 255, 0.65)) !important;
+}
+.fxg > .lc {
+  container-type: size;
+  background: var(--hc, #2a2f5a);
+  overflow: visible !important;
+}
+.fxg > .lc > .art {
+  position: absolute !important;
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  border-radius: 9px !important;
 }
 .fxg.gpu-steal-actor > .mc,
 .fxg.gpu-steal-actor > .hc {
@@ -1163,4 +1188,427 @@ body.rm .choreo-afterimage {
 }
 #lbVfxTest:active {
   transform: scale(0.95);
+}
+
+/* ==================== MÀN TUYỆT KỸ BẬC S4 (.ult-s4) ==================== */
+.ult-s4 {
+  --c: #ff7ae6;
+  position: fixed;
+  left: 50%;
+  top: var(--opp-cy, 23vh);
+  width: min(94vw, 426px);
+  height: min(34vw, 142px);
+  transform: translate(-50%, -50%);
+  z-index: 54;
+  opacity: 1;
+  pointer-events: none !important;
+  display: grid;
+  grid-template-columns: min(28vw, 118px) 1fr;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 16px 9px 11px;
+  will-change: transform, opacity;
+}
+body.rm .ult-s4 {
+  display: none !important;
+}
+.ult-s4.foe {
+  grid-template-columns: 1fr min(28vw, 118px);
+  padding: 9px 11px 9px 16px;
+}
+.ult-s4.foe .ul4-art { order: 2; }
+.ult-s4.foe .ul4-tx { order: 1; text-align: right; align-items: flex-end; }
+.ult-s4 .ul4-bg {
+  position: absolute;
+  inset: 8px 0;
+  border-radius: 16px;
+  clip-path: polygon(16px 0, 100% 0, calc(100% - 16px) 100%, 0 100%);
+  background:
+    linear-gradient(110deg, rgba(8, 10, 38, 0.97) 0%, rgba(44, 18, 92, 0.96) 52%, rgba(8, 12, 38, 0.97) 100%);
+  border: 2px solid var(--c, #ff7ae6);
+  box-shadow:
+    0 12px 30px rgba(0, 0, 0, 0.85),
+    0 0 26px var(--c, #ff7ae6),
+    inset 0 0 22px rgba(255, 122, 230, 0.28);
+  overflow: hidden;
+}
+.ult-s4 .ul4-sp {
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(255, 122, 230, 0.35) 30deg, transparent 65deg, rgba(127, 232, 255, 0.35) 180deg, transparent 225deg);
+  animation: gpuReticleSpin 3.2s linear infinite;
+}
+.ult-s4 .ul4-art {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  border-radius: 13px;
+  overflow: hidden;
+  border: 2px solid #ffffff;
+  background: radial-gradient(circle at 50% 35%, #5b2ca8, #0c0828 78%);
+  box-shadow: 0 0 22px var(--c, #ff7ae6), 0 8px 18px rgba(0, 0, 0, 0.78);
+}
+.ult-s4 .ul4-art .art {
+  position: absolute !important;
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+  object-position: 50% 15%;
+}
+.ult-s4 .ul4-tx {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+}
+.ult-s4 .ul4-tx small {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--c, #ff7ae6), #7fe8ff);
+  color: #0d0622;
+  font-family: var(--f-display), sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: skewX(-10deg);
+  box-shadow: 0 0 12px var(--c, #ff7ae6);
+}
+.ult-s4 .ul4-tx b {
+  font-family: var(--f-display), sans-serif;
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(21px, 5.8vw, 28px);
+  line-height: 1.05;
+  text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 2px 0 #05061a, 0 0 14px var(--c, #ff7ae6);
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.ult-s4 .ul4-tx em {
+  font-style: normal;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #f4eeff;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-shadow: 0 1px 2px #000;
+}
+.ult-s4 .ul4-fl {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 32%, rgba(255, 255, 255, 0.72) 50%, transparent 68%);
+  mix-blend-mode: screen;
+  animation: ultS4Sweep 0.75s ease-out forwards;
+}
+@keyframes ultS4Sweep {
+  0% { transform: translateX(-110%); opacity: 0.9; }
+  100% { transform: translateX(115%); opacity: 0; }
+}
+
+/* ==================== PHONG ẤN MỞ CHIẾN ĐỊA & CỔNG TRIỆU HỒI / GƯƠNG NHÂN BẢN ==================== */
+.gpu-loc-seal,
+.gpu-summon-gate,
+.choreo-mirror-fx {
+  position: fixed;
+  pointer-events: none !important;
+  z-index: 34;
+  display: grid;
+  place-items: center;
+  will-change: transform, opacity;
+}
+.gpu-loc-seal img,
+.gpu-summon-gate img,
+.choreo-mirror-fx img {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 14px var(--lc, var(--gc, #7fe8ff)));
+}
+.gpu-loc-seal .ls-icon {
+  width: 56%;
+  height: 56%;
+}
+.locw.gpu-loc-rev {
+  z-index: 16 !important;
+  animation: locflip 1.32s cubic-bezier(0.18, 0.88, 0.26, 1.12) both !important;
+}
+
+/* ==================== VFX CHIẾN ĐỊA TRỰC QUAN TRÊN 2 PHẦN SÂN NGƯỜI CHƠI (#boardFieldVfx) ==================== */
+#boardFieldVfx {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none !important;
+  overflow: hidden;
+}
+body.rm #boardFieldVfx,
+body:has(.ov.on) #boardFieldVfx,
+body:has(#lobby.on) #boardFieldVfx {
+  display: none !important;
+}
+.bfx-box {
+  --fc: #6ef3ff;
+  position: fixed;
+  border-radius: 11px;
+  pointer-events: none !important;
+  overflow: hidden;
+  transition: opacity 0.35s ease;
+}
+.bfx-box .bfx-aura,
+.bfx-box .bfx-rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+.bfx-box .bfx-rim {
+  border: 1.5px solid color-mix(in srgb, var(--fc) 68%, rgba(255, 255, 255, 0.25));
+  box-shadow:
+    inset 0 0 16px color-mix(in srgb, var(--fc) 36%, transparent),
+    0 0 10px color-mix(in srgb, var(--fc) 28%, transparent);
+  animation: bfxRimPulse 2.8s ease-in-out infinite alternate;
+}
+.bfx-box .bfx-sig {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 76%;
+  height: 76%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  opacity: 0.24;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 8px var(--fc));
+  animation: bfxSlowSpin 14s linear infinite;
+}
+.bfx-box .bfx-crest {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44%;
+  height: 44%;
+  transform: translate(-50%, -50%);
+  object-fit: contain;
+  opacity: 0.38;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 10px var(--fc));
+  animation: bfxCrestFloat 3.2s ease-in-out infinite alternate;
+}
+.bfx-box .bfx-plume {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+}
+
+/* 1. KHIÊN BẤT DIỆT (cấm tiêu huỷ: lớp khiên hào quang vòm lục giác che phần sân 2 bên) */
+.bfx-box.k-shield .bfx-aura {
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(110, 243, 255, 0.14) 0%, rgba(44, 180, 255, 0.28) 72%, rgba(110, 243, 255, 0.42) 100%),
+    repeating-linear-gradient(60deg, rgba(160, 248, 255, 0.14) 0 1px, transparent 1px 13px),
+    repeating-linear-gradient(-60deg, rgba(160, 248, 255, 0.14) 0 1px, transparent 1px 13px);
+  animation: bfxShieldDome 2.6s ease-in-out infinite alternate;
+}
+.bfx-box.k-shield .bfx-rim {
+  border-width: 2px;
+  border-color: rgba(165, 250, 255, 0.9);
+  box-shadow: inset 0 0 22px rgba(86, 236, 255, 0.55), 0 0 14px rgba(86, 236, 255, 0.48);
+}
+.bfx-box.k-shield .bfx-crest {
+  width: 58%;
+  height: 58%;
+  opacity: 0.52;
+}
+
+/* 2. CHƯỚNG KHÍ ĐỘC (trừ điểm: 2 phần sân bốc lên hơi độc cuồn cuộn) */
+.bfx-box.k-poison .bfx-aura {
+  background:
+    radial-gradient(120% 70% at 50% 100%, rgba(74, 255, 130, 0.42) 0%, rgba(146, 56, 235, 0.26) 52%, transparent 92%);
+  animation: bfxMiasmaWave 3.1s ease-in-out infinite alternate;
+}
+.bfx-box.k-poison .bfx-plume {
+  bottom: -12%;
+  width: 44%;
+  height: 44%;
+  background: radial-gradient(circle, rgba(108, 255, 145, 0.72) 0%, rgba(154, 72, 255, 0.35) 55%, transparent 75%);
+  filter: blur(4px);
+  animation: bfxToxicRise 3.2s ease-out infinite;
+}
+.bfx-box.k-poison .p1 { left: 4%; animation-delay: 0s; }
+.bfx-box.k-poison .p2 { left: 32%; animation-delay: -0.85s; }
+.bfx-box.k-poison .p3 { left: 58%; animation-delay: -1.7s; }
+.bfx-box.k-poison .p4 { left: 20%; width: 52%; animation-delay: -2.4s; }
+
+/* 3. SƯƠNG GIÁ BĂNG TUYẾT */
+.bfx-box.k-frost .bfx-aura {
+  background:
+    radial-gradient(circle at 50% 50%, transparent 35%, rgba(160, 240, 255, 0.36) 100%),
+    linear-gradient(180deg, rgba(210, 250, 255, 0.24), transparent 45%, rgba(150, 230, 255, 0.24));
+}
+.bfx-box.k-frost .bfx-plume {
+  top: -8%;
+  width: 8px;
+  height: 8px;
+  background: radial-gradient(circle, #ffffff 0%, #9eeeff 60%, transparent 100%);
+  animation: bfxSnowFall 3.6s linear infinite;
+}
+.bfx-box.k-frost .p1 { left: 16%; animation-delay: 0s; }
+.bfx-box.k-frost .p2 { left: 44%; animation-delay: -1.1s; }
+.bfx-box.k-frost .p3 { left: 72%; animation-delay: -2.2s; }
+.bfx-box.k-frost .p4 { left: 86%; animation-delay: -2.9s; }
+
+/* 4. HOẢ NGỤC TIÊU HUỶ */
+.bfx-box.k-lava_kill .bfx-aura {
+  background:
+    radial-gradient(120% 68% at 50% 100%, rgba(255, 72, 32, 0.45) 0%, rgba(180, 18, 42, 0.22) 58%, transparent 95%);
+}
+.bfx-box.k-lava_kill .bfx-plume {
+  bottom: -6%;
+  width: 7px;
+  height: 12px;
+  background: radial-gradient(circle, #fff3b0 0%, #ff5424 65%, transparent 100%);
+  animation: bfxEmberRise 2.4s ease-out infinite;
+}
+.bfx-box.k-lava_kill .p1 { left: 15%; animation-delay: 0s; }
+.bfx-box.k-lava_kill .p2 { left: 42%; animation-delay: -0.6s; }
+.bfx-box.k-lava_kill .p3 { left: 68%; animation-delay: -1.3s; }
+.bfx-box.k-lava_kill .p4 { left: 84%; animation-delay: -1.9s; }
+
+/* 5. XIỀNG XÍCH PHONG ẤN (cấm đặt / khoá chiêu) */
+.bfx-box.k-lock_chain .bfx-aura {
+  background:
+    linear-gradient(36deg, transparent 45%, rgba(255, 210, 105, 0.28) 48%, rgba(255, 240, 180, 0.52) 50%, rgba(255, 210, 105, 0.28) 52%, transparent 55%),
+    linear-gradient(-36deg, transparent 45%, rgba(255, 210, 105, 0.28) 48%, rgba(255, 240, 180, 0.52) 50%, rgba(255, 210, 105, 0.28) 52%, transparent 55%),
+    radial-gradient(circle at 50% 50%, rgba(255, 196, 76, 0.16), transparent 75%);
+}
+.bfx-box.k-lock_chain .bfx-crest {
+  width: 54%;
+  height: 54%;
+  opacity: 0.48;
+}
+
+/* 6. LỬA RÈN CƯỜNG HOÁ & 7. TRỐNG ĐỒNG ×2 & 8. GIÓ DỊCH CHUYỂN & 9..13 */
+.bfx-box.k-forge .bfx-aura {
+  background: radial-gradient(110% 70% at 50% 100%, rgba(255, 154, 46, 0.42), rgba(255, 82, 24, 0.16) 60%, transparent 95%);
+}
+.bfx-box.k-forge .bfx-plume {
+  bottom: 0;
+  width: 6px;
+  height: 6px;
+  background: #ffe082;
+  box-shadow: 0 0 8px #ff8820;
+  animation: bfxEmberRise 2.2s ease-out infinite;
+}
+.bfx-box.k-forge .p1 { left: 22%; animation-delay: -0.2s; }
+.bfx-box.k-forge .p2 { left: 52%; animation-delay: -0.9s; }
+.bfx-box.k-forge .p3 { left: 78%; animation-delay: -1.5s; }
+
+.bfx-box.k-double_drum .bfx-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 224, 102, 0.22) 0%, transparent 68%);
+}
+.bfx-box.k-double_drum .bfx-sig {
+  width: 88%;
+  height: 88%;
+  opacity: 0.36;
+  animation-duration: 9s;
+}
+
+.bfx-box.k-wind_move .bfx-aura {
+  background: repeating-linear-gradient(-18deg, transparent 0 18px, rgba(116, 255, 223, 0.18) 18px 24px, transparent 24px 42px);
+  background-size: 200% 200%;
+  animation: bfxWindStream 2.8s linear infinite;
+}
+
+.bfx-box.k-summon_gate .bfx-sig {
+  width: 86%;
+  height: 86%;
+  opacity: 0.38;
+  animation-duration: 8s;
+}
+.bfx-box.k-summon_gate .bfx-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(149, 255, 117, 0.22), transparent 72%);
+}
+
+.bfx-box.k-mirror_clone .bfx-aura {
+  background: linear-gradient(125deg, rgba(134, 216, 255, 0.08) 20%, rgba(210, 245, 255, 0.34) 50%, rgba(186, 136, 255, 0.14) 80%);
+  background-size: 220% 220%;
+  animation: bfxMirrorShimmer 3.8s ease-in-out infinite alternate;
+}
+
+.bfx-box.k-energy_gem .bfx-aura {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(79, 216, 255, 0.24), transparent 74%),
+    linear-gradient(90deg, transparent 48%, rgba(120, 235, 255, 0.22) 50%, transparent 52%),
+    linear-gradient(0deg, transparent 48%, rgba(120, 235, 255, 0.22) 50%, transparent 52%);
+}
+
+.bfx-box.k-blessing .bfx-aura {
+  background: radial-gradient(circle at 50% 50%, rgba(255, 217, 106, 0.24), rgba(255, 170, 50, 0.08) 68%, transparent 100%);
+}
+.bfx-box.k-cosmic_rule .bfx-aura {
+  background: conic-gradient(from 0deg at 50% 50%, rgba(207, 136, 255, 0.22), rgba(90, 216, 255, 0.14), rgba(207, 136, 255, 0.22));
+  animation: bfxSlowSpin 16s linear infinite;
+}
+
+@keyframes bfxRimPulse {
+  from { opacity: 0.68; }
+  to { opacity: 1; }
+}
+@keyframes bfxSlowSpin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+@keyframes bfxCrestFloat {
+  from { transform: translate(-50%, -48%) scale(0.94); opacity: 0.3; }
+  to { transform: translate(-50%, -54%) scale(1.06); opacity: 0.5; }
+}
+@keyframes bfxShieldDome {
+  from { opacity: 0.72; filter: brightness(0.95); }
+  to { opacity: 1; filter: brightness(1.22); }
+}
+@keyframes bfxMiasmaWave {
+  from { opacity: 0.72; transform: scaleY(0.95); }
+  to { opacity: 1; transform: scaleY(1.06); }
+}
+@keyframes bfxToxicRise {
+  0% { transform: translateY(10%) scale(0.55); opacity: 0; }
+  30% { opacity: 0.82; }
+  100% { transform: translateY(-210%) scale(1.35); opacity: 0; }
+}
+@keyframes bfxSnowFall {
+  0% { transform: translate(0, 0) scale(0.8); opacity: 0; }
+  20% { opacity: 0.9; }
+  100% { transform: translate(-10px, 145px) scale(1.1); opacity: 0; }
+}
+@keyframes bfxEmberRise {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  25% { opacity: 0.95; }
+  100% { transform: translate(8px, -135px) scale(0.4); opacity: 0; }
+}
+@keyframes bfxWindStream {
+  from { background-position: 0% 0%; }
+  to { background-position: 100% 40%; }
+}
+@keyframes bfxMirrorShimmer {
+  from { background-position: 0% 20%; }
+  to { background-position: 100% 80%; }
 }

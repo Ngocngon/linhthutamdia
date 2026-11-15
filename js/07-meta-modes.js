@@ -431,7 +431,7 @@ function startModeGame0(mode,pDeck,foeDeck,upP,upA,xo){
   G=E.newGame(pDeck,foeDeck,Object.assign({upg:{p:upP||{},a:upA||{}}},xo||{}));G.mode=mode;gameDeck=store.deck.join();
   missNote="";resetTimer(false);
   G.msg=`<b>${mode.lbl||(mode.k==="draft"?"Tuyển chọn":"Chinh phục")} · máy ${DIFF[mode.diff].n}.</b> `+turnMsg(G.msgs.slice(0,4));
-  closeAll();$("lobby").classList.remove("on");render();dealIn();startShow();$("foeName").textContent="MÁY";}
+  closeAll();$("lobby").classList.remove("on");if(window.BGM)BGM.syncGame(G);render();dealIn();startShow();$("foeName").textContent="MÁY";if(typeof gpuLocReveal==="function")setTimeout(()=>gpuLocReveal(0),320);}
 /* ---- Tuyển chọn ---- */
 const DR_GAMES=21,DR_SIZE=12;
 function drDiff(g){return g<6?"thuong":g<14?"kho":"acmong";}
@@ -465,7 +465,7 @@ function renderDraft(){const R=store.run,b=$("runBody");$("runTitle").textConten
   }
   b.innerHTML=stat+h;$("runFoot").innerHTML=f;}
 function drReward(R){return {gold:150+R.w*120,up:20+R.w*25,tok:30+R.w*30,evp:R.w*15};}
-function drPlay(){const R=store.run;if(G&&G.mode&&G.mode.k==="draft"&&G.phase==="play"){closeAll();$("lobby").classList.remove("on");render();return;}
+function drPlay(){const R=store.run;if(G&&G.mode&&G.mode.k==="draft"&&G.phase==="play"){closeAll();$("lobby").classList.remove("on");if(window.BGM)BGM.syncGame(G);render();return;}
   const diff=drDiff(R.g),fd=pickFoeDeck();startModeGame({k:"draft",diff},R.deck.slice(),fd,R.upg,foeUpg(fd,Math.floor(R.g*.8)+DIFF[diff].upg));}
 /* ---- Chinh phục ---- */
 const CQ=[{diff:"de",hp:8,rw:{gold:300,up:40,tok:40,evp:20}},{diff:"thuong",hp:10,rw:{gold:700,up:90,tok:90,evp:50}},{diff:"kho",hp:12,rw:{gold:1500,up:180,tok:180,evp:120}},{diff:"acmong",hp:15,rw:{gold:3000,up:400,tok:400,evp:300}}];
@@ -878,9 +878,339 @@ $("pkBody").addEventListener("click",ev=>{const lk=ev.target.closest("[data-lk],
   $("ovPick").classList.remove("on");renderDeck(true);});
 $("deckTray").addEventListener("click",ev=>{const r=ev.target.closest("[data-tray]");if(!r)return;SFX.play("tap");openPick(r.dataset.tray);});
 $("deckDetail").addEventListener("click",ev=>{const fb=ev.target.closest("[data-fav]");if(fb){toggleFav(fb.dataset.fav);SFX.play("tap");renderDeck(true);return;}const r=ev.target.closest("[data-toggle]");if(!r)return;toggleDraft(r.dataset.toggle);SFX.play("tap");renderDeck(true);});
+$("btnRandom").textContent="✨ Đề xuất bộ";
 $("btnRandom").addEventListener("click",()=>{
-  const hs=Object.keys(E.PARTNER),h=hs.includes(F.he)?F.he:hs[Math.floor(Math.random()*hs.length)];
-  draft=new Set(ownDeck(h));F.dang="MINE";F.he="ALL";F.cost=0;F.text="";$("deckSearch").value="";renderDeck();
+  SFX.play("tap");openRecModal("arch");
+});
+
+/* ==================== HỆ THỐNG ĐỀ XUẤT THẺ / BỘ BÀI TỪ DATA & MÃ BỘ BÀI (COPY / PASTE) ==================== */
+const B64U="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789._";
+const ARCHETYPES=[
+  {id:"destroy",n:"Tiêu Huỷ Huyết Chiến",c:"#ff5468",re:/tiêu huỷ|bị tiêu huỷ|mộ|hồi sinh/,desc:"Phá huỷ thẻ phe ta để kích hoạt nội tại hồi sinh và nhân sức mạnh từ mộ bài."},
+  {id:"move",n:"Dịch Chuyển & Kéo Đẩy",c:"#5ef2d6",re:/di chuyển|dời|kéo|đẩy|thổi|sang chiến địa/,desc:"Linh hoạt đổi làn, kéo thẻ đối phương lệch vị trí và cộng điểm mỗi lần di chuyển."},
+  {id:"swarm",n:"Nhân Bản & Triệu Hồi",c:"#7fe8ff",re:/bản sao|sao chép|triệu hồi|nhân bản|thêm .* vào tay|sóc|ảo ảnh/,desc:"Phủ kín 3 chiến địa bằng bóng phân thân, linh thú triệu hồi và hiệu ứng cộng toàn bàn."},
+  {id:"discard",n:"Vứt Bỏ Phản Kích",c:"#ff9a3c",re:/vứt bỏ|bị vứt bỏ/,desc:"Chủ động vứt bài trên tay để gọi viện binh miễn phí và cường hoá chủ lực."},
+  {id:"ongoing",n:"Duy Trì Hộ Vệ",c:"#ffd65a",re:/duy trì|không thể bị tiêu huỷ|bảo vệ/,t:"on",desc:"Xếp chồng hào quang Duy Trì bền bỉ, che chắn chiến địa và tăng điểm liên tục."},
+  {id:"buff",n:"Cường Hoá Sức Mạnh",c:"#7dff96",re:/cường hoá|nhân đôi sức mạnh|\+\d+\s*sức mạnh|tăng .* sức mạnh/,desc:"Dồn chỉ số vượt trội cho thẻ trên tay, trên bàn và bùng nổ sức mạnh cuối trận."},
+  {id:"control",n:"Kiểm Soát Khắc Chế",c:"#c984ff",re:/mất kỹ năng|tắt kỹ năng|cướp|khoá|tốn nhiều hơn|−\d+\s*sức mạnh|-\d+\s*sức mạnh|đổi phe/,desc:"Phong ấn kỹ năng, trừ sức mạnh và khoá chiến địa khiến đối thủ không kịp trở tay."}
+];
+const CARD_TAGS_CACHE={};
+function tagsOfCard(id){
+  if(CARD_TAGS_CACHE[id])return CARD_TAGS_CACHE[id];
+  const d=C[id];if(!d)return CARD_TAGS_CACHE[id]=[];
+  const tx=((d.n||"")+" "+(d.x||"")).toLowerCase(),out=[];
+  for(const a of ARCHETYPES){if((a.t&&d.t===a.t)||a.re.test(tx))out.push(a.id);}
+  return CARD_TAGS_CACHE[id]=out;
+}
+function encodeDeckCode(ids,name,back){
+  const list=(ids||[]).filter(k=>C[k]&&E.COLLECT.includes(k)).slice(0,12);
+  if(!list.length)return "";
+  let body="";
+  for(const k of list){const idx=E.COLLECT.indexOf(k);body+=B64U[(idx>>6)&63]+B64U[idx&63];}
+  const bk=BACKS[back]?back:"b0";
+  const nm=String(name||"").trim().slice(0,16);
+  const nmPart=nm?"-"+btoa(unescape(encodeURIComponent(nm))).replace(/\+/g,".").replace(/\//g,"_").replace(/=+$/,""):"";
+  return `LTTD1-${bk}-${body}${nmPart}`;
+}
+function decodeDeckCode(raw){
+  const s=String(raw||"").trim();
+  if(!s)return {ok:false,err:"Chưa có mã bộ bài."};
+  const m=s.match(/LTTD1-(b\d)-([A-Za-z0-9._]{2,24})(?:-([A-Za-z0-9._\-]+))?/);
+  if(m){
+    const bk=BACKS[m[1]]?m[1]:"b0",code=m[2];
+    if(code.length%2!==0)return {ok:false,err:"Mã bộ bài bị thiếu ký tự."};
+    const ids=[];
+    for(let i=0;i<code.length&&ids.length<12;i+=2){
+      const hi=B64U.indexOf(code[i]),lo=B64U.indexOf(code[i+1]);
+      if(hi<0||lo<0)return {ok:false,err:"Mã chứa ký tự không hợp lệ."};
+      const k=E.COLLECT[(hi<<6)|lo];
+      if(k&&C[k]&&!ids.includes(k))ids.push(k);
+    }
+    let name="";
+    if(m[3]){try{const b64=m[3].replace(/[.]/g,"+").replace(/-/g,"+").replace(/_/g,"/");name=decodeURIComponent(escape(atob(b64))).slice(0,16);}catch(e){}}
+    if(!ids.length)return {ok:false,err:"Không tìm thấy thẻ hợp lệ trong mã."};
+    return {ok:true,ids,name:name||"Bộ bài nhập mã",back:bk};
+  }
+  /* Hỗ trợ dán danh sách ID hoặc tên thẻ cách nhau bởi dấu phẩy / xuống dòng */
+  const parts=s.split(/[,;\n|]+/).map(x=>x.trim()).filter(Boolean);
+  const ids=[];
+  for(const p of parts){
+    if(C[p]&&E.COLLECT.includes(p)&&!ids.includes(p)){ids.push(p);continue;}
+    const pn=norm(p);
+    const hit=E.COLLECT.find(k=>!ids.includes(k)&&(k===pn||norm(C[k].n)===pn));
+    if(hit)ids.push(hit);
+    if(ids.length>=12)break;
+  }
+  if(ids.length>=1)return {ok:true,ids,name:"Bộ bài nhập mã",back:"b0"};
+  return {ok:false,err:"Mã không đúng định dạng LTTD1-... hoặc tên thẻ."};
+}
+
+function recommendCardsForSet(curIds,limit){
+  const cur=new Set(curIds||[]),own=[...OWN].filter(k=>C[k]&&!cur.has(k));
+  const tagCnt={},heCnt={},tCnt={},costCnt=[0,0,0,0,0,0,0];
+  for(const k of cur){
+    const d=C[k];if(!d)continue;
+    heCnt[d.h]=(heCnt[d.h]||0)+1;tCnt[d.t]=(tCnt[d.t]||0)+1;
+    costCnt[Math.max(1,Math.min(6,d.c||1))]++;
+    for(const tg of tagsOfCard(k))tagCnt[tg]=(tagCnt[tg]||0)+1;
+  }
+  const want=[0,2,3,3,2,1,1];
+  const topTag=Object.entries(tagCnt).sort((a,b)=>b[1]-a[1])[0];
+  const scored=own.map(k=>{
+    const d=C[k],bc=Math.max(1,Math.min(6,d.c||1)),tgs=tagsOfCard(k);
+    let sc=(d.p||0)*0.35+(lvl(k)||0)*0.4;
+    let reason="";
+    for(const tg of tgs){
+      if(tagCnt[tg]){sc+=tagCnt[tg]*3.4;if(!reason){const a=ARCHETYPES.find(x=>x.id===tg);if(a)reason="Hợp "+a.n.split(" ")[0]+" "+a.n.split(" ")[1];}}
+    }
+    if(costCnt[bc]<want[bc]){sc+=(want[bc]-costCnt[bc])*2.5;if(!reason)reason=`Bù mốc ${d.c}⚡`;}
+    else if(costCnt[bc]>want[bc]+1)sc-=2.2;
+    if(heCnt[d.h]){sc+=Math.min(3,heCnt[d.h])*0.9;if(!reason)reason="Cùng "+(HE[d.h]||d.h);}
+    if(tCnt[d.t]>=2){sc+=1.1;if(!reason)reason="Cùng hệ "+(DANG[d.t]||"");}
+    if(!cur.size){
+      sc+=tgs.length*1.6+(d.c>=1&&d.c<=4?1.8:0.8);
+      reason=tgs.length?(ARCHETYPES.find(x=>x.id===tgs[0])||{}).n||"Đa dụng":"Chỉ số tốt";
+    }
+    return {id:k,sc,reason:reason||"Cân bằng năng lượng",topTag:topTag?topTag[0]:""};
+  });
+  scored.sort((a,b)=>b.sc-a.sc||C[a.id].c-C[b.id].c);
+  return scored.slice(0,limit||12);
+}
+
+function fillDeckSmart(seedIds){
+  const res=(seedIds||[]).filter(k=>C[k]&&OWN.has(k)).slice(0,12);
+  while(res.length<12){
+    const next=recommendCardsForSet(res,1)[0];
+    if(!next)break;
+    res.push(next.id);
+  }
+  return res.sort((a,b)=>C[a].c-C[b].c||C[a].p-C[b].p);
+}
+
+function buildArchetypeDeck(archId){
+  const a=ARCHETYPES.find(x=>x.id===archId)||ARCHETYPES[0];
+  const own=[...OWN].filter(k=>C[k]);
+  const core=own.filter(k=>tagsOfCard(k).includes(a.id)).sort((x,y)=>(C[y].p-C[x].p)||(C[x].c-C[y].c));
+  const want=[0,2,3,3,2,1,1],picked=[],cc=[0,0,0,0,0,0,0];
+  for(const k of core){
+    if(picked.length>=9)break;
+    const bc=Math.max(1,Math.min(6,C[k].c||1));
+    if(cc[bc]<want[bc]+1){picked.push(k);cc[bc]++;}
+  }
+  for(const k of core){if(picked.length>=10)break;if(!picked.includes(k))picked.push(k);}
+  return fillDeckSmart(picked);
+}
+
+function buildHeOrTypeDeck(kind,val){
+  const own=[...OWN].filter(k=>C[k]);
+  const pool=own.filter(k=>kind==="he"?C[k].h===val:C[k].t===val);
+  const want=[0,2,3,3,2,1,1],picked=[];
+  for(let b=1;b<=6;b++){
+    const fit=pool.filter(k=>Math.max(1,Math.min(6,C[k].c||1))===b&&!picked.includes(k)).sort((x,y)=>C[y].p-C[x].p);
+    for(let i=0;i<want[b]&&i<fit.length;i++)picked.push(fit[i]);
+  }
+  for(const k of pool){if(picked.length>=12)break;if(!picked.includes(k))picked.push(k);}
+  return fillDeckSmart(picked);
+}
+
+function syncDeckToolsUI(){
+  const tools=$("deckTools"),strip=$("recInline");
+  if(!tools||!strip)return;
+  if(F.col){tools.hidden=true;strip.hidden=true;return;}
+  tools.hidden=false;
+  const fillBtn=$("btnAutoFill");
+  if(fillBtn)fillBtn.disabled=draft.size>=12;
+  if(draft.size>=12){strip.hidden=true;strip.innerHTML="";return;}
+  const recs=recommendCardsForSet([...draft],6);
+  if(!recs.length){strip.hidden=true;return;}
+  if(typeof spLoad==="function")for(const r of recs)spLoad(r.id);
+  strip.hidden=false;
+  strip.innerHTML=`<div class="rs-hd"><span>✨ Đề xuất cho bộ đang xếp (${draft.size}/12):</span><small>Chạm thẻ để thêm nhanh</small></div><div class="rs-row">${recs.map(r=>{const d=C[r.id];return `<button type="button" class="rs-it" data-radd="${r.id}" style="--hc:${HC[d.h]}"><span class="rs-c">${d.c}</span><span class="rs-p">${d.p}</span>${art(r.id)}<b>${esc(d.n)}</b><i>${esc(r.reason)}</i></button>`;}).join("")}</div>`;
+  if(typeof spWatch==="function")spWatch(strip);
+}
+{const _rdOrig=renderDeck;renderDeck=function(){_rdOrig.apply(this,arguments);try{syncDeckToolsUI();}catch(e){}};}
+
+let recTab="card";
+const REC_PRESETS_CACHE={};
+function openRecModal(defaultTab){
+  recTab=defaultTab||(!F.col&&$("ovDeck").classList.contains("on")&&draft.size>0&&draft.size<12?"card":"arch");
+  renderRecModal();
+  $("ovRec").classList.add("on");
+}
+function applyRecommendedDeck(ids,name){
+  const valid=ids.filter(k=>C[k]&&OWN.has(k)).slice(0,12);
+  if(valid.length<12)return;
+  if($("ovDeck").classList.contains("on")&&!F.col){
+    draft=new Set(valid);
+    if(name)$("deckName").value=name.slice(0,16);
+    $("ovRec").classList.remove("on");
+    SFX.play("win");
+    renderDeck(true);
+    toast("Đã nạp bộ bài đề xuất vào khay sửa!");
+    return;
+  }
+  if(store.decks.length<12){
+    store.decks.push({n:(name||"Bộ đề xuất").slice(0,16),ids:valid,b:store.back||"b0"});
+    pendIdx=store.decks.length-1;
+  }else{
+    store.decks[pendIdx]={n:(name||"Bộ đề xuất").slice(0,16),ids:valid,b:dBack(store.decks[pendIdx])};
+  }
+  store.cur=pendIdx;store.deck=store.decks[store.cur].ids;save();
+  $("ovRec").classList.remove("on");
+  if($("ovDecks").classList.contains("on"))renderDecks();
+  renderLobby();SFX.play("win");
+  toast("Đã tạo & trang bị: "+(name||"Bộ đề xuất"));
+}
+function renderRecModal(){
+  $("recTabs").querySelectorAll("[data-rt]").forEach(b=>b.classList.toggle("on",b.dataset.rt===recTab));
+  const body=$("recBody");
+  if(recTab==="card"){
+    const baseIds=($("ovDeck").classList.contains("on")&&!F.col)?[...draft]:(store.decks[pendIdx]?store.decks[pendIdx].ids:store.deck);
+    const editing=$("ovDeck").classList.contains("on")&&!F.col;
+    const seed=editing?baseIds:baseIds.slice(0,6);
+    const recs=recommendCardsForSet(editing?baseIds:[],12);
+    if(typeof spLoad==="function")for(const r of recs)spLoad(r.id);
+    const curve=[1,2,3,4,5,6].map(c=>{const n=(editing?baseIds:[]).filter(k=>Math.max(1,Math.min(6,C[k].c))===c).length;return `<span class="rc-cv"><b>${c===6?"6+":c}⚡</b><i>${n}</i></span>`;}).join("");
+    let h=`<div class="rc-box"><div class="rc-top"><div><b>${editing?`Đang xếp: ${baseIds.length}/12 thẻ`:"Gợi ý thẻ mạnh trong kho bài"}</b><small>${editing?(baseIds.length<12?`Còn thiếu ${12-baseIds.length} thẻ — hệ thống phân tích kỹ năng & đường cong năng lượng để đề xuất:`:"Bộ bài đã đủ 12/12 thẻ. Bấm bớt thẻ trên khay nếu muốn thay thẻ mới."):"Mở Sửa bộ bài để thêm từng thẻ trực tiếp, hoặc bấm Đổi sang tab Chiến thuật để lấy trọn bộ 12 thẻ."}</small></div>${editing&&baseIds.length<12?`<button type="button" class="btn end rc-fill" data-rfill="1">⚡ Bù đủ 12 thẻ</button>`:""}</div>${editing?`<div class="rc-curve">${curve}</div>`:""}</div>`;
+    h+=`<div class="rc-cgrid">${recs.map(r=>{const d=C[r.id],canAdd=editing&&baseIds.length<12&&!draft.has(r.id);return `<div class="rc-card" style="--hc:${HC[d.h]}"><div class="rc-cw" data-rview="${r.id}">${cardGC(r.id," mini")}</div><div class="rc-info"><b>${esc(d.n)}</b><span class="rc-tag">${esc(r.reason)}</span><p>${kwfx(esc(skillText(d)))}</p>${canAdd?`<button type="button" class="ib hi" data-rmadd="${r.id}">＋ Thêm vào bộ</button>`:editing&&draft.has(r.id)?`<span class="rc-in">Đã có</span>`:""}</div></div>`;}).join("")}</div>`;
+    body.innerHTML=h;if(typeof spWatch==="function")spWatch(body);return;
+  }
+  if(recTab==="arch"){
+    let h=`<div class="rc-lead">Phân tích trực tiếp từ dữ liệu kỹ năng của <b>${OWN.size}</b> thẻ bạn đang sở hữu để dựng bộ 12 thẻ chuẩn đường cong năng lượng:</div>`;
+    for(const a of ARCHETYPES){
+      const ids=buildArchetypeDeck(a.id);
+      if(typeof spLoad==="function")for(const k of ids)spLoad(k);
+      REC_PRESETS_CACHE["a_"+a.id]={ids,n:a.n.slice(0,16)};
+      const avg=(ids.reduce((s,k)=>s+(C[k].c||0),0)/Math.max(1,ids.length)).toFixed(1);
+      h+=`<div class="rc-dk" style="--rc:${a.c}"><div class="rc-dkh"><div><b>${esc(a.n)}</b><small>TB ${avg}⚡ · 12 thẻ phối hợp</small></div><div class="rc-dka"><button type="button" class="ib alt" data-rcopy="a_${a.id}">📋 Mã</button><button type="button" class="ib hi" data-ruse="a_${a.id}">Dùng bộ này</button></div></div><p class="rc-dkd">${esc(a.desc)}</p><div class="tray rc-tray">${miniTray(ids)}</div></div>`;
+    }
+    body.innerHTML=h;if(typeof spWatch==="function")spWatch(body);return;
+  }
+  /* Tab Theo Hệ / Bậc & Dạng Kỹ Năng */
+  let h=`<div class="rc-lead">Bộ bài đề xuất theo từng <b>Hệ / Bậc thẻ (HE)</b> và <b>Dạng kỹ năng</b> từ kho thẻ hiện có:</div>`;
+  const groups=[
+    ...["KD","C1","TB","S1","S2","S3","S4","S5"].filter(hk=>HE[hk]&&[...OWN].some(k=>C[k]&&C[k].h===hk)).map(hk=>({key:"h_"+hk,kind:"he",val:hk,title:"Hệ "+(HE[hk]||hk),col:HC[hk]||"#7fe8ff",desc:`Ưu tiên các thẻ chủ lực thuộc ${HE[hk]||hk}, kết hợp thẻ bổ trợ cân bằng năng lượng 1–6.`})),
+    ...["rev","on","act"].map(tk=>({key:"t_"+tk,kind:"t",val:tk,title:"Chuyên "+DANG[tk],col:"#ffd65a",desc:`Tập trung tối đa vào cơ chế ${DANG[tk]} để tối ưu chiến địa và chuỗi combo.`}))
+  ];
+  for(const g of groups){
+    const ids=buildHeOrTypeDeck(g.kind,g.val);
+    if(typeof spLoad==="function")for(const k of ids)spLoad(k);
+    REC_PRESETS_CACHE[g.key]={ids,n:g.title.slice(0,16)};
+    const cntMatch=ids.filter(k=>g.kind==="he"?C[k].h===g.val:C[k].t===g.val).length;
+    h+=`<div class="rc-dk" style="--rc:${g.col}"><div class="rc-dkh"><div><b>${esc(g.title)}</b><small>${cntMatch}/12 thẻ đúng hệ</small></div><div class="rc-dka"><button type="button" class="ib alt" data-rcopy="g_${g.key}">📋 Mã</button><button type="button" class="ib hi" data-ruse="${g.key}">Dùng bộ này</button></div></div><p class="rc-dkd">${esc(g.desc)}</p><div class="tray rc-tray">${miniTray(ids)}</div></div>`;
+  }
+  body.innerHTML=h;if(typeof spWatch==="function")spWatch(body);
+}
+
+/* ---- Hộp thoại Sao chép / Dán mã bộ bài (#ovCode) ---- */
+let parsedCodeDeck=null;
+function copyTextSafe(str){
+  if(!str)return;
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(str).then(()=>toast("Đã sao chép mã bộ bài!")).catch(()=>fallbackCopyInput(str));
+  }else fallbackCopyInput(str);
+}
+function fallbackCopyInput(str){
+  const inp=$("outDeckCode");
+  if(inp){inp.value=str;inp.focus();inp.select();try{document.execCommand("copy");toast("Đã sao chép mã bộ bài!");}catch(e){}}
+}
+function openCodeModal(srcIds,srcName,srcBack,focusPaste){
+  const ids=(srcIds&&srcIds.length)?srcIds:(store.decks[pendIdx]?store.decks[pendIdx].ids:store.deck);
+  const nm=srcName||(store.decks[pendIdx]?store.decks[pendIdx].n:"Bộ bài");
+  const bk=srcBack||(store.decks[pendIdx]?dBack(store.decks[pendIdx]):"b0");
+  const code=encodeDeckCode(ids,nm,bk);
+  $("outDeckCode").value=code;
+  $("codeOutWrap").hidden=!code;
+  $("inDeckCode").value="";
+  parsedCodeDeck=null;
+  renderCodePreview();
+  $("ovCode").classList.add("on");
+  if(focusPaste)setTimeout(()=>$("inDeckCode").focus(),60);
+  else if(code)copyTextSafe(code);
+}
+function renderCodePreview(){
+  const raw=$("inDeckCode").value.trim(),pv=$("codePreview"),bAp=$("btnCodeApply"),bNw=$("btnCodeNewDeck");
+  if(!raw){parsedCodeDeck=null;pv.innerHTML=`<div class="cp-empty">Dán mã <b>LTTD1-...</b> vào ô trên để xem trước 12 thẻ bài và nạp vào kho bộ bài.</div>`;bAp.disabled=true;bNw.disabled=true;return;}
+  const res=decodeDeckCode(raw);
+  if(!res.ok){parsedCodeDeck=null;pv.innerHTML=`<div class="cp-err">⚠ ${esc(res.err)}</div>`;bAp.disabled=true;bNw.disabled=true;return;}
+  const ownIds=res.ids.filter(k=>OWN.has(k)),missIds=res.ids.filter(k=>!OWN.has(k));
+  const finalIds=ownIds.length===12?ownIds:fillDeckSmart(ownIds);
+  if(typeof spLoad==="function")for(const k of finalIds)spLoad(k);
+  parsedCodeDeck={ids:finalIds,rawIds:res.ids,ownCnt:ownIds.length,missIds,name:res.name,back:res.back};
+  bAp.disabled=finalIds.length!==12;
+  bNw.disabled=finalIds.length!==12||store.decks.length>=12;
+  pv.innerHTML=`<div class="cp-ok"><b>${esc(res.name)}</b> · Đọc được <b>${res.ids.length}</b> thẻ (${ownIds.length}/${res.ids.length} thẻ đã sở hữu)${missIds.length?`<small class="cp-warn">Thiếu ${missIds.length} thẻ chưa mở (${missIds.map(k=>esc(C[k].n)).join(", ")}) → tự động bù thẻ phối hợp tương đương để đủ 12/12!</small>`:res.ids.length<12?`<small class="cp-warn">Mã có ${res.ids.length} thẻ → tự động bù đủ 12/12 thẻ phối hợp!</small>`:""}</div><div class="tray">${miniTray(finalIds)}</div>`;
+  if(typeof spWatch==="function")spWatch(pv);
+}
+
+if($("btnRecOpen"))$("btnRecOpen").addEventListener("click",()=>{SFX.play("tap");openRecModal("card");});
+if($("btnRecDecks"))$("btnRecDecks").addEventListener("click",()=>{SFX.play("tap");openRecModal("arch");});
+if($("btnAutoFill"))$("btnAutoFill").addEventListener("click",()=>{
+  if(F.col||draft.size>=12)return;
+  draft=new Set(fillDeckSmart([...draft]));SFX.play("win");renderDeck(true);toast("Đã tự động bù đủ 12/12 thẻ phối hợp!");
+});
+if($("recInline"))$("recInline").addEventListener("click",ev=>{
+  const b=ev.target.closest("[data-radd]");if(!b)return;
+  const k=b.dataset.radd;if(!F.col&&draft.size<12&&OWN.has(k)&&!draft.has(k)){draft.add(k);SFX.play("place");renderDeck(true);}
+});
+if($("recTabs"))$("recTabs").addEventListener("click",ev=>{
+  const b=ev.target.closest("[data-rt]");if(!b)return;recTab=b.dataset.rt;SFX.play("tap");renderRecModal();$("recBody").scrollTop=0;
+});
+if($("recBody"))$("recBody").addEventListener("click",ev=>{
+  const bf=ev.target.closest("[data-rfill]");
+  if(bf){draft=new Set(fillDeckSmart([...draft]));SFX.play("win");renderDeck(true);renderRecModal();toast("Đã bù đủ 12/12 thẻ!");return;}
+  const ba=ev.target.closest("[data-rmadd]");
+  if(ba){const k=ba.dataset.rmadd;if(draft.size<12&&OWN.has(k)&&!draft.has(k)){draft.add(k);SFX.play("place");renderDeck(true);renderRecModal();}return;}
+  const bv=ev.target.closest("[data-rview]");
+  if(bv){SFX.play("tap");openPick(bv.dataset.rview);return;}
+  const bc=ev.target.closest("[data-rcopy]");
+  if(bc){const key=bc.dataset.rcopy.replace(/^g_/,""),pr=REC_PRESETS_CACHE[key];if(pr){SFX.play("tap");copyTextSafe(encodeDeckCode(pr.ids,pr.n,"b0"));}return;}
+  const bu=ev.target.closest("[data-ruse]");
+  if(bu){const pr=REC_PRESETS_CACHE[bu.dataset.ruse];if(pr)applyRecommendedDeck(pr.ids,pr.n);}
+});
+
+if($("btnCopyDraft"))$("btnCopyDraft").addEventListener("click",()=>{
+  SFX.play("tap");openCodeModal([...draft],$("deckName").value.trim()||"Bộ đang sửa",draftB,false);
+});
+if($("btnPasteDraft"))$("btnPasteDraft").addEventListener("click",()=>{
+  SFX.play("tap");openCodeModal([...draft],$("deckName").value.trim()||"Bộ đang sửa",draftB,true);
+});
+if($("btnCopySel"))$("btnCopySel").addEventListener("click",()=>{
+  const d=store.decks[pendIdx];if(!d)return;SFX.play("tap");openCodeModal(d.ids,d.n,dBack(d),false);
+});
+if($("btnPasteOpen"))$("btnPasteOpen").addEventListener("click",()=>{
+  const d=store.decks[pendIdx];SFX.play("tap");openCodeModal(d?d.ids:store.deck,d?d.n:"Bộ bài",d?dBack(d):"b0",true);
+});
+if($("btnDoCopyCode"))$("btnDoCopyCode").addEventListener("click",()=>{SFX.play("tap");copyTextSafe($("outDeckCode").value);});
+if($("inDeckCode"))$("inDeckCode").addEventListener("input",renderCodePreview);
+if($("btnClearCode"))$("btnClearCode").addEventListener("click",()=>{$("inDeckCode").value="";renderCodePreview();});
+if($("btnReadClip"))$("btnReadClip").addEventListener("click",async()=>{
+  SFX.play("tap");
+  if(navigator.clipboard&&navigator.clipboard.readText){
+    try{const tx=await navigator.clipboard.readText();if(tx){$("inDeckCode").value=tx.trim();renderCodePreview();return;}}catch(e){}
+  }
+  $("inDeckCode").focus();toast("Hãy nhấn giữ / Ctrl+V vào ô để dán mã");
+});
+if($("btnCodeApply"))$("btnCodeApply").addEventListener("click",()=>{
+  if(!parsedCodeDeck||parsedCodeDeck.ids.length!==12)return;
+  if($("ovDeck").classList.contains("on")&&!F.col){
+    draft=new Set(parsedCodeDeck.ids);
+    if(parsedCodeDeck.name)$("deckName").value=parsedCodeDeck.name.slice(0,16);
+    if(BACKS[parsedCodeDeck.back]&&(store.backs.includes(parsedCodeDeck.back)||parsedCodeDeck.back==="b0")){draftB=parsedCodeDeck.back;paintBack();}
+    $("ovCode").classList.remove("on");SFX.play("win");renderDeck(true);toast("Đã dán mã bộ bài vào khay sửa!");
+    return;
+  }
+  const idx=$("ovDecks").classList.contains("on")?pendIdx:store.cur;
+  store.decks[idx]={n:(parsedCodeDeck.name||"Bộ nhập mã").slice(0,16),ids:parsedCodeDeck.ids.slice(0,12),b:dBack(store.decks[idx])};
+  store.cur=idx;store.deck=store.decks[store.cur].ids;save();
+  $("ovCode").classList.remove("on");if($("ovDecks").classList.contains("on"))renderDecks();renderLobby();SFX.play("win");toast("Đã nạp & trang bị bộ bài từ mã!");
+});
+if($("btnCodeNewDeck"))$("btnCodeNewDeck").addEventListener("click",()=>{
+  if(!parsedCodeDeck||parsedCodeDeck.ids.length!==12||store.decks.length>=12)return;
+  store.decks.push({n:(parsedCodeDeck.name||"Bộ mới "+(store.decks.length+1)).slice(0,16),ids:parsedCodeDeck.ids.slice(0,12),b:store.back||"b0"});
+  pendIdx=store.decks.length-1;store.cur=pendIdx;store.deck=store.decks[store.cur].ids;save();
+  $("ovCode").classList.remove("on");if($("ovDeck").classList.contains("on"))$("ovDeck").classList.remove("on");
+  if($("ovDecks").classList.contains("on"))renderDecks();renderLobby();SFX.play("win");toast("Đã tạo & trang bị bộ bài mới từ mã!");
 });
 $("btnSaveDeck").addEventListener("click",()=>{if(draft.size!==12)return;store.decks[editIdx]={n:($("deckName").value.trim()||"Bộ bài "+(editIdx+1)).slice(0,16),ids:[...draft],b:draftB};store.deck=store.decks[store.cur].ids;save();$("ovDeck").classList.remove("on");renderLobby();});
 $("btnProfile").addEventListener("click",()=>{$("inName").value=store.name;renderProfile();$("ovProfile").classList.add("on");});
