@@ -1,0 +1,9 @@
+{
+  "appId": "vn.linhthu.tamdia",
+  "appName": "Linh Thú Tam Địa",
+  "webDir": "www",
+  "backgroundColor": "#1a0f2e",
+  "android": {
+    "allowMixedContent": false
+  }
+}
