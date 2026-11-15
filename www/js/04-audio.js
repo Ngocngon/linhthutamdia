@@ -368,8 +368,20 @@ const BGM = (() => {
     return ac;
   }
 
+  function inLobbyView() {
+    const lb = document.getElementById("lobby");
+    const mm = document.getElementById("mm");
+    return !!(lb && lb.classList.contains("on")) && !(mm && mm.classList.contains("on"));
+  }
+
+  function isBgmAllowed() {
+    if (store.mute) return false;
+    if (inLobbyView()) return store.bgm !== false;
+    return !!store.battleBgm && mode !== "lobby";
+  }
+
   function calcGain() {
-    if (store.mute || store.bgm === false) return 0.0001;
+    if (!isBgmAllowed()) return 0.0001;
     const v = (store.bgmVol ?? 55) / 100;
     return Math.max(0.0001, v * 0.28);
   }
@@ -378,7 +390,7 @@ const BGM = (() => {
     if (!bgmBus) return;
     const ac = SFX.ctx();
     if (!ac) return;
-    bgmBus.gain.setTargetAtTime(calcGain(), ac.currentTime, 0.08);
+    bgmBus.gain.setTargetAtTime(calcGain(), ac.currentTime, isBgmAllowed() ? 0.08 : 0.025);
   }
 
   function semiToFreq(base, semi) {
@@ -579,8 +591,12 @@ const BGM = (() => {
 
   function scheduler() {
     if (!playingBgm) return;
+    if (!isBgmAllowed()) {
+      stopLoop();
+      return;
+    }
     const ac = ensureBus();
-    if (!ac || ac.state !== "running" || store.mute || store.bgm === false) return;
+    if (!ac || ac.state !== "running") return;
 
     const cfg = MODES[mode] || MODES.battle1;
     const stepDur = 60 / cfg.bpm / 4;
@@ -594,6 +610,10 @@ const BGM = (() => {
   }
 
   function startLoop() {
+    if (!isBgmAllowed()) {
+      stopLoop();
+      return;
+    }
     if (playingBgm) {
       syncVol();
       return;
@@ -601,6 +621,7 @@ const BGM = (() => {
     playingBgm = true;
     const ac = ensureBus();
     if (ac) nextStepTime = ac.currentTime + 0.04;
+    syncVol();
     clearInterval(schedTimer);
     schedTimer = setInterval(scheduler, 50);
   }
@@ -609,24 +630,47 @@ const BGM = (() => {
     playingBgm = false;
     clearInterval(schedTimer);
     schedTimer = 0;
+    if (bgmBus) {
+      const ac = SFX.ctx();
+      if (ac) {
+        try {
+          bgmBus.gain.cancelScheduledValues(ac.currentTime);
+          bgmBus.gain.setTargetAtTime(0.0001, ac.currentTime, 0.02);
+        } catch (e) {}
+      }
+    }
   }
 
   return {
     wake() {
       if (store.bgm === undefined) store.bgm = true;
+      if (store.battleBgm === undefined) store.battleBgm = false;
       if (store.bgmVol === undefined) store.bgmVol = 55;
       ensureBus();
+      if (inLobbyView()) {
+        mode = "lobby";
+        if (!playingBgm && isBgmAllowed()) startLoop();
+      } else {
+        this.syncGame(typeof G !== "undefined" ? G : null);
+      }
       syncVol();
-      if (!playingBgm && store.bgm !== false && !store.mute) startLoop();
     },
     setMode(m) {
       if (!MODES[m]) return;
+      if (m === "lobby" && !inLobbyView()) {
+        stopLoop();
+        return;
+      }
       mode = m;
-      if (store.bgm !== false && !store.mute) startLoop();
+      if (isBgmAllowed()) startLoop();
+      else stopLoop();
       syncVol();
     },
     play(m) {
       this.setMode(m || mode);
+    },
+    stop() {
+      stopLoop();
     },
     getMode() {
       return mode;
@@ -635,15 +679,19 @@ const BGM = (() => {
       return mode;
     },
     isPlaying() {
-      return !!(playingBgm && store.bgm !== false && !store.mute);
+      return !!(playingBgm && isBgmAllowed());
     },
     getLabel() {
       return (MODES[mode] && MODES[mode].label) || "";
     },
     syncGame(g) {
-      const lobbyOn = document.getElementById("lobby") && document.getElementById("lobby").classList.contains("on");
-      if (!g || lobbyOn || g.phase === "over") {
+      if (inLobbyView()) {
         this.setMode("lobby");
+        return;
+      }
+      /* Vào trận đấu hoặc màn ghép trận: tắt ngay nhạc nền sảnh */
+      if (!store.battleBgm || !g || g.phase === "over") {
+        stopLoop();
         return;
       }
       const maxT = typeof E !== "undefined" && E.turns ? E.turns(g) : 6;
@@ -652,12 +700,11 @@ const BGM = (() => {
       else this.setMode("battle1");
     },
     toggle(on) {
-      store.bgm = on !== undefined ? !!on : store.bgm === false;
+      store.battleBgm = on !== undefined ? !!on : !store.battleBgm;
+      this.syncGame(typeof G !== "undefined" ? G : null);
       syncVol();
-      if (store.bgm && !store.mute) startLoop();
-      else stopLoop();
       try { save(); } catch (e) {}
-      return store.bgm;
+      return store.battleBgm;
     },
     setVol(v) {
       store.bgmVol = Math.max(0, Math.min(100, +v || 0));

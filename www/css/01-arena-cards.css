@@ -59,21 +59,20 @@ button:disabled{cursor:default}
 .cube{width:52px;height:52px;position:relative;display:grid;place-items:center;filter:drop-shadow(0 0 8px rgba(138,92,255,.9))}
 .cube::before{content:"";position:absolute;inset:0;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:linear-gradient(180deg,#b9a4ff,#5a3be0 55%,#2a1a8a)}
 .cube::after{content:"";position:absolute;inset:3px;clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);background:radial-gradient(circle at 50% 30%,#3a2fb0,#0f0b3a)}
-.cube .ch{position:absolute;z-index:1;bottom:7px;left:0;right:0;text-align:center;font-family:var(--f-display);font-style:italic;font-weight:900;font-size:7.5px;letter-spacing:.06em;color:#d9d0ff;text-transform:uppercase}
-.cube:disabled .ch{display:none}
-.cube:not(:disabled) .cv{transform:translateY(-3px)}
-.cube .cv{position:relative;z-index:1;font-family:var(--f-display);font-style:italic;font-weight:900;font-size:26px;line-height:1;color:#fff;text-shadow:0 0 8px #b9a4ff}
-.cube.hot{filter:drop-shadow(0 0 10px rgba(255,214,90,.95))}
+.cube .ch{position:absolute;z-index:1;bottom:6px;left:0;right:0;text-align:center;font-family:var(--f-display);font-style:italic;font-weight:900;font-size:7.5px;letter-spacing:.05em;color:#d9d0ff;text-transform:uppercase;pointer-events:none}
+.cube:disabled .ch{opacity:.86}
+.cube .cv{position:relative;z-index:1;transform:translateY(-3px);font-family:var(--f-display);font-style:italic;font-weight:900;font-size:26px;line-height:1;color:#fff;text-shadow:0 0 8px #b9a4ff;transition:transform .2s,color .2s}
+.cube.hot{filter:drop-shadow(0 0 12px rgba(255,214,90,.98))}
 .cube.hot::before{background:linear-gradient(180deg,#fff0b0,#ffb02e 55%,#a85a00)}
-.cube.hot .cv{color:var(--vang);text-shadow:0 0 8px #ffb02e}
+.cube.hot .cv{color:var(--vang);text-shadow:0 0 10px #ffb02e}
+.cube.hot .ch{color:#fff3c4}
 .cube:not(:disabled):active{transform:scale(.94)}
 .sub{flex:none;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:6px;height:24px}
 .tools{display:flex;gap:4px}
 .tools.r{justify-content:flex-end}
 .tb.off{text-decoration:line-through;opacity:.55}
 .tb{height:24px;padding:0 9px;border-radius:6px;border:1px solid var(--vien);background:var(--kinh);font-size:11px;font-weight:600;color:#dedcff}
-.final{font-family:var(--f-display);font-style:italic;font-weight:700;font-size:12px;color:#d9d4ff;text-align:center;white-space:nowrap}
-.final b{color:var(--vang);font-weight:900}
+.final{display:none!important}
 
 /* ---------- bàn ---------- */
 .board{flex:1 1 auto;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}

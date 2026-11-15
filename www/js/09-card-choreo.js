@@ -10,14 +10,14 @@
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  /* Nhịp hoạt cảnh giàu lực đạo nhưng dứt khoát chuẩn Marvel Snap */
+  /* Nhịp hoạt cảnh chậm rãi, rõ ràng từng chiêu thức để người chơi kịp quan sát */
   try {
     if (typeof T8 === "object" && T8) {
-      T8.LIFT = 86;
-      T8.FLY = 285;
-      T8.REACT = 245;
-      T8.BACK = 250;
-      T8.GAP = 95;
+      T8.LIFT = 190;
+      T8.FLY = 580;
+      T8.REACT = 470;
+      T8.BACK = 500;
+      T8.GAP = 220;
     }
   } catch (e) {}
 
@@ -909,10 +909,42 @@
 
       const sel = mcEl9(s.src);
       if (!s.sp || !sel) {
+        if (typeof holdFx === "function") holdFx(1040);
         if (dstId === "nhennhan" || dstId === "nhenma" || dstId === "cuduto") {
           SFX.play("web");
           const topAnchor = { x: (r0.x + r1.x) * 0.5, y: Math.max(58, Math.min(r0.y, r1.y) - 125) };
-          runPhysicalTether({ kind: "web", srcId: dstId, src: topAnchor, from: r0, to: r1, extendMs: 85, holdMs: 25, pullMs: 430 });
+          runPhysicalTether({ kind: "web", srcId: dstId, src: topAnchor, from: r0, to: r1, extendMs: 220, holdMs: 110, pullMs: 680 });
+        }
+        /* Dịch chuyển / Tự dời thẻ: mở cổng gió linh giới ở điểm đi & điểm đến, bay vòng cung 3D rõ nét (760ms) */
+        const mvCol = dstId && C[dstId] ? (HC[C[dstId].h] || "#74ffdf") : "#74ffdf";
+        SFX.play("e_gio");
+        spawnPaintedBurst("gio", r0.x, r0.y, 138, mvCol, 620);
+        spawnPaintedBurst("an_vong", r0.x, r0.y, 118, mvCol, 580);
+        if (ph && ph.isConnected) {
+          ph.style.zIndex = "36";
+          const mdx = r1.x - r0.x, mdy = r1.y - r0.y;
+          spawnCardAfterimages(r0, mdx, mdy, ph.innerHTML, mvCol);
+          const animMv = ph.animate([
+            { transform: "perspective(650px) translate3d(0, 0, 0) scale(1)" },
+            { transform: "perspective(650px) translate3d(0, -16px, 36px) scale(1.2)", offset: 0.22 },
+            { transform: `perspective(650px) translate3d(${(mdx * 0.54).toFixed(1)}px, ${(mdy * 0.54 - 44).toFixed(1)}px, 54px) rotateZ(${(mdx >= 0 ? 10 : -10)}deg) scale(1.22)`, offset: 0.62 },
+            { transform: `perspective(650px) translate3d(${mdx.toFixed(1)}px, ${mdy.toFixed(1)}px, 0) scale(1)` }
+          ], { duration: 760, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "both" });
+          let doneMv = false;
+          const finMv = () => {
+            if (doneMv) return;
+            doneMv = true;
+            if (ph.isConnected) ph.remove();
+            s.ph = null;
+            if (h) { hide9(h, 0); s.hid = null; }
+            spawnPaintedBurst("gio", r1.x, r1.y, 142, mvCol, 460);
+            spawnPaintedBurst("song_xung", r1.x, r1.y, 136, mvCol, 420);
+            SFX.play("place");
+            if (dstName && window.pushOppNotif) window.pushOppNotif(`${dstName} ▸ Dịch chuyển`, mvCol);
+          };
+          animMv.onfinish = finMv;
+          fxT(finMv, 840);
+          return;
         }
         return _prevMove10(s);
       }
@@ -920,23 +952,13 @@
       const ls = laneOf8(s.sp), l0 = laneOf8(r0), l1 = laneOf8(r1);
       const isPull = ls >= 0 && l0 >= 0 && l1 >= 0 && Math.abs(l1 - ls) < Math.abs(l0 - ls);
 
-      /* 6.1. KÉO THẺ BẰNG ĐẠO CỤ MESH-RIBBON TRANH VẼ */
+      /* 6.1. KÉO THẺ BẰNG ĐẠO CỤ MESH-RIBBON TRANH VẼ (CHẬM RÕ 3 NHỊP: PHÓNG DÂY -> MÓC GIỮ -> LÔI KÉO) */
       if (isPull) {
         const pullKind = getPullKind(srcId);
-        const extendMs = 185, holdMs = 65, flightDur = 455;
+        const extendMs = 340, holdMs = 190, flightDur = 720;
+        if (typeof holdFx === "function") holdFx(extendMs + holdMs + flightDur + 220);
         const sfxMap = { web: "web", silk: "web", magnet: "magnet", tentacle: "tentacle", blood_tentacle: "tentacle", tornado: "e_gio", talisman: "e_hon", banyan: "e_moc", hook: "chain" };
         const colMap = { web: "#9ef6ff", silk: "#ffd86b", magnet: "#5ad8ff", tentacle: "#d580ff", blood_tentacle: "#ff4d6d", tornado: "#7ff5e0", talisman: "#ffd65a", banyan: "#7dff70", hook: "#ffb84d" };
-        const labelMap = {
-          web: "PHÓNG ĐINH BA & LƯỚI TƠ NHỆN KÉO",
-          silk: "DẢI LỤA KIM TUYẾN QUẤN KÉO",
-          magnet: "TỪ TRƯỜNG NAM CHÂM ĐÔNG SƠN HÚT",
-          tentacle: "XÚC TU BẠCH TUỘC QUẤN LÔI",
-          blood_tentacle: "XÚC TU HUYẾT DỊCH LÔI KÉO",
-          tornado: "CUỒNG PHONG VÒI RỒNG CUỐN VỀ",
-          talisman: "LINH PHÙ VÀNG DẪN LỐI",
-          banyan: "RỄ ĐA CHÚ CUỘI MÓC KÉO",
-          hook: "MÓC CÂU ĐỒNG GIẬT VỀ"
-        };
         const pCol = colMap[pullKind] || "#ffd65a";
         SFX.play(sfxMap[pullKind] || "chain");
 
@@ -944,23 +966,35 @@
         const ux = dx0 / L0, uy = dy0 / L0;
         sel.animate([
           { transform: "translate3d(0,0,0) scale(1)" },
-          { transform: `perspective(620px) translate3d(${(ux * 12).toFixed(1)}px, ${(uy * 12 - 6).toFixed(1)}px, 24px) scale(1.16)`, offset: 0.28 },
-          { transform: `perspective(620px) translate3d(${(-ux * 16).toFixed(1)}px, ${(-uy * 16).toFixed(1)}px, 28px) rotate(${(ux >= 0 ? -9 : 9)}deg) scale(1.18)`, offset: 0.58 },
+          { transform: `perspective(620px) translate3d(${(ux * 14).toFixed(1)}px, ${(uy * 14 - 7).toFixed(1)}px, 28px) scale(1.2)`, offset: 0.28 },
+          { transform: `perspective(620px) translate3d(${(-ux * 18).toFixed(1)}px, ${(-uy * 18).toFixed(1)}px, 32px) rotate(${(ux >= 0 ? -10 : 10)}deg) scale(1.22)`, offset: 0.65 },
           { transform: "translate3d(0,0,0) scale(1)" }
-        ], { duration: extendMs + holdMs + 300, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+        ], { duration: extendMs + holdMs + 420, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
 
         runPhysicalTether({ kind: pullKind, srcId, src: s.sp, from: r0, to: r1, extendMs, holdMs, pullMs: flightDur });
+
+        /* Nhịp móc trúng mục tiêu: loé vòng trói và nhấc thẻ bị kéo lên trước khi lôi đi */
+        fxT(() => {
+          spawnPaintedBurst("song_xung", r0.x, r0.y, 136, pCol, 420);
+          if (ph && ph.isConnected) {
+            ph.style.zIndex = "35";
+            ph.animate([
+              { transform: "perspective(650px) translate3d(0,0,0) scale(1)" },
+              { transform: "perspective(650px) translate3d(0,-10px,28px) rotateZ(-5deg) scale(1.18)" }
+            ], { duration: holdMs, easing: "ease-out", fill: "forwards" });
+          }
+        }, extendMs);
 
         fxT(() => {
           if (ph && ph.isConnected) {
             ph.style.zIndex = "35";
             const mdx = r1.x - r0.x, mdy = r1.y - r0.y;
-            const liftY = pullKind === "tornado" ? -52 : -22;
-            const rotMid = pullKind === "tornado" ? (mdx >= 0 ? 22 : -22) : (mdx >= 0 ? -8 : 8);
+            const liftY = pullKind === "tornado" ? -58 : -28;
+            const rotMid = pullKind === "tornado" ? (mdx >= 0 ? 22 : -22) : (mdx >= 0 ? -9 : 9);
             const animRef = ph.animate([
-              { transform: "perspective(650px) translate3d(0,0,0) scale(1)" },
-              { transform: `perspective(650px) translate3d(${(mdx * 0.52).toFixed(1)}px, ${(mdy * 0.52 + liftY).toFixed(1)}px, 44px) rotateZ(${rotMid}deg) scale(1.18)`, offset: 0.52 },
-              { transform: `perspective(650px) translate3d(${(mdx * 1.04).toFixed(1)}px, ${(mdy * 1.04).toFixed(1)}px, 8px) rotateZ(${(mdx >= 0 ? 3 : -3)}deg) scale(0.96)`, offset: 0.86 },
+              { transform: "perspective(650px) translate3d(0,-10px,28px) scale(1.18)" },
+              { transform: `perspective(650px) translate3d(${(mdx * 0.52).toFixed(1)}px, ${(mdy * 0.52 + liftY).toFixed(1)}px, 48px) rotateZ(${rotMid}deg) scale(1.22)`, offset: 0.54 },
+              { transform: `perspective(650px) translate3d(${(mdx * 1.03).toFixed(1)}px, ${(mdy * 1.03).toFixed(1)}px, 8px) rotateZ(${(mdx >= 0 ? 3 : -3)}deg) scale(0.96)`, offset: 0.88 },
               { transform: `perspective(650px) translate3d(${mdx.toFixed(1)}px, ${mdy.toFixed(1)}px, 0) scale(1)` }
             ], { duration: flightDur, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "both" });
 
@@ -971,15 +1005,15 @@
               if (ph.isConnected) ph.remove();
               s.ph = null;
               if (h) { hide9(h, 0); s.hid = null; }
-              spawnPaintedBurst("song_xung", r1.x, r1.y, 148, pCol, 360);
-              spawnPaintedBurst("bui_dap", r1.x, r1.y + 18, 128, pCol, 380);
+              spawnPaintedBurst("song_xung", r1.x, r1.y, 152, pCol, 420);
+              spawnPaintedBurst("bui_dap", r1.x, r1.y + 18, 132, pCol, 420);
               if (window.GLFX) GLFX.impulseShake(5.0, mdx, mdy);
               SFX.play("place");
-              const srcNm = srcId && C[srcId] ? C[srcId].n.toUpperCase() : "CHIÊU LẬT";
-              if (window.pushOppNotif) pushOppNotif(`${srcNm} ▸ ${labelMap[pullKind]}${dstName ? ": " + dstName.toUpperCase() : ""}!`, pCol);
+              const srcNm = srcId && C[srcId] ? C[srcId].n : "Chiêu Lật";
+              if (window.pushOppNotif) pushOppNotif(`${srcNm} ▸ Kéo thẻ`, pCol);
             };
             animRef.onfinish = fin;
-            fxT(fin, flightDur + 95);
+            fxT(fin, flightDur + 120);
           } else if (h) {
             hide9(h, 0);
             s.hid = null;
@@ -990,8 +1024,9 @@
 
       /* 6.2. ĐẨY / HÚC NGÀ VOI / THIẾT QUYỀN / QUÂN CỜ TƯỚNG / TÚI GIÓ PHONG THẦN */
       const pushKind = getPushKind(srcId);
-      const flightDur = 450;
-      let launchDelay = 200;
+      const flightDur = 680;
+      let launchDelay = 300;
+      if (typeof holdFx === "function") holdFx(launchDelay + flightDur + 220);
       let pCol = "#ffd65a";
       let pushVerb = "HẤT VĂNG SANG CHIẾN ĐỊA";
 
@@ -1140,9 +1175,10 @@
     const dstEl = cfg.dstEl || null;
     const isFirstInGrp = !cfg.grp || cfg.grp.i === 0;
     const isMulti = !!(cfg.grp && cfg.grp.n > 1);
-    const L0 = cfg.liftMs != null ? cfg.liftMs : 82;
-    const flyMs = cfg.flyMs != null ? cfg.flyMs : 280;
+    const L0 = cfg.liftMs != null ? cfg.liftMs : 185;
+    const flyMs = cfg.flyMs != null ? cfg.flyMs : 560;
     const isKill = cfg.stepKind === "kill";
+    if (typeof holdFx === "function") holdFx(L0 + flyMs + 520);
 
     if (!sp || !tp) {
       if (cfg.onImpact) fxT(cfg.onImpact, 60);
@@ -1603,25 +1639,30 @@
       /* Bạch Tuộc Tinh (batty) phóng 2 xúc tu tranh vẽ uốn lượn lôi thẻ từ tay đối thủ xuống bàn */
       if (s.k === "summon" && srcId === "batty") {
         try { if (typeof dimStep12 === "function") dimStep12(s); } catch (e) {}
+        if (typeof holdFx === "function") holdFx(1420);
         const foeHand = (typeof HANDZ === "function" && HANDZ(srcInst.side === "p" ? "a" : "p")) || { x: window.innerWidth * 0.72, y: 36 };
         SFX.play("tentacle");
-        runPhysicalTether({ kind: "tentacle", srcId: "batty", src: s.sp, from: foeHand, to: s.tp, extendMs: 180, holdMs: 55, pullMs: 430 });
+        runPhysicalTether({ kind: "tentacle", srcId: "batty", src: s.sp, from: foeHand, to: s.tp, extendMs: 340, holdMs: 180, pullMs: 700 });
         fxT(() => {
           hit8(s);
-          spawnPaintedBurst("no_toi", s.tp.x, s.tp.y, 158, "#d580ff", 400);
-          spawnPaintedBurst("song_xung", s.tp.x, s.tp.y, 168, "#d580ff", 380);
-          if (window.pushOppNotif) pushOppNotif("BẠCH TUỘC TINH ▸ XÚC TU TRANH VẼ LÔI THẺ TỪ TAY ĐỐI THỦ XUỐNG SÀN!", "#e09eff");
-        }, 580);
+          spawnPaintedBurst("no_toi", s.tp.x, s.tp.y, 162, "#d580ff", 460);
+          spawnPaintedBurst("song_xung", s.tp.x, s.tp.y, 170, "#d580ff", 440);
+          if (window.pushOppNotif) pushOppNotif("Bạch Tuộc Tinh ▸ Lôi thẻ xuống sân", "#e09eff");
+        }, 1150);
         return;
       }
 
       /* Lôi Đài Chủ (giacdausi) quăng dây móc đồng Đông Sơn kéo thẻ từ bộ bài địch xuống sàn */
       if (s.k === "summon" && srcId === "giacdausi") {
         try { if (typeof dimStep12 === "function") dimStep12(s); } catch (e) {}
+        if (typeof holdFx === "function") holdFx(1380);
         const foeDeck = (typeof DECKZ === "function" && DECKZ(srcInst.side === "p" ? "a" : "p")) || { x: window.innerWidth * 0.75, y: 36 };
         SFX.play("chain");
-        runPhysicalTether({ kind: "hook", srcId: "giacdausi", src: s.sp, from: foeDeck, to: s.tp, extendMs: 170, holdMs: 50, pullMs: 410 });
-        fxT(() => { hit8(s); }, 550);
+        runPhysicalTether({ kind: "hook", srcId: "giacdausi", src: s.sp, from: foeDeck, to: s.tp, extendMs: 320, holdMs: 165, pullMs: 680 });
+        fxT(() => {
+          hit8(s);
+          if (window.pushOppNotif) pushOppNotif("Lôi Đài Chủ ▸ Lôi thẻ xuống sân", "#ffb84d");
+        }, 1100);
         return;
       }
 
@@ -1664,17 +1705,46 @@
             if (typeof recoil10 === "function") recoil10(dstEl, s.sp, s.tp);
           }
           if (s.k === "copy" && s.sp) {
+            if (typeof holdFx === "function") holdFx(960);
             const cur = (typeof where7 === "function" && where7(s.src, null, rects())) || s.sp;
             const abId = s.abId || ((anyC(s.dst) || {}).id);
+            /* Hiện Gương Đồng Đông Sơn trên thẻ bị chép rồi rút tinh hồn thẻ bay chậm rãi về chủ thể */
+            const mir = document.createElement("div");
+            mir.className = "choreo-mirror-fx";
+            mir.style.cssText = `left:${s.tp.x}px;top:${s.tp.y}px;width:136px;height:136px;--gc:#8cf4ff`;
+            mir.innerHTML = `<img src="img/v/v_guong.webp" alt="">`;
+            document.body.appendChild(mir);
+            mir.animate([
+              { transform: "translate(-50%,-50%) scale(0.35) rotate(-25deg)", opacity: 0 },
+              { transform: "translate(-50%,-50%) scale(1.15) rotate(0deg)", opacity: 1, offset: 0.35 },
+              { transform: "translate(-50%,-50%) scale(1.25) rotate(12deg)", opacity: 0 }
+            ], { duration: 680, easing: "ease-out", fill: "forwards" }).onfinish = () => mir.remove();
+            fxT(() => mir.remove(), 760);
+
+            if (abId && C[abId] && typeof liteId === "function") {
+              if (typeof spLoad === "function") spLoad(abId);
+              const soul = ghost({ x: s.tp.x, y: s.tp.y, w: s.tp.w || 54, h: s.tp.h || 76 }, liteId(abId), "g9");
+              soul.style.zIndex = "38";
+              const rdx = cur.x - s.tp.x, rdy = cur.y - s.tp.y;
+              soul.animate([
+                { transform: "perspective(650px) translate3d(0, 0, 10px) scale(0.85)", opacity: 0.9 },
+                { transform: "perspective(650px) translate3d(0, -18px, 42px) scale(1.24)", opacity: 1, offset: 0.32 },
+                { transform: `perspective(650px) translate3d(${(rdx * 0.55).toFixed(1)}px, ${(rdy * 0.55 - 32).toFixed(1)}px, 48px) scale(1.16)`, opacity: 1, offset: 0.68 },
+                { transform: `perspective(650px) translate3d(${rdx.toFixed(1)}px, ${rdy.toFixed(1)}px, 0) scale(0.75)`, opacity: 0.2 }
+              ], { duration: 720, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => soul.remove();
+              fxT(() => soul.remove(), 800);
+            }
+
             fxT(() => {
               if (srcEl && srcEl.isConnected) {
-                spawnPaintedBurst("no_sang", cur.x, cur.y, 146, "#8cf4ff", 380);
-                const nm = abId && C[abId] ? C[abId].n : "";
+                spawnPaintedBurst("no_sang", cur.x, cur.y, 152, "#8cf4ff", 440);
+                spawnPaintedBurst("sao_tang", cur.x, cur.y, 138, "#ffd65a", 420);
                 if (!grp || grp.i === 0) {
-                  if (window.pushOppNotif) pushOppNotif(`SAO CHÉP KỸ NĂNG${nm ? ": " + nm.toUpperCase() : ""}`, "#8cf4ff");
+                  const srcNm = srcId && C[srcId] ? C[srcId].n : "Sao chép";
+                  if (window.pushOppNotif) pushOppNotif(`${srcNm} ▸ Sao chép`, "#8cf4ff");
                 }
               }
-            }, 140);
+            }, 680);
           }
         }
       });
@@ -1726,10 +1796,129 @@
           const fromBox = (typeof DECKZ === "function" && DECKZ(st.fromSide)) || { x: window.innerWidth * 0.74, y: 34 };
           const toBox = st.toSide === "p" ? ((typeof zpt === "function" && zpt("hand")) || { x: window.innerWidth * 0.5, y: window.innerHeight - 90 }) : fromBox;
           const k = getPullKind(sid);
+          if (typeof holdFx === "function") holdFx(1250);
           SFX.play(k === "banyan" ? "e_moc" : "chain");
-          runPhysicalTether({ kind: k, srcId: sid, src: sp, from: fromBox, to: toBox, extendMs: 165, holdMs: 50, pullMs: 430 });
+          runPhysicalTether({ kind: k, srcId: sid, src: sp, from: fromBox, to: toBox, extendMs: 320, holdMs: 160, pullMs: 660 });
         });
       }
+
+      /* (D) NHÂN BẢN THẺ BÀI (clone): Mở Gương Đồng Đông Sơn -> Tách bóng song sinh đứng cạnh để người chơi nhìn rõ -> Bay vòng cung về ô đích */
+      const clones = evs.filter((e) => e.k === "clone");
+      clones.slice(0, 4).forEach((e, idx) => {
+        const c = anyC(e.uid);
+        if (!c) return;
+        const fp = W(e.from);
+        const s = c.side;
+        let tp = R1.get(e.uid) || (typeof hpt === "function" ? hpt(e.uid) : null);
+        if (!tp) tp = G.hand[s] && G.hand[s].includes(c) ? HANDZ(s) : (G.deck[s] || []).includes(c) ? DECKZ(s) : null;
+        if (!fp || !tp) return;
+        const pub = R0.has(e.from) || R1.has(e.from) || R1.has(e.uid) || s === "p";
+        if (pub && typeof spLoad === "function") spLoad(c.id);
+        const dstDom = document.querySelector(`#board [data-mc="${e.uid}"]`) || (s === "p" ? document.querySelector(`#hand [data-hc="${e.uid}"]`) : null);
+        const srcDom = document.querySelector(`#board [data-mc="${e.from}"]`);
+        const html = pub
+          ? ((dstDom && typeof cleanCloneHTML === "function" && cleanCloneHTML(dstDom)) || (srcDom && typeof cleanCloneHTML === "function" && cleanCloneHTML(srcDom)) || (typeof liteId === "function" ? liteId(c.id) : ""))
+          : (typeof BACK7 === "function" ? BACK7() : "");
+        const stDelay = idx * 240;
+        const mirMs = 340, showMs = 320, flyMs = 680;
+        if (typeof holdFx === "function") holdFx(stDelay + mirMs + showMs + flyMs + 220);
+        if (dstDom) dstDom.style.opacity = "0";
+
+        fxT(() => {
+          SFX.play("e_hon");
+          const mir = document.createElement("div");
+          mir.className = "choreo-mirror-fx";
+          mir.style.cssText = `left:${fp.x}px;top:${fp.y}px;width:146px;height:146px;--gc:#7fe8ff`;
+          mir.innerHTML = `<img src="img/v/v_an_mat.webp" alt=""><img src="img/v/v_guong.webp" alt="">`;
+          document.body.appendChild(mir);
+          mir.animate([
+            { transform: "translate(-50%,-50%) scale(0.28) rotate(-35deg)", opacity: 0 },
+            { transform: "translate(-50%,-50%) scale(1.18) rotate(0deg)", opacity: 1, offset: 0.36 },
+            { transform: "translate(-50%,-50%) scale(1.08) rotate(8deg)", opacity: 0.92, offset: 0.72 },
+            { transform: "translate(-50%,-50%) scale(1.34) rotate(22deg)", opacity: 0 }
+          ], { duration: mirMs + showMs + 160, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => mir.remove();
+          fxT(() => mir.remove(), mirMs + showMs + 260);
+
+          const w0 = Math.max(48, fp.w || 54), h0 = Math.max(68, fp.h || 76);
+          const twin = ghost({ x: fp.x, y: fp.y, w: w0, h: h0 }, html, "g9");
+          twin.style.zIndex = "39";
+          const dx = tp.x - fp.x, dy = tp.y - fp.y;
+          const splitX = dx >= 0 ? 24 : -24;
+          const scEnd = clamp((tp.w || w0) / w0, 0.65, 1.25);
+
+          const animTwin = twin.animate([
+            { transform: "perspective(680px) translate3d(0, 0, 10px) scale(0.65)", opacity: 0, filter: "brightness(2.2)" },
+            { transform: `perspective(680px) translate3d(${splitX}px, -20px, 44px) rotateY(-12deg) scale(1.24)`, opacity: 1, filter: "brightness(1.25)", offset: 0.26 },
+            { transform: `perspective(680px) translate3d(${splitX}px, -22px, 48px) rotateY(0deg) scale(1.24)`, opacity: 1, filter: "brightness(1.05)", offset: 0.50 },
+            { transform: `perspective(680px) translate3d(${(dx * 0.56).toFixed(1)}px, ${(dy * 0.56 - 38).toFixed(1)}px, 42px) rotateZ(${(dx >= 0 ? 8 : -8)}deg) scale(1.16)`, opacity: 1, filter: "none", offset: 0.78 },
+            { transform: `perspective(680px) translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale(${scEnd.toFixed(2)})`, opacity: 1, filter: "none" }
+          ], { duration: mirMs + showMs + flyMs, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" });
+
+          let doneCl = false;
+          const finCl = () => {
+            if (doneCl) return;
+            doneCl = true;
+            if (twin.isConnected) twin.remove();
+            if (dstDom && dstDom.isConnected) {
+              dstDom.style.opacity = "";
+              dstDom.animate([
+                { transform: "scale(1.18)", filter: "brightness(1.5)" },
+                { transform: "scale(1)", filter: "none" }
+              ], { duration: 280, easing: "ease-out" });
+            }
+            spawnPaintedBurst("song_xung", tp.x, tp.y, 138, "#7fe8ff", 400);
+            spawnPaintedBurst("sao_tang", tp.x, tp.y, 124, "#b8f6ff", 400);
+            SFX.play("place");
+            if (idx === 0 && pub && C[c.id] && window.pushOppNotif) {
+              window.pushOppNotif(`${C[c.id].n} ▸ Nhân bản`, "#7fe8ff");
+            }
+          };
+          animTwin.onfinish = finCl;
+          fxT(finCl, mirMs + showMs + flyMs + 120);
+        }, stDelay);
+      });
+
+      /* (E) TRIỆU HỒI TỰ ĐỘNG / TỪ CHIẾN ĐỊA / TỪ MỘ (các summon chưa đi qua run8): Mở Cổng Triệu Hồi xoay rõ nét rồi thẻ trồi lên */
+      const freeSummons = evs.filter((e) => e.k === "summon" && R1.has(e.uid) && !clones.some((x) => x.uid === e.uid) && !(typeof S8 !== "undefined" && S8.has("u" + e.uid)));
+      freeSummons.slice(0, 4).forEach((e, idx) => {
+        const tp = R1.get(e.uid);
+        const dom = document.querySelector(`#board [data-mc="${e.uid}"]`);
+        if (!tp || !dom) return;
+        const c = anyC(e.uid);
+        const col = c && C[c.id] ? (HC[C[c.id].h] || "#86ff8a") : "#86ff8a";
+        const stDelay = idx * 210;
+        if (typeof holdFx === "function") holdFx(stDelay + 1080);
+        dom.style.opacity = "0";
+        fxT(() => {
+          SFX.play("summon");
+          const gate = document.createElement("div");
+          gate.className = "gpu-summon-gate";
+          gate.style.cssText = `left:${tp.x}px;top:${tp.y}px;width:146px;height:146px;--gc:${col}`;
+          gate.innerHTML = `<img src="img/v/v_an_vong.webp" alt=""><img src="img/v/v_cong.webp" alt="">`;
+          document.body.appendChild(gate);
+          gate.animate([
+            { transform: "translate(-50%,-50%) scale(0.25) rotate(-90deg)", opacity: 0 },
+            { transform: "translate(-50%,-50%) scale(1.16) rotate(25deg)", opacity: 1, offset: 0.32 },
+            { transform: "translate(-50%,-50%) scale(1.06) rotate(120deg)", opacity: 0.88, offset: 0.72 },
+            { transform: "translate(-50%,-50%) scale(1.36) rotate(210deg)", opacity: 0 }
+          ], { duration: 960, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => gate.remove();
+          fxT(() => gate.remove(), 1060);
+
+          fxT(() => {
+            if (!dom.isConnected) return;
+            dom.style.opacity = "";
+            dom.animate([
+              { opacity: 0, transform: "perspective(650px) translate3d(0, 32px, -40px) rotateX(40deg) scale(0.28)" },
+              { opacity: 1, transform: "perspective(650px) translate3d(0, -14px, 36px) rotateX(-8deg) scale(1.24)", offset: 0.58 },
+              { opacity: 1, transform: "perspective(650px) translate3d(0, 0, 0) scale(1)" }
+            ], { duration: 680, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+            spawnPaintedBurst("song_xung", tp.x, tp.y, 136, col, 400);
+            if (idx === 0 && c && C[c.id] && window.pushOppNotif) {
+              window.pushOppNotif(`${C[c.id].n} ▸ Triệu hồi`, col);
+            }
+          }, 280);
+        }, stDelay);
+      });
 
       /* (C) Lôi Đài Chủ (giacdausi) kéo thẻ từ bộ bài địch ra sàn VÀ tung Thiết Quyền rồng lửa hạ đo ván! */
       for (const e of evs) {

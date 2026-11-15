@@ -192,22 +192,44 @@
     return oppHost;
   }
 
+  let lastNotifSrc = "";
+  function condenseActLabel(raw) {
+    let s = String(raw || "").replace(/!+/g, "").replace(/\s+/g, " ").trim();
+    if (!s) return "";
+    const low = s.toLowerCase();
+    if (/lôi thẻ từ tay|kéo thẻ từ bộ bài/.test(low)) return "Lôi thẻ xuống sân";
+    if (/xúc tu.*kéo|lưới tơ.*kéo|nam châm.*hút|rễ đa.*kéo|móc câu.*giật|dải lụa.*kéo|vòi rồng.*cuốn|linh phù.*dẫn/.test(low)) return "Kéo thẻ";
+    if (/điều quân cờ|thổi dời|đẩy sóng|đấm văng|quét văng|húc tung|hất văng/.test(low)) return "Đẩy dời thẻ";
+    if (/cướp thẻ|về phe ta|sang phe đối thủ|đổi sang phe/.test(low)) return "Đổi phe";
+    if (/nhân bản/.test(low)) return "Nhân bản";
+    if (/chép kỹ năng|sao chép/.test(low)) return "Sao chép";
+    if (/cướp kỹ năng/.test(low)) return "Cướp chiêu";
+    if (/mất kỹ năng|xoá kỹ năng|phong ấn/.test(low)) return "Xoá chiêu";
+    if (/tiêu huỷ|chém hạ|nghiền nát/.test(low)) return "Tiêu huỷ";
+    if (/triệu hồi/.test(low)) return "Triệu hồi";
+    if (/về tay/.test(low)) return "Trả về tay";
+    if (/vứt bỏ/.test(low)) return "Vứt bỏ";
+    if (s.length > 22) s = s.slice(0, 21).trim() + "…";
+    return s;
+  }
+
   function formatNotifInner(raw, isHtml) {
     if (isHtml) return raw;
     const s = String(raw || "").trim();
     const arrowIdx = s.indexOf("▸");
     if (arrowIdx > 0) {
-      const left = esc(s.slice(0, arrowIdx).trim());
-      const right = esc(s.slice(arrowIdx + 1).trim());
-      return `<span class="ntf-src">${left}</span><span class="ntf-sep">▸</span><span class="ntf-act">${right}</span>`;
+      let left = s.slice(0, arrowIdx).trim();
+      if (left.length > 18) left = left.slice(0, 17).trim() + "…";
+      const right = condenseActLabel(s.slice(arrowIdx + 1));
+      return `<span class="ntf-src">${esc(left)}</span><span class="ntf-sep">▸</span><span class="ntf-act">${esc(right)}</span>`;
     }
     const colonIdx = s.indexOf(":");
-    if (colonIdx > 1 && colonIdx < 22) {
+    if (colonIdx > 1 && colonIdx < 20) {
       const left = esc(s.slice(0, colonIdx + 1));
-      const right = esc(s.slice(colonIdx + 1).trim());
+      const right = esc(condenseActLabel(s.slice(colonIdx + 1)));
       return `<span class="ntf-src">${left}</span> <span class="ntf-act">${right}</span>`;
     }
-    return `<span class="ntf-act">${esc(s)}</span>`;
+    return `<span class="ntf-act">${esc(condenseActLabel(s))}</span>`;
   }
 
   function pushOppNotif(text, color, opts) {
@@ -220,22 +242,29 @@
     const cleanKey = String(text).replace(/<[^>]*>/g, "").trim();
     if (!cleanKey) return;
 
+    const arrowIdx = cleanKey.indexOf("▸");
+    const srcTag = arrowIdx > 0 ? cleanKey.slice(0, arrowIdx).trim().toUpperCase() : "";
     const now = performance.now();
-    if (cleanKey === lastNotifText && now - lastNotifTime < 420 && host.lastElementChild) {
-      const prev = host.lastElementChild;
-      smoothAnim(prev, [
-        { transform: "translate3d(0,0,0) scale(1)" },
-        { transform: "translate3d(0,-2px,0) scale(1.07)", offset: 0.4 },
-        { transform: "translate3d(0,0,0) scale(1)" }
-      ], { duration: 280 });
+    if (
+      (cleanKey === lastNotifText && now - lastNotifTime < 650) ||
+      (srcTag && srcTag === lastNotifSrc && now - lastNotifTime < 520 && !(opts && opts.force))
+    ) {
+      if (host.lastElementChild && !host.lastElementChild.dataset.leaving) {
+        const prev = host.lastElementChild;
+        prev.style.setProperty("--nc", color || "#7fe8ff");
+        prev.innerHTML = formatNotifInner(text, !!(opts && opts.html));
+      }
+      lastNotifText = cleanKey;
+      lastNotifTime = now;
       return;
     }
     lastNotifText = cleanKey;
+    lastNotifSrc = srcTag;
     lastNotifTime = now;
 
-    /* Giữ tối đa 3 dòng thông báo gọn gàng trong phần sân đối thủ để không tràn xuống ô Chiến Địa */
+    /* Chỉ giữ 1 nhãn chiêu siêu gọn duy nhất để không che khuất bàn đấu */
     const activeItems = Array.from(host.children).filter((el) => !el.dataset.leaving);
-    while (activeItems.length >= 3) {
+    while (activeItems.length >= 1) {
       const old = activeItems.shift();
       dismissOppNotif(old);
     }
@@ -247,12 +276,12 @@
     host.appendChild(item);
 
     item.animate([
-      { opacity: 0, transform: "translate3d(0, -12px, 0) scale(0.88)" },
-      { opacity: 1, transform: "translate3d(0, 1.5px, 0) scale(1.03)", offset: 0.58 },
+      { opacity: 0, transform: "translate3d(0, -8px, 0) scale(0.9)" },
+      { opacity: 1, transform: "translate3d(0, 1px, 0) scale(1.02)", offset: 0.55 },
       { opacity: 1, transform: "translate3d(0, 0, 0) scale(1)" }
-    ], { duration: 300, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" });
+    ], { duration: 240, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" });
 
-    const stayMs = (opts && opts.dur) || 1950;
+    const stayMs = (opts && opts.dur) || 1280;
     fxT(() => dismissOppNotif(item), stayMs);
   }
 
@@ -1382,7 +1411,7 @@
   }
 
   if (typeof mvDur9 === "function") {
-    mvDur9 = (s) => (s.k === "swap" ? (s.sp ? 940 : 800) : (s.sp ? 820 : 640));
+    mvDur9 = (s) => (s.k === "swap" ? (s.sp ? 1280 : 1080) : (s.sp ? 1260 : 880));
   }
 
   if (typeof move10 === "function") {
@@ -1872,13 +1901,30 @@
     CFX.summon = function (el, c) {
       if (reduced || !el) return;
       const col = c || "#7dffb0";
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
       portal(el, col);
+      /* Vòng cổng triệu hồi tranh vẽ xoay mở rộng dưới chân thẻ */
+      const gate = document.createElement("div");
+      gate.className = "gpu-summon-gate";
+      gate.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(96, r.width * 2.1)}px;height:${Math.max(96, r.width * 2.1)}px;--gc:${col}`;
+      gate.innerHTML = `<img src="img/v/v_cong.webp" alt="">`;
+      document.body.appendChild(gate);
+      gate.animate([
+        { transform: "translate(-50%,-50%) scale(0.25) rotate(-90deg)", opacity: 0 },
+        { transform: "translate(-50%,-50%) scale(1.12) rotate(35deg)", opacity: 0.95, offset: 0.35 },
+        { transform: "translate(-50%,-50%) scale(1.05) rotate(130deg)", opacity: 0.85, offset: 0.72 },
+        { transform: "translate(-50%,-50%) scale(1.35) rotate(220deg)", opacity: 0 }
+      ], { duration: 920, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => gate.remove();
+      fxT(() => gate.remove(), 1050);
+
       smoothAnim(el, [
-        { opacity: 0, transform: "perspective(650px) translate3d(0, 28px, -40px) rotateX(35deg) scale(0.35)" },
-        { opacity: 1, transform: "perspective(650px) translate3d(0, -10px, 34px) rotateX(-8deg) scale(1.2)", offset: 0.58 },
-        { opacity: 1, transform: "perspective(650px) translate3d(0, 2px, 0) scale(0.97)", offset: 0.82 },
+        { opacity: 0, transform: "perspective(650px) translate3d(0, 34px, -45px) rotateX(42deg) scale(0.28)" },
+        { opacity: 1, transform: "perspective(650px) translate3d(0, -14px, 38px) rotateX(-10deg) scale(1.24)", offset: 0.56 },
+        { opacity: 1, transform: "perspective(650px) translate3d(0, 2px, 0) scale(0.97)", offset: 0.84 },
         { opacity: 1, transform: "perspective(650px) translate3d(0, 0, 0) scale(1)" }
-      ], { duration: 540 });
+      ], { duration: 780 });
+      if (typeof holdFx === "function") holdFx(920);
     };
 
     CFX.morph = function (el) {
@@ -1991,6 +2037,23 @@
       FX.bolts(cx, cy, col, 8, 130);
       gpuFlash(col, 0.3, 380);
       GLFX.impulseShake(9);
+    };
+  }
+
+  if (typeof ultS4 === "function" && GLFX.ok) {
+    const _ultS4Orig = ultS4;
+    ultS4 = function (inst) {
+      syncOppCourtMetrics();
+      _ultS4Orig(inst);
+      if (reduced || !inst) return;
+      const d = C[inst.id];
+      const col = (d && HC[d.h]) || "#ff7ae6";
+      const cx = window.innerWidth / 2, cy = window.innerHeight * 0.25;
+      FX.rays(cx, cy, col, 130);
+      FX.wave(cx, cy, col, 155);
+      FX.sparks(cx, cy, col, 18, 220);
+      gpuFlash(col, 0.14, 260);
+      GLFX.impulseShake(5.5);
     };
   }
 
@@ -2161,7 +2224,146 @@
     });
   };
 
-  /* Mở Chiến Địa 3D Kiểu Marvel Snap (Tia Mạch Điện Bát Giác + Lật Khung 3D + Sóng Chủ Đề) */
+  /* ==================== HỆ THỐNG VFX CHIẾN ĐỊA ĐỘNG & HIỆU ỨNG TRỰC QUAN TRÊN 2 PHẦN SÂN ==================== */
+  const LOC_FIELD_MAP = {};
+  const LOC_FIELD_META = {
+    shield:      { col: "#6ef3ff", img: "img/v/v_khien.webp",    sig: "img/v/v_an_khien.webp", tag: "Khiên Bất Diệt" },
+    poison:      { col: "#62ff8e", img: "img/v/v_no_doc.webp",   sig: "img/v/v_an_xich.webp",  tag: "Chướng Khí Độc" },
+    frost:       { col: "#9eeeff", img: "img/v/v_no_bang.webp",  sig: "img/v/v_khung_nuoc.webp", tag: "Băng Sương Hàn" },
+    lava_kill:   { col: "#ff5436", img: "img/v/v_so.webp",       sig: "img/v/v_lua.webp",      tag: "Hoả Ngục Huỷ" },
+    lock_chain:  { col: "#ffd269", img: "img/v/v_xich.webp",     sig: "img/v/v_an_khoa.webp",  tag: "Xiềng Phong Ấn" },
+    forge:       { col: "#ff9a3c", img: "img/v/v_bua_ren.webp",  sig: "img/v/v_lua.webp",      tag: "Lửa Rèn Thần" },
+    double_drum: { col: "#ffe066", img: "img/v/v_trong.webp",    sig: "img/v/v_an_vong.webp",  tag: "Cộng Hưởng ×2" },
+    wind_move:   { col: "#74ffdf", img: "img/v/v_gio.webp",      sig: "img/v/v_an_vong.webp",  tag: "Gió Dịch Chuyển" },
+    summon_gate: { col: "#95ff75", img: "img/v/v_cong.webp",     sig: "img/v/v_an_vong.webp",  tag: "Cổng Triệu Hồi" },
+    mirror_clone:{ col: "#86d8ff", img: "img/v/v_guong.webp",    sig: "img/v/v_an_mat.webp",   tag: "Gương Nhân Bản" },
+    energy_gem:  { col: "#4fd8ff", img: "img/v/v_ngoc.webp",     sig: "img/v/v_an_ngoc.webp",  tag: "Mạch Tinh Thể" },
+    blessing:    { col: "#ffd96a", img: "img/v/v_sao_tang.webp", sig: "img/v/v_an_co.webp",    tag: "Linh Khí Hộ Trì" },
+    cosmic_rule: { col: "#cf88ff", img: "img/v/v_bua_chu.webp",  sig: "img/v/v_an_vong.webp",  tag: "Kỳ Giới Biến Luật" }
+  };
+
+  function classifyLocField(id) {
+    if (!id || id === "meadow") return "";
+    if (LOC_FIELD_MAP[id]) return LOC_FIELD_MAP[id];
+    const def = typeof LOC !== "undefined" ? LOC[id] : null;
+    if (!def) return "";
+    const tx = ((def.n || "") + " " + (def.x || "")).toLowerCase();
+    let kind = "";
+    if (id === "bamboo" || /không thể bị tiêu huỷ|không bị tiêu huỷ|miễn nhiễm/.test(tx)) kind = "shield";
+    else if (/tuyết|băng|mẫu sơn|sa pa|phan xi păng|lạnh/.test(tx)) kind = "frost";
+    else if (/(−|-\s?\d)\s*sức mạnh|giảm\s+\d+\s*sức mạnh|trừ\s+\d+/.test(tx) || /^(amphu|bachdang|badennui|muine|tokien|hangtoi|kinhthanhhue|dongrom)$/.test(id)) kind = "poison";
+    else if (/tiêu huỷ|bãi tha ma|mộ|vực/.test(tx)) kind = "lava_kill";
+    else if (/không đặt được|không thể đặt|chỉ thẻ|chỉ đặt|mới đặt được|cấm|tắt kỹ năng|mất kỹ năng|không chạy ở đây|chỉ chứa tối đa/.test(tx)) kind = "lock_chain";
+    else if (/lò rèn|lò thần|rèn/.test(tx)) kind = "forge";
+    else if (/chạy 2 lần|gấp đôi|nhân đôi/.test(tx)) kind = "double_drum";
+    else if (/di chuyển|dời|thổi|bến đò|đồi gió|trạm dịch|cầu treo/.test(tx)) kind = "wind_move";
+    else if (/triệu hồi|đặt 1 thẻ|có thêm 1|gọi|sinh ra/.test(tx)) kind = "summon_gate";
+    else if (/bản sao|sao chép|hồ gương|hoán đổi|đổi tay|rút\s+\d+|thêm .* vào tay/.test(tx)) kind = "mirror_clone";
+    else if (/năng lượng|tốn ít hơn|tốn nhiều hơn/.test(tx)) kind = "energy_gem";
+    else if (/\+\s*\d+\s*sức mạnh|tăng .* sức mạnh/.test(tx)) kind = "blessing";
+    else kind = "cosmic_rule";
+    LOC_FIELD_MAP[id] = kind;
+    return kind;
+  }
+
+  let bfxHost = null;
+  const bfxBoxes = [];
+  let bfxRaf = 0;
+
+  function buildBfxInner(kind) {
+    const m = LOC_FIELD_META[kind];
+    if (!m) return "";
+    return `
+      <i class="bfx-aura"></i>
+      <i class="bfx-rim"></i>
+      <span class="bfx-plume p1"></span>
+      <span class="bfx-plume p2"></span>
+      <span class="bfx-plume p3"></span>
+      <span class="bfx-plume p4"></span>
+      <img class="bfx-sig" src="${m.sig}" alt="" decoding="async">
+      <img class="bfx-crest" src="${m.img}" alt="" decoding="async">
+    `;
+  }
+
+  function ensureBoardFieldHost() {
+    if (bfxHost && bfxHost.isConnected) return bfxHost;
+    bfxHost = document.createElement("div");
+    bfxHost.id = "boardFieldVfx";
+    bfxHost.setAttribute("aria-hidden", "true");
+    bfxBoxes.length = 0;
+    for (let li = 0; li < 3; li++) {
+      for (const sd of ["opp", "me"]) {
+        const box = document.createElement("div");
+        box.className = `bfx-box bfx-${sd}`;
+        box.dataset.lane = String(li);
+        box.dataset.sd = sd;
+        box.dataset.kind = "";
+        bfxHost.appendChild(box);
+        bfxBoxes.push(box);
+      }
+    }
+    const app = $id("app") || document.body;
+    app.appendChild(bfxHost);
+    return bfxHost;
+  }
+
+  function syncBoardFieldVfxNow() {
+    bfxRaf = 0;
+    const host = ensureBoardFieldHost();
+    const lobbyOn = $id("lobby") && $id("lobby").classList.contains("on");
+    if (reduced || lobbyOn || !G || !G.locs) {
+      host.style.display = "none";
+      return;
+    }
+    host.style.display = "block";
+    for (let li = 0; li < 3; li++) {
+      const L = G.locs[li];
+      const kind = L && L.rvl && !L.gone ? classifyLocField(L.id) : "";
+      const ln = document.querySelector(`#board [data-lane="${li}"]`);
+      if (ln) ln.dataset.lfx = kind || "";
+      for (let si = 0; si < 2; si++) {
+        const sd = si === 0 ? "opp" : "me";
+        const box = bfxBoxes[li * 2 + si];
+        if (!box) continue;
+        const sideEl = ln ? ln.querySelector(`.side.${sd}`) : null;
+        if (!kind || !sideEl) {
+          box.style.display = "none";
+          if (box.dataset.kind !== "") {
+            box.dataset.kind = "";
+            box.className = `bfx-box bfx-${sd}`;
+            box.innerHTML = "";
+          }
+          continue;
+        }
+        const meta = LOC_FIELD_META[kind];
+        if (box.dataset.kind !== kind) {
+          box.dataset.kind = kind;
+          box.className = `bfx-box bfx-${sd} k-${kind}`;
+          box.style.setProperty("--fc", meta.col);
+          box.innerHTML = buildBfxInner(kind);
+        }
+        const r = sideEl.getBoundingClientRect();
+        if (r.width < 10 || r.height < 10) {
+          box.style.display = "none";
+          continue;
+        }
+        box.style.display = "block";
+        box.style.left = (r.left - 2).toFixed(1) + "px";
+        box.style.top = (r.top - 2).toFixed(1) + "px";
+        box.style.width = (r.width + 4).toFixed(1) + "px";
+        box.style.height = (r.height + 4).toFixed(1) + "px";
+      }
+    }
+  }
+
+  function syncBoardFieldVfx() {
+    if (!bfxRaf) bfxRaf = requestAnimationFrame(syncBoardFieldVfxNow);
+  }
+  window.syncBoardFieldVfx = syncBoardFieldVfx;
+  window.classifyLocField = classifyLocField;
+  window.addEventListener("resize", syncBoardFieldVfx, { passive: true });
+
+  /* Mở Chiến Địa 3D Chậm Rãi & Hoành Tráng (Phong Ấn Cổ Ngữ -> Lật 3D -> Lan Hào Quang Sang 2 Phần Sân) */
   if (typeof locReveal === "function") {
     const _locRevOrig = locReveal;
     locReveal = function (li) {
@@ -2171,19 +2373,36 @@
       if (!lw) return;
       const L = G.locs[li];
       const def = typeof LOC !== "undefined" ? LOC[L.id] : null;
+      const kind = classifyLocField(L.id);
+      const fMeta = kind ? LOC_FIELD_META[kind] : null;
       const th = (typeof LTH !== "undefined" && LTH[L.id]) || "thieng";
-      const col = (typeof LTC !== "undefined" && LTC[th]) || (typeof LHUE !== "undefined" && LHUE[L.id]) || "#40d8ff";
+      const col = (fMeta && fMeta.col) || (typeof LTC !== "undefined" && LTC[th]) || (typeof LHUE !== "undefined" && LHUE[L.id]) || "#40d8ff";
       const lr = lw.getBoundingClientRect();
       const cx = lr.left + lr.width / 2, cy = lr.top + lr.height / 2;
-      const hw = lr.width * 0.48, hh = lr.height * 0.42;
+      const hw = lr.width * 0.5, hh = lr.height * 0.45;
 
+      if (typeof holdFx === "function") holdFx(1280);
       SFX.play("loc");
       lw.classList.remove("gpu-loc-rev");
       void lw.offsetWidth;
       lw.classList.add("gpu-loc-rev");
-      setTimeout(() => lw.classList.remove("gpu-loc-rev"), 620);
+      setTimeout(() => lw.classList.remove("gpu-loc-rev"), 1360);
 
-      /* Viền tia điện chạy quanh khung bát giác chiến địa */
+      /* Vòng ấn cổ ngữ xoay mở phong ấn Chiến Địa (1280ms) */
+      const seal = document.createElement("div");
+      seal.className = "gpu-loc-seal";
+      seal.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(126, lr.width * 1.42)}px;height:${Math.max(126, lr.width * 1.42)}px;--lc:${col}`;
+      seal.innerHTML = `<img class="ls-ring" src="img/v/v_an_vong.webp" alt=""><img class="ls-icon" src="${(fMeta && fMeta.img) || "img/v/v_bua_chu.webp"}" alt="">`;
+      document.body.appendChild(seal);
+      seal.animate([
+        { transform: "translate(-50%,-50%) scale(0.32) rotate(-80deg)", opacity: 0 },
+        { transform: "translate(-50%,-50%) scale(1.16) rotate(12deg)", opacity: 1, offset: 0.32 },
+        { transform: "translate(-50%,-50%) scale(1.06) rotate(68deg)", opacity: 0.92, offset: 0.72 },
+        { transform: "translate(-50%,-50%) scale(1.38) rotate(125deg)", opacity: 0 }
+      ], { duration: 1260, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => seal.remove();
+      fxT(() => seal.remove(), 1380);
+
+      /* Viền tia điện bát giác + Sóng lan toả lên cả 2 phần sân của 2 người chơi */
       if (GLFX.ok) {
         const pts = [
           [cx - hw * 0.82, cy - hh],
@@ -2197,16 +2416,31 @@
         ];
         for (let i = 0; i < pts.length; i++) {
           const a = pts[i], b = pts[(i + 1) % pts.length];
-          GLFX.arc(a[0], a[1], b[0], b[1], col, 5, 0.75, false, 0.28);
+          GLFX.arc(a[0], a[1], b[0], b[1], col, 6, 0.85, false, 0.55);
         }
+        const oppSide = ln.querySelector(".side.opp");
+        const meSide = ln.querySelector(".side.me");
+        fxT(() => {
+          [oppSide, meSide].forEach((sEl) => {
+            if (!sEl) return;
+            const sr = sEl.getBoundingClientRect();
+            const sx = sr.left + sr.width / 2, sy = sr.top + sr.height / 2;
+            GLFX.tether(cx, cy, sx, sy, col, 9, 0.16, 0.52);
+            FX.wave(sx, sy, col, Math.max(75, sr.width * 0.65));
+            FX.sparks(sx, sy, col, 14, 180);
+          });
+          syncBoardFieldVfx();
+        }, 360);
       }
 
       _locRevOrig(li);
-      FX.wave(cx, cy, col, 118);
-      FX.sparks(cx, cy, col, 22, 240);
-      GLFX.impulseShake(4.2, 0, 1);
+      FX.rays(cx, cy, col, 138, 12);
+      FX.wave(cx, cy, col, 132);
+      FX.sparks(cx, cy, col, 28, 260);
+      GLFX.impulseShake(5.0, 0, 1);
+      syncBoardFieldVfx();
       if (def && def.n) {
-        pushOppNotif(`CHIẾN ĐỊA LỘ DIỆN ▸ ${def.n.toUpperCase()}`, col, { dur: 1750 });
+        pushOppNotif(`${def.n} ▸ Lộ diện`, col, { dur: 1450, force: true });
       }
     };
     window.gpuLocReveal = locReveal;

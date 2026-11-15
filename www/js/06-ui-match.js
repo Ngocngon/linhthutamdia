@@ -23,11 +23,16 @@ function render0(){
   $("meSub").innerHTML=`${icn("gems")}${store.gems} · Bài ${G.deck.p.length}`;
   $("oppSub").textContent=`Tay ${G.hand.a.length} · Bài ${G.deck.a.length}`;
   const over=G.phase==="over";
-  const final=over?G.stake:Math.min(8,G.stake*Math.pow(2,G.pendingDouble)*2);
-  $("stakeV").textContent=String(G.stake);
-  const cube=$("btnSnap");cube.classList.toggle("hot",G.snap.p||G.snap.a);cube.disabled=!play||G.snap.p;
-  {const ch=cube.querySelector(".ch");if(ch){const tx=!over&&G.pendingDouble?"sắp lên "+Math.min(8,G.stake*Math.pow(2,G.pendingDouble)):"cược ×2";if(ch.textContent!==tx)ch.textContent=tx;}}
-  $("finalV").innerHTML=over?`Kết quả: <b>${G.stake} ${icn("gems")}</b>`:`Chung cuộc: <b>${final} ${icn("gems")}</b>`;
+  const shownStake=over?G.stake:Math.min(8,G.stake*Math.pow(2,G.pendingDouble||0));
+  const stakeEl=$("stakeV");
+  if(stakeEl.textContent!==String(shownStake)){
+    const prevS=+stakeEl.textContent||1;
+    stakeEl.textContent=String(shownStake);
+    if(shownStake>prevS)pulse("#btnSnap",[{transform:"scale(1)"},{transform:"scale(1.42)",filter:"brightness(1.85)",offset:.38},{transform:"scale(1)"}],480);
+  }
+  const cube=$("btnSnap");cube.classList.toggle("hot",!!(G.snap.p||G.snap.a||G.pendingDouble));cube.disabled=!play||G.snap.p;
+  {const ch=cube.querySelector(".ch");if(ch){const tx=over?"kết thúc":G.snap.p?(G.snap.a?"cược ×4":"đã cược"):"cược ×2";if(ch.textContent!==tx)ch.textContent=tx;}}
+  $("finalV").innerHTML="";
   const selInst=sel?G.hand.p.find(c=>c.uid===sel):null;
   const mvF=moveSel?E.find(G,moveSel):null;
   let html="";
@@ -42,7 +47,7 @@ function render0(){
     const order=[2,3,0,1],top=["","","",""];theirs.forEach((h,i)=>{if(i<4)top[order[i]]=h;});
     const cp=E.cap(G,li),def=LOC[L.id];
     let lc="locw";if(!L.rvl)lc+=" hid";
-    if(L.rvl&&!seenLoc.has(li)){seenLoc.add(li);if(G.turn>1)lc+=" new";}
+    if(L.rvl&&!seenLoc.has(li)){seenLoc.add(li);lc+=" new";}
     if(look&&look.kind==="loc"&&look.li===li)lc+=" look";
     const lk=play&&L.lock.p===G.turn?`<div class="lk">Bạn bị khoá lượt này</div>`:play&&L.grant.p===G.turn?`<div class="lk" style="color:#9ff2ff">Được dời 1 thẻ ở đây</div>`:"";
     const offTop=i=>cp<4&&(i===0||i===1)&&!top[i]?" off":"";
@@ -59,7 +64,7 @@ function render0(){
       <div class="side me">${[0,1,2,3].map(i=>`<div class="slot${offBot(i)}">${mine[i]||""}</div>`).join("")}</div>
     </section>`;
   });
-  patchBoard(html);tickPw();try{syncAmb();landDust();}catch(e){}
+  patchBoard(html);tickPw();try{syncAmb();if(typeof syncBoardFieldVfx==="function")syncBoardFieldVfx();landDust();}catch(e){}
   let info=(G.phase==="play"&&G.hideT===G.turn&&!G.msg?"<b>Lượt này mọi thẻ đặt xuống sẽ úp đến cuối ván</b> ("+C.sieusaokhonglo.n+").":G.msg),acts="";
   if(moveSel&&mvF){info=`<b>Dời ${C[mvF.inst.id].n}.</b> Chạm chiến địa muốn dời tới.`;acts=`<button type="button" class="ib alt" data-do="cancelmove">Thôi</button>`;}
   else if(selInst){
@@ -120,26 +125,27 @@ async function endTurnUI(auto){
   if(typeof window.gpuDropFoeStaged==="function")window.gpuDropFoeStaged(foeHad);
   SFX.play("place");
   await sleep(reduced?80:230);
-  for(const st of steps){
-    const R0=rects0(),P0=powers();
-    const did=E.doStep(G,st);
-    if(!did&&!G.msgs.length)continue;
-    const evs=G.evs.slice();await artReady12(evs);
-    if(G.msgs.length)G.msg=fmt(G.msgs);
+   for(const st of steps){
+     const R0=rects0(),P0=powers();
+     const did=E.doStep(G,st);
+     if(!did&&!G.msgs.length)continue;
+     const evs=G.evs.slice();await artReady12(evs);
+     if(G.msgs.length)G.msg=fmt(G.msgs);
+     render();playFx(evs,R0,P0);
+     await sleep(reduced?140:(G.msgs.length>1?560:420)+(evs.some(e=>e.k==="flip")?580:0));
+   }
+   {const R0=rects0(),P0=powers();E.endTurn(G);const evs=G.evs.slice();
+    if(G.msgs.length||evs.length){G.msg=`<b>Cuối lượt.</b> `+G.msgs.slice(0,8).join(" · ");render();playFx(evs,R0,P0);await sleep(reduced?160:640);}}
+   if(G.turn>=E.turns(G)){await endReveal(G);E.finish(G,"end");showEnd();return;}
+   {const R0=rects0(),P0=powers();E.startTurn(G);const evs=G.evs.slice();
+    G.msg=missNote+turnMsg(G.msgs.slice(0,4));missNote="";resetTimer(true);
+    if(window.BGM)BGM.syncGame(G);
+    if(E.aiWantsSnap(G,"a")){G.snap.a=true;G.pendingDouble++;if(window.BGM)BGM.syncGame(G);G.msg=`<b>Máy đã cược!</b> Mức cược tăng lên ${Math.min(8,G.stake*Math.pow(2,G.pendingDouble))} ngọc. Rút lui ngay thì chỉ mất ${G.stake} ${icn("gems")}.<br>`+G.msg;const q=ctr($("btnSnap"));FX.ring(q.x,q.y,"#ff4d7d",90,6);SFX.play("snap");snapFx("#ff4d7d","×2");}
+    if(G.turn===5&&E.boardCards(G,"p").some(([c])=>!c.sil&&E.is(G,c,"vouy"))){aiMove("a");ddPlan=true;const ps=G.q.a.filter(a=>a.t==="play").map(a=>`${C[a.inst.id].n} vào ${G.locs[a.li].rvl?LOC[G.locs[a.li].id].n:"chiến địa "+(a.li+1)}`);setTimeout(()=>{try{const v=E.boardCards(G,"p").find(([c])=>!c.sil&&E.is(G,c,"vouy"));if(v)eye7(srcPt(v[0].uid),ctr($("avFoe")),"THẤY TRƯỚC");}catch(e){}},650);G.msg+=`<br><b>Vô Uý thấy trước:</b> máy sẽ đặt ${ps.length?ps.join(", "):"không thẻ nào"}.`;}
     render();playFx(evs,R0,P0);
-    await sleep(reduced?120:(G.msgs.length>1?300:200)+(evs.some(e=>e.k==="flip")?330:0));
-  }
-  {const R0=rects0(),P0=powers();E.endTurn(G);const evs=G.evs.slice();
-   if(G.msgs.length||evs.length){G.msg=`<b>Cuối lượt.</b> `+G.msgs.slice(0,8).join(" · ");render();playFx(evs,R0,P0);await sleep(reduced?140:340);}}
-  if(G.turn>=E.turns(G)){await endReveal(G);E.finish(G,"end");showEnd();return;}
-  {const R0=rects0(),P0=powers();E.startTurn(G);const evs=G.evs.slice();
-   G.msg=missNote+turnMsg(G.msgs.slice(0,4));missNote="";resetTimer(true);
-   if(window.BGM)BGM.syncGame(G);
-   if(E.aiWantsSnap(G,"a")){G.snap.a=true;G.pendingDouble++;if(window.BGM)BGM.syncGame(G);G.msg=`<b>Máy đã cược!</b> Mức cược nhân đôi từ lượt sau. Rút lui ngay thì chỉ mất ${G.stake} ${icn("gems")}.<br>`+G.msg;const q=ctr($("btnSnap"));FX.ring(q.x,q.y,"#ff4d7d",90,6);SFX.play("snap");snapFx("#ff4d7d","×2");}
-   if(G.turn===5&&E.boardCards(G,"p").some(([c])=>!c.sil&&E.is(G,c,"vouy"))){aiMove("a");ddPlan=true;const ps=G.q.a.filter(a=>a.t==="play").map(a=>`${C[a.inst.id].n} vào ${G.locs[a.li].rvl?LOC[G.locs[a.li].id].n:"chiến địa "+(a.li+1)}`);setTimeout(()=>{try{const v=E.boardCards(G,"p").find(([c])=>!c.sil&&E.is(G,c,"vouy"));if(v)eye7(srcPt(v[0].uid),ctr($("avFoe")),"THẤY TRƯỚC");}catch(e){}},650);G.msg+=`<br><b>Vô Uý thấy trước:</b> máy sẽ đặt ${ps.length?ps.join(", "):"không thẻ nào"}.`;}
-   render();playFx(evs,R0,P0);
-   const isFinalTurn=G.turn===E.turns(G);
-   banner(isFinalTurn?"LƯỢT CUỐI!":`LƯỢT ${G.turn}/${E.turns(G)}`,"");
+    if(G.newLoc>=0)await sleep(reduced?140:1150);
+    const isFinalTurn=G.turn===E.turns(G);
+    banner(isFinalTurn?"LƯỢT CUỐI!":`LƯỢT ${G.turn}/${E.turns(G)}`,"");
    pulse("#orb",[{transform:"scale(1.42)",filter:"brightness(2.2)"},{transform:"scale(1)",filter:"brightness(1)"}],420);
    if(G.agatha&&G.agatha.p&&G.turn%2===0&&G.phase==="play"){E.aiPlan(G,"p",200);G.msg="<b>Lão Phù Thuỷ điều khiển lượt này.</b><br>"+G.msg;render();setTimeout(()=>endTurnUI(true),reduced?300:950);}}
 }
@@ -498,7 +504,7 @@ $("btnMute").textContent="Cài đặt";
 $("setVol").addEventListener("input",e=>{store.vol=+e.target.value;$("setVolV").textContent=store.vol+"%";save();});
 $("setVol").addEventListener("change",()=>SFX.play("buff"));
 if($("setBgmVol"))$("setBgmVol").addEventListener("input",e=>{if(window.BGM)BGM.setVol(+e.target.value);else{store.bgmVol=+e.target.value;save();}if($("setBgmVolV"))$("setBgmVolV").textContent=(store.bgmVol??55)+"%";});
-if($("setBgm"))$("setBgm").addEventListener("change",e=>{if(window.BGM)BGM.toggle(e.target.checked);else{store.bgm=e.target.checked;save();}});
+if($("setBgm"))$("setBgm").addEventListener("change",e=>{if(window.BGM)BGM.toggle(e.target.checked);else{store.battleBgm=!!e.target.checked;save();}});
 $("setMute").addEventListener("change",e=>{store.mute=e.target.checked;save();if(window.BGM)BGM.syncVol();if(G)render();renderLobby();});
 $("setGpu").addEventListener("change",e=>{store.gpu=!!e.target.checked;GPUON=store.gpu;document.body.classList.toggle("gpu",GPUON);BC=null;save();if(G)render();});
 $("setSpd").addEventListener("change",e=>{setSpd10(e.target.value);});
