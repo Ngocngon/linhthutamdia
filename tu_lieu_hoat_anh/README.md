@@ -179,7 +179,7 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/l/`](img/l) | Ảnh chiến địa | 120 |
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
-| [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (80 chiêu riêng vẽ bằng ChatGPT, 41 hiệu ứng chung vẽ bằng Google Flow) | 121 |
+| [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (toàn bộ vẽ bằng ChatGPT; 41 hiệu ứng chung và 22 ảnh giao diện đã vẽ lại 16/11 thay ảnh Google Flow) | 121 |
 | [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 12 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).
