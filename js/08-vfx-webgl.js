@@ -1792,10 +1792,12 @@
     };
   }
 
-  /* 6.5. Nâng cấp CFX (Tiêu huỷ mảnh vỡ 3D, Về tay, Rút bài, Triệu hồi, Biến hình, Buff/Debuff mượt) */
+  /* 6.5. Nâng cấp CFX (Tiêu huỷ mảnh vỡ 3D, Về tay, Rút bài, Triệu hồi, Biến hình, Buff/Debuff mượt + v16) */
   if (typeof CFX === "object" && CFX) {
     CFX.destroy = function (r) {
       if (reduced || !r || !r.html) return;
+      if (typeof holdFx === "function") holdFx(800);
+      if (typeof window.playV16 === "function") window.playV16("tieu_diet", r.x, r.y, Math.max(112, (r.w || 54) * 2.05), 560, 140);
       const g0 = ghost(r, r.html, "g9");
       g0.insertAdjacentHTML(
         "beforeend",
@@ -1854,6 +1856,7 @@
 
     CFX.fromBoard = function (el, r) {
       if (reduced || !el || !r) return;
+      if (typeof holdFx === "function") holdFx(580);
       const b = el.getBoundingClientRect();
       const cx = b.left + b.width / 2, cy = b.top + b.height / 2;
       const dx = r.x - cx, dy = r.y - cy;
@@ -1886,16 +1889,20 @@
       if (reduced || !el) return;
       const b = el.getBoundingClientRect();
       const col = cr ? "#ffd65a" : "#7fe8ff";
-      const delay = (k || 0) * 75;
+      const delay = (k || 0) * 95;
+      if (typeof holdFx === "function") holdFx(480 + delay);
+      if (b.width > 0 && typeof window.playV16 === "function") {
+        window.playV16("rut_bai", b.left + b.width / 2, b.top + b.height / 2, Math.max(92, b.width * 1.75), 460, delay);
+      }
       smoothAnim(el, [
         { opacity: 0, transform: "perspective(650px) translate3d(130px, 34px, 40px) rotateY(-65deg) rotateZ(22deg) scale(0.48)" },
         { opacity: 1, transform: "perspective(650px) translate3d(-8px, -24px, 28px) rotateY(8deg) rotateZ(-4deg) scale(1.12)", offset: 0.62 },
         { opacity: 1, transform: "perspective(650px) translate3d(0, 0, 0) rotateY(0deg) rotateZ(0deg) scale(1)" }
-      ], { duration: 520, delay, fill: "backwards" });
+      ], { duration: 460, delay, fill: "backwards" });
       fxT(() => {
         FX.glow(b.left + b.width / 2, b.top + b.height / 2, col, 62);
         FX.sparks(b.left + b.width / 2, b.top + b.height / 2, col, cr ? 18 : 10, 210);
-      }, 360 + delay);
+      }, 330 + delay);
     };
 
     CFX.summon = function (el, c) {
@@ -1903,20 +1910,24 @@
       const col = c || "#7dffb0";
       const r = el.getBoundingClientRect();
       const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      if (typeof holdFx === "function") holdFx(580);
+      if (r.width > 0 && typeof window.playV16 === "function") {
+        window.playV16("tao_the", cx, cy, Math.max(106, r.width * 1.95), 520, 0);
+      }
       portal(el, col);
       /* Vòng cổng triệu hồi tranh vẽ xoay mở rộng dưới chân thẻ */
       const gate = document.createElement("div");
       gate.className = "gpu-summon-gate";
       gate.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(96, r.width * 2.1)}px;height:${Math.max(96, r.width * 2.1)}px;--gc:${col}`;
-      gate.innerHTML = `<img src="img/v/v_cong.webp" alt="">`;
+      gate.innerHTML = `<img src="img/v/v_cong.webp?v=gpu17" alt="">`;
       document.body.appendChild(gate);
       gate.animate([
         { transform: "translate(-50%,-50%) scale(0.25) rotate(-90deg)", opacity: 0 },
         { transform: "translate(-50%,-50%) scale(1.12) rotate(35deg)", opacity: 0.95, offset: 0.35 },
         { transform: "translate(-50%,-50%) scale(1.05) rotate(130deg)", opacity: 0.85, offset: 0.72 },
         { transform: "translate(-50%,-50%) scale(1.35) rotate(220deg)", opacity: 0 }
-      ], { duration: 920, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => gate.remove();
-      fxT(() => gate.remove(), 1050);
+      ], { duration: 560, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => gate.remove();
+      fxT(() => gate.remove(), 600);
 
       smoothAnim(el, [
         { opacity: 0, transform: "perspective(650px) translate3d(0, 34px, -45px) rotateX(42deg) scale(0.28)" },
@@ -1924,12 +1935,15 @@
         { opacity: 1, transform: "perspective(650px) translate3d(0, 2px, 0) scale(0.97)", offset: 0.84 },
         { opacity: 1, transform: "perspective(650px) translate3d(0, 0, 0) scale(1)" }
       ], { duration: 420 });
-      if (typeof holdFx === "function") holdFx(380);
     };
 
     CFX.morph = function (el) {
       if (reduced || !el) return;
+      if (typeof holdFx === "function") holdFx(580);
       const r = el.getBoundingClientRect();
+      if (r.width > 0 && typeof window.playV16 === "function") {
+        window.playV16("bien_hinh", r.left + r.width / 2, r.top + r.height / 2, Math.max(104, r.width * 1.9), 520, 0);
+      }
       FX.holo(r.left + r.width / 2, r.top + r.height / 2, "#d46bff", 26);
       smoothAnim(el, [
         { transform: "perspective(620px) rotateY(0deg) scale(1)" },
@@ -1941,29 +1955,39 @@
 
     CFX.buff = function (el, d) {
       if (reduced || !el) return;
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && typeof window.playV16 === "function") {
+        window.playV16("tang_suc", r.left + r.width / 2, r.top + r.height / 2, Math.max(96, r.width * 1.85), 500, 0);
+      }
+      if (typeof holdFx === "function") holdFx(520);
       smoothAnim(el, [
         { transform: "translate3d(0,0,0) scale(1)" },
         { transform: "perspective(600px) translate3d(0,-7px,22px) scale(1.16)", offset: 0.38 },
         { transform: "translate3d(0,0,0) scale(1)" }
-      ], { duration: Math.min(620, 380 + (d || 1) * 28) });
+      ], { duration: 500 });
       const pwh = el.querySelector(".pwh");
       if (pwh) {
         smoothAnim(pwh, [
           { transform: "scale(1)" },
           { transform: "scale(1.85) rotate(-8deg)", offset: 0.38 },
           { transform: "scale(1)" }
-        ], { duration: 460 });
+        ], { duration: 480 });
       }
     };
 
     CFX.debuff = function (el) {
       if (reduced || !el) return;
+      const r = el.getBoundingClientRect();
+      if (r.width > 0 && typeof window.playV16 === "function") {
+        window.playV16("giam_suc", r.left + r.width / 2, r.top + r.height / 2, Math.max(96, r.width * 1.85), 500, 0);
+      }
+      if (typeof holdFx === "function") holdFx(520);
       smoothAnim(el, [
         { transform: "translate3d(0,0,0) scale(1)" },
         { transform: "translate3d(-5px, 2px, 0) rotate(-3deg) scale(0.94)", offset: 0.24 },
         { transform: "translate3d(5px, 1px, 0) rotate(3deg) scale(0.96)", offset: 0.52 },
         { transform: "translate3d(0,0,0) scale(1)" }
-      ], { duration: 440 });
+      ], { duration: 500 });
     };
   }
 
@@ -2073,7 +2097,8 @@
     const sw = origin ? Math.max(44, origin.w) : tw * 1.18;
     const sh = origin ? Math.max(62, origin.h) : th * 1.18;
     const dx = tx - sx, dy = ty - sy;
-    const dur = origin && origin.fromDrag ? 96 : 118;
+    const dur = origin && origin.fromDrag ? 110 : 130;
+    window._placeLockUntil = Math.max(window._placeLockUntil || 0, performance.now() + (dur + 45) * (typeof SPD !== "undefined" ? SPD : 1));
 
     mc.classList.add("gpu-fly-wait");
     mc.classList.remove("land");
@@ -2147,6 +2172,7 @@
     const th = hc ? Math.max(66, tr.height) : sh * 1.15;
     const dx = tx - sx, dy = ty - sy;
     const dur = 155;
+    window._placeLockUntil = Math.max(window._placeLockUntil || 0, performance.now() + (dur + 45) * (typeof SPD !== "undefined" ? SPD : 1));
 
     if (hc) hc.style.opacity = "0";
 
@@ -2193,26 +2219,32 @@
   }
 
   window.gpuFlipDownMine = function (uids) {
-    if (reduced || !G || !Array.isArray(uids) || !uids.length) return;
+    if (reduced || !G || !Array.isArray(uids) || !uids.length) return 0;
+    let cnt = 0;
     uids.forEach((uid, idx) => {
       const mc = document.querySelector(`#board .side.me [data-mc="${uid}"]`);
       if (!mc) return;
+      cnt++;
       const r = mc.getBoundingClientRect();
       const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
-      setTimeout(() => {
+      fxT(() => {
         if (!mc.isConnected) return;
         smoothAnim(mc, [
           { transform: "perspective(580px) translate3d(0, -6px, 18px) rotateY(-95deg) scale(1.06)", filter: "brightness(1.35)" },
           { transform: "perspective(580px) translate3d(0, 1px, 0) rotateY(0deg) scale(0.97)", filter: "brightness(1)", offset: 0.78 },
           { transform: "perspective(580px) translate3d(0, 0, 0) rotateY(0deg) scale(1)", filter: "none" }
-        ], { duration: 120, easing: "cubic-bezier(0.2, 0.95, 0.32, 1)" });
+        ], { duration: 140, easing: "cubic-bezier(0.2, 0.95, 0.32, 1)" });
         FX.ring(tx, ty, "#5ee6ff", 38, 2.6);
-      }, idx * 22);
+      }, idx * 40);
     });
+    const tot = cnt ? 140 + (cnt - 1) * 40 : 0;
+    if (tot && typeof holdFx === "function") holdFx(tot);
+    return tot;
   };
 
-  window.gpuDropFoeStaged = function (foeHad) {
-    if (reduced || !G) return;
+  window.gpuDropFoeStaged = function (foeHad, startDelayMs) {
+    if (reduced || !G) return 0;
+    const baseDelay = Math.max(0, +startDelayMs || 0);
     const av = $id("avFoe");
     const ar = av ? av.getBoundingClientRect() : { left: window.innerWidth * 0.72, top: 24, width: 48, height: 48 };
     const sx = ar.left + ar.width / 2, sy = ar.top + ar.height / 2;
@@ -2223,42 +2255,45 @@
       const r = mc.getBoundingClientRect();
       const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
       const dx = sx - tx, dy = sy - ty;
-      const delay = idx * 26;
+      const delay = baseDelay + idx * 50;
       idx++;
       mc.style.opacity = "0";
-      setTimeout(() => {
+      fxT(() => {
         if (!mc.isConnected) return;
         mc.style.opacity = "";
         smoothAnim(mc, [
           { transform: `perspective(620px) translate3d(${(dx * 0.38).toFixed(1)}px, ${Math.min(-28, dy * 0.38).toFixed(1)}px, 36px) scale(1.16) rotateZ(${(dx >= 0 ? 6 : -6)}deg)`, opacity: 0.45 },
           { transform: "perspective(620px) translate3d(0, 1.5px, 0) scale(0.96)", opacity: 1, offset: 0.74 },
           { transform: "perspective(620px) translate3d(0, 0, 0) scale(1)", opacity: 1 }
-        ], { duration: 125, easing: "cubic-bezier(0.18, 0.95, 0.32, 1)" });
-        setTimeout(() => {
+        ], { duration: 160, easing: "cubic-bezier(0.18, 0.95, 0.32, 1)" });
+        fxT(() => {
           FX.dust(tx, ty + r.height * 0.4, "#ffd8d0");
           FX.ring(tx, ty, "#ff7a5a", 42, 2.8);
           GLFX.impulseShake(2.2, 0, 1);
-        }, 90);
+        }, 110);
       }, delay);
     });
+    const foeDur = idx ? 160 + (idx - 1) * 50 : 0;
+    if (foeDur && typeof holdFx === "function") holdFx(baseDelay + foeDur);
+    return foeDur;
   };
 
   /* ==================== HỆ THỐNG VFX CHIẾN ĐỊA ĐỘNG & HIỆU ỨNG TRỰC QUAN TRÊN 2 PHẦN SÂN ==================== */
   const LOC_FIELD_MAP = {};
   const LOC_FIELD_META = {
-    shield:      { col: "#6ef3ff", img: "img/v/v_khien.webp",    sig: "img/v/v_an_khien.webp", tag: "Khiên Bất Diệt" },
-    poison:      { col: "#62ff8e", img: "img/v/v_no_doc.webp",   sig: "img/v/v_an_xich.webp",  tag: "Chướng Khí Độc" },
-    frost:       { col: "#9eeeff", img: "img/v/v_no_bang.webp",  sig: "img/v/v_khung_nuoc.webp", tag: "Băng Sương Hàn" },
-    lava_kill:   { col: "#ff5436", img: "img/v/v_so.webp",       sig: "img/v/v_lua.webp",      tag: "Hoả Ngục Huỷ" },
-    lock_chain:  { col: "#ffd269", img: "img/v/v_xich.webp",     sig: "img/v/v_an_khoa.webp",  tag: "Xiềng Phong Ấn" },
-    forge:       { col: "#ff9a3c", img: "img/v/v_bua_ren.webp",  sig: "img/v/v_lua.webp",      tag: "Lửa Rèn Thần" },
-    double_drum: { col: "#ffe066", img: "img/v/v_trong.webp",    sig: "img/v/v_an_vong.webp",  tag: "Cộng Hưởng ×2" },
-    wind_move:   { col: "#74ffdf", img: "img/v/v_gio.webp",      sig: "img/v/v_an_vong.webp",  tag: "Gió Dịch Chuyển" },
-    summon_gate: { col: "#95ff75", img: "img/v/v_cong.webp",     sig: "img/v/v_an_vong.webp",  tag: "Cổng Triệu Hồi" },
-    mirror_clone:{ col: "#86d8ff", img: "img/v/v_guong.webp",    sig: "img/v/v_an_mat.webp",   tag: "Gương Nhân Bản" },
-    energy_gem:  { col: "#4fd8ff", img: "img/v/v_ngoc.webp",     sig: "img/v/v_an_ngoc.webp",  tag: "Mạch Tinh Thể" },
-    blessing:    { col: "#ffd96a", img: "img/v/v_sao_tang.webp", sig: "img/v/v_an_co.webp",    tag: "Linh Khí Hộ Trì" },
-    cosmic_rule: { col: "#cf88ff", img: "img/v/v_bua_chu.webp",  sig: "img/v/v_an_vong.webp",  tag: "Kỳ Giới Biến Luật" }
+    shield:      { col: "#6ef3ff", img: "img/v/v_khien.webp?v=gpu17",    sig: "img/v/v_an_khien.webp?v=gpu17", tag: "Khiên Bất Diệt" },
+    poison:      { col: "#62ff8e", img: "img/v/v_no_doc.webp?v=gpu17",   sig: "img/v/v_an_xich.webp?v=gpu17",  tag: "Chướng Khí Độc" },
+    frost:       { col: "#9eeeff", img: "img/v/v_no_bang.webp?v=gpu17",  sig: "img/v/v_khung_nuoc.webp?v=gpu17", tag: "Băng Sương Hàn" },
+    lava_kill:   { col: "#ff5436", img: "img/v/v_so.webp?v=gpu17",       sig: "img/v/v_lua.webp?v=gpu17",      tag: "Hoả Ngục Huỷ" },
+    lock_chain:  { col: "#ffd269", img: "img/v/v_xich.webp?v=gpu17",     sig: "img/v/v_an_khoa.webp?v=gpu17",  tag: "Xiềng Phong Ấn" },
+    forge:       { col: "#ff9a3c", img: "img/v/v_bua_ren.webp?v=gpu17",  sig: "img/v/v_lua.webp?v=gpu17",      tag: "Lửa Rèn Thần" },
+    double_drum: { col: "#ffe066", img: "img/v/v_trong.webp?v=gpu17",    sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Cộng Hưởng ×2" },
+    wind_move:   { col: "#74ffdf", img: "img/v/v_gio.webp?v=gpu17",      sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Gió Dịch Chuyển" },
+    summon_gate: { col: "#95ff75", img: "img/v/v_cong.webp?v=gpu17",     sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Cổng Triệu Hồi" },
+    mirror_clone:{ col: "#86d8ff", img: "img/v/v_guong.webp?v=gpu17",    sig: "img/v/v_an_mat.webp?v=gpu17",   tag: "Gương Nhân Bản" },
+    energy_gem:  { col: "#4fd8ff", img: "img/v/v_ngoc.webp?v=gpu17",     sig: "img/v/v_an_ngoc.webp?v=gpu17",  tag: "Mạch Tinh Thể" },
+    blessing:    { col: "#ffd96a", img: "img/v/v_sao_tang.webp?v=gpu17", sig: "img/v/v_an_co.webp?v=gpu17",    tag: "Linh Khí Hộ Trì" },
+    cosmic_rule: { col: "#cf88ff", img: "img/v/v_bua_chu.webp?v=gpu17",  sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Kỳ Giới Biến Luật" }
   };
 
   function classifyLocField(id) {
@@ -2400,26 +2435,26 @@
       const cx = lr.left + lr.width / 2, cy = lr.top + lr.height / 2;
       const hw = lr.width * 0.5, hh = lr.height * 0.45;
 
-      if (typeof holdFx === "function") holdFx(540);
+      if (typeof holdFx === "function") holdFx(940);
       SFX.play("loc");
       lw.classList.remove("gpu-loc-rev");
       void lw.offsetWidth;
       lw.classList.add("gpu-loc-rev");
-      setTimeout(() => lw.classList.remove("gpu-loc-rev"), 1360);
+      fxT(() => lw.classList.remove("gpu-loc-rev"), 920);
 
-      /* Vòng ấn cổ ngữ xoay mở phong ấn Chiến Địa (1280ms) */
+      /* Vòng ấn cổ ngữ xoay mở phong ấn Chiến Địa (900ms chuẩn xác) */
       const seal = document.createElement("div");
       seal.className = "gpu-loc-seal";
       seal.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(126, lr.width * 1.42)}px;height:${Math.max(126, lr.width * 1.42)}px;--lc:${col}`;
-      seal.innerHTML = `<img class="ls-ring" src="img/v/v_an_vong.webp" alt=""><img class="ls-icon" src="${(fMeta && fMeta.img) || "img/v/v_bua_chu.webp"}" alt="">`;
+      seal.innerHTML = `<img class="ls-ring" src="img/v/v_an_vong.webp?v=gpu17" alt=""><img class="ls-icon" src="${(fMeta && fMeta.img) || "img/v/v_bua_chu.webp?v=gpu17"}" alt="">`;
       document.body.appendChild(seal);
       seal.animate([
         { transform: "translate(-50%,-50%) scale(0.32) rotate(-80deg)", opacity: 0 },
         { transform: "translate(-50%,-50%) scale(1.16) rotate(12deg)", opacity: 1, offset: 0.32 },
         { transform: "translate(-50%,-50%) scale(1.06) rotate(68deg)", opacity: 0.92, offset: 0.72 },
         { transform: "translate(-50%,-50%) scale(1.38) rotate(125deg)", opacity: 0 }
-      ], { duration: 1260, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => seal.remove();
-      fxT(() => seal.remove(), 1380);
+      ], { duration: 900, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => seal.remove();
+      fxT(() => seal.remove(), 940);
 
       /* Viền tia điện bát giác + Sóng lan toả lên cả 2 phần sân của 2 người chơi */
       if (GLFX.ok) {
