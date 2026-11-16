@@ -21,6 +21,22 @@ body.rm #fxgl {
   display: none !important;
 }
 
+/* Hoạt ảnh 16 khung hình 4x4 (v16: lật thẻ, tăng sức, giảm sức) */
+.fx-v16 {
+  position: fixed;
+  pointer-events: none;
+  z-index: 30;
+  transform: translate(-50%, -50%);
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  mix-blend-mode: screen;
+  filter: brightness(1.12) saturate(1.18);
+  will-change: background-position, opacity, transform;
+}
+body.rm .fx-v16 {
+  display: none !important;
+}
+
 /* Ánh đèn sân khấu GPU siêu nhẹ */
 #dim12 {
   position: fixed;

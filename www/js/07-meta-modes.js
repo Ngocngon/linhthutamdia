@@ -3,18 +3,41 @@
 const QN=[["Thường","#b9bcc8"],["Đặc Biệt","#35d07f"],["Hiếm","#3aa0ff"],["Hùng Tráng","#c45cff"],["Huyền Thoại","#ff9a1f"],["Siêu Cấp","#ff4d6d"],["Vô Cực","#ffffff"]],UPC=[25,50,100,200,300,400],CLG=[0,1,3,7,13,21,31];
 const SWATCH=["#ffffff","#ffd65a","#ff4d6d","#ff5ae0","#c45cff","#3aa0ff","#3fe0ff","#7dff8a"];
 const RES={gold:[icn("gold"),"#ffb02e","Vàng"],up:[icn("up"),"#7fd0ff","Điểm nâng cấp"],tok:[icn("tok"),"#c9a4ff","Token"],evp:[icn("evp"),"#ff8af0","Điểm sự kiện"],gems:[icn("gems"),"#3dffb4","Ngọc xếp hạng"]};
-function mkBack(name,c1,c2,ac,pat,emb){const svg=`<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 132'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='${c1}'/><stop offset='1' stop-color='${c2}'/></linearGradient><radialGradient id='r'><stop offset='0' stop-color='${ac}' stop-opacity='.9'/><stop offset='1' stop-color='${ac}' stop-opacity='0'/></radialGradient><pattern id='p' width='14' height='14' patternUnits='userSpaceOnUse'>${pat}</pattern><clipPath id='c'><rect x='5' y='5' width='90' height='122' rx='6'/></clipPath></defs><rect width='100' height='132' rx='9' fill='#05061a'/><rect x='2' y='2' width='96' height='128' rx='8' fill='${ac}'/><rect x='5' y='5' width='90' height='122' rx='6' fill='url(#g)'/><g clip-path='url(#c)'><rect x='5' y='5' width='90' height='122' fill='url(#p)'/><circle cx='50' cy='66' r='46' fill='url(#r)'/></g><rect x='9' y='9' width='82' height='114' rx='4' fill='none' stroke='${ac}' stroke-width='1' opacity='.8'/><path d='M9 22V9h13M78 9h13v13M91 110v13H78M22 123H9v-13' fill='none' stroke='#fff' stroke-width='2' opacity='.85'/><path d='M50 36l26 15v30L50 96 24 81V51z' fill='#05061a' fill-opacity='.72' stroke='${ac}' stroke-width='2.5'/><path d='M50 41l21.5 12.5v25L50 91 28.500 78.500v-25z' fill='none' stroke='#fff' stroke-width='.8' opacity='.6'/><g fill='${ac}' stroke='#fff' stroke-width='1' stroke-linejoin='round'>${emb}</g></svg>`;return [name,`url('data:image/svg+xml,${encodeURIComponent(svg).replace(/'/g,"%27")}') center/cover`];}
+function mkImgBack(name,uKey,cropBot){
+  const u=UI(uKey)||("img/u/"+uKey+".webp");
+  return [name,cropBot?`url('${u}') 50% 0% / 104% 108% no-repeat #0b0a24`:`url('${u}') 50% 50% / 103% 103% no-repeat #0b0a24`];
+}
 const BACKS={
- b0:mkBack("Lưới Lam","#1b4fd0","#081a5e","#5ad0ff","<path d='M7 0l7 4v6l-7 4-7-4V4z' fill='none' stroke='#7fd0ff' stroke-opacity='.35'/>","<path d='M54 46L40 68h9l-4 18 16-24h-9z'/>"),
- b1:mkBack("Hồng Son","#b3123f","#3a0620","#ff7a9a","<path d='M0 14L14 0M-3 3L3-3M11 17l6-6' stroke='#ff9ab4' stroke-opacity='.3' stroke-width='3'/>","<path d='M50 46l5.500 13 14 1-11 9 3.500 14L50 75l-12 8 3.500-14-11-9 14-1z'/>"),
- b2:mkBack("Vảy Ngọc","#0f8a66","#04302a","#3dffb4","<path d='M0 7a7 7 0 0014 0M-7 14a7 7 0 0014 0M7 14a7 7 0 0014 0' fill='none' stroke='#7dffd0' stroke-opacity='.4'/>","<path d='M30 66q20-22 40 0q-20 22-40 0z'/><ellipse cx='50' cy='66' rx='4' ry='11' fill='#05061a' stroke='none'/>"),
- b3:mkBack("Hoàng Kim","#d49a1a","#5a3a06","#ffe27a","<path d='M7 0v14M0 7h14' stroke='#fff3b0' stroke-opacity='.3'/><circle cx='7' cy='7' r='2' fill='#fff3b0' fill-opacity='.4'/>","<path d='M32 80l-4-26 12 10 10-16 10 16 12-10-4 26z'/><rect x='32' y='82' width='36' height='4' rx='1'/>"),
- b4:mkBack("Tinh Vân","#6a1fb0","#0a0830","#ff8af0","<circle cx='3' cy='4' r='.9' fill='#fff'/><circle cx='10' cy='10' r='.6' fill='#fff' fill-opacity='.7'/>","<circle cx='50' cy='66' r='11'/><ellipse cx='50' cy='66' rx='22' ry='6' fill='none' stroke='#fff' stroke-width='2' transform='rotate(-20 50 66)'/>"),
- b5:mkBack("Mạch Điện","#0b3a5e","#030c1e","#3fe0ff","<path d='M0 7h5l2-3h7M7 14V9' fill='none' stroke='#3fe0ff' stroke-opacity='.45'/><circle cx='7' cy='9' r='1.300' fill='#3fe0ff' fill-opacity='.7'/>","<rect x='39' y='55' width='22' height='22' rx='3'/><path d='M44 55v-7M50 55v-7M56 55v-7M44 77v7M50 77v7M56 77v7M39 60h-7M39 66h-7M39 72h-7M61 60h7M61 66h7M61 72h7' fill='none' stroke-width='2'/>"),
- b6:mkBack("Dung Nham","#e0480f","#3a0a04","#ffb347","<path d='M0 4l4 3 3-4 4 5 3-2M2 14l3-4 4 2 5-3' fill='none' stroke='#ffd08a' stroke-opacity='.4'/>","<path d='M50 44q14 14 10 26q8-4 6-12q8 14-2 24q-8 8-18 4q-12-4-12-16q0-8 6-12q0 8 6 8q-4-10 4-22z'/>"),
- b7:mkBack("Cổ Thư","#9a7430","#3a2810","#f0d28a","<path d='M2 3h4M9 3h3M3 8h6M2 12h3M8 12h4' stroke='#f5e2b0' stroke-opacity='.35' stroke-width='1.200'/>","<circle cx='50' cy='66' r='8'/><path d='M50 46v8M50 78v8M30 66h8M62 66h8M36 52l6 6M58 74l6 6M64 52l-6 6M42 74l-6 6' fill='none' stroke-width='2.500'/>"),
- b8:mkBack("Kẻ Caro","#3a3560","#0c0a24","#f3f1ff","<rect width='7' height='7' fill='#fff' fill-opacity='.12'/><rect x='7' y='7' width='7' height='7' fill='#fff' fill-opacity='.12'/>","<path d='M50 46l16 20-16 20-16-20z'/><path d='M50 54l9 12-9 12-9-12z' fill='#05061a' stroke='none'/>"),
- b9:mkBack("Cầu Vồng","#ff4d6d","#3fa0ff","#ffffff","<path d='M0 14L14 0' stroke='#fff' stroke-opacity='.35' stroke-width='2'/><path d='M0 7L7 0M7 14l7-7' stroke='#ffe27a' stroke-opacity='.35' stroke-width='2'/>","<path d='M50 66c-5-9-18-9-18 0s13 9 18 0c5-9 18-9 18 0s-13 9-18 0z' fill='none' stroke-width='4'/>")};
+ b0:mkImgBack("Trống Đồng Lạc Việt","bk_thuong_1"),
+ b1:mkImgBack("Hoàng Long Nhả Ngọc","bk_hungtrang_1"),
+ b2:mkImgBack("Chim Lạc Ngọc Lục","bk_dacbiet_1"),
+ b3:mkImgBack("Tứ Linh Hội Tụ","bk_huyenthoai_1"),
+ b4:mkImgBack("Long Phụng Tinh Hà","bk_vocuc_1",1),
+ b5:mkImgBack("Gốm Lam Vân Mây","bk_thuong_3"),
+ b6:mkImgBack("Cửu Long Triều Nhật","bk_sieucap_1"),
+ b7:mkImgBack("Hồi Văn Sơn Son","bk_thuong_2"),
+ b8:mkImgBack("Kim Quy Đạp Sóng","bk_hiem_1"),
+ b9:mkImgBack("Bảo Châu Tứ Thánh","bk_vocuc_4"),
+ bk_thuong_4:mkImgBack("Khắc Gỗ Cổ Phong","bk_thuong_4"),
+ bk_dacbiet_2:mkImgBack("Thanh Trúc Linh Điểu","bk_dacbiet_2"),
+ bk_dacbiet_3:mkImgBack("Lục Bảo Hoa Văn","bk_dacbiet_3"),
+ bk_dacbiet_4:mkImgBack("Ngọc Ấn Sơn Lâm","bk_dacbiet_4"),
+ bk_hiem_2:mkImgBack("Thuỷ Triều Đông Hải","bk_hiem_2"),
+ bk_hiem_3:mkImgBack("Lam Ngọc Liên Hoa","bk_hiem_3"),
+ bk_hiem_4:mkImgBack("Huyền Vũ Trấn Hải","bk_hiem_4"),
+ bk_hungtrang_2:mkImgBack("Tử Kim Pháp Trận","bk_hungtrang_2"),
+ bk_hungtrang_3:mkImgBack("Uy Linh Thần Hổ","bk_hungtrang_3"),
+ bk_hungtrang_4:mkImgBack("Phượng Vũ Cửu Thiên","bk_hungtrang_4"),
+ bk_huyenthoai_2:mkImgBack("Kim Long Vờn Mây","bk_huyenthoai_2"),
+ bk_huyenthoai_3:mkImgBack("Thánh Hoả Lạc Hồng","bk_huyenthoai_3"),
+ bk_huyenthoai_4:mkImgBack("Thiên Ấn Hoàng Triều","bk_huyenthoai_4"),
+ bk_sieucap_2:mkImgBack("Huyết Long Xung Thiên","bk_sieucap_2"),
+ bk_sieucap_3:mkImgBack("Xích Diệm Thần Chu","bk_sieucap_3"),
+ bk_sieucap_4:mkImgBack("Bá Vương Hồng Nhật","bk_sieucap_4"),
+ bk_vocuc_2:mkImgBack("Ngân Hà Tứ Thánh","bk_vocuc_2",1),
+ bk_vocuc_3:mkImgBack("Cổ Loa Tinh Đồ","bk_vocuc_3")
+};
+if(typeof TEST_MAX!=="undefined"&&TEST_MAX){for(const bk of Object.keys(BACKS))if(!store.backs.includes(bk))store.backs.push(bk);}
 function mkScene(body){return `url('data:image/svg+xml,${encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 860' preserveAspectRatio='xMidYMid slice'>"+body+"</svg>").replace(/'/g,"%27")}')`;}
 const SCENES={
  ancient:()=>{let c="";for(const x of [20,70,330,380]){c+=`<rect x='${x-14}' y='90' width='28' height='560' fill='url(#col)'/><rect x='${x-20}' y='78' width='40' height='14' fill='#e9cf96'/><rect x='${x-20}' y='648' width='40' height='16' fill='#b8935a'/>`;for(let k=-10;k<=10;k+=5)c+=`<rect x='${x+k-.5}' y='94' width='1' height='552' fill='#6b4a1e' opacity='.45'/>`;}
@@ -423,15 +446,15 @@ function cardTile(k,attr,u){const d=C[k],ug=u&&u.n?`<span class="ugb">⬆${u.n}<
   const cs=d.c-((u&&u.c)||0),pw=d.p+((u&&u.p)||0);
   return `<button type="button" class="gc mdc" style="--hc:${HC[d.h]}" ${attr} aria-label="${esc(d.n)}">${art(k)}<span class="cst${cs<d.c?" up":""}">${cs}</span><span class="pwh${pw>d.p?" up":""}">${pw}</span>${ug}</button>`;}
 /* ---- trận theo chế độ ---- */
-function startModeGame(mode,pDeck,foeDeck,upP,upA,xo){mmBot(nm=>{startModeGame0(mode,pDeck,foeDeck,upP,upA,xo);$("foeName").textContent=nm;banner("LƯỢT 1",mode.lbl||"");});}
+function startModeGame(mode,pDeck,foeDeck,upP,upA,xo){mmBot(nm=>{startModeGame0(mode,pDeck,foeDeck,upP,upA,xo);$("foeName").textContent=nm;runMatchIntro("LƯỢT 1",mode.lbl||"",true);});}
 function startModeGame0(mode,pDeck,foeDeck,upP,upA,xo){
   BC=null;TN0=0;LOCID=[];seenRev.clear();prevPow.clear();seenLoc.clear();seenStg.clear();prevLd=[];PWV={};sel=look=moveSel=null;armRetreat=0;
   foeAv=foeDeck[foeDeck.length-1];$("avFoe").innerHTML=artFace(foeAv);$("avMe").innerHTML=meAv();
-  foeBack=Object.keys(BACKS)[Math.floor(Math.random()*10)];
+  foeBack=Object.keys(BACKS)[Math.floor(Math.random()*Object.keys(BACKS).length)];
   G=E.newGame(pDeck,foeDeck,Object.assign({upg:{p:upP||{},a:upA||{}}},xo||{}));G.mode=mode;gameDeck=store.deck.join();
   missNote="";resetTimer(false);
   G.msg=`<b>${mode.lbl||(mode.k==="draft"?"Tuyển chọn":"Chinh phục")} · máy ${DIFF[mode.diff].n}.</b> `+turnMsg(G.msgs.slice(0,4));
-  closeAll();$("lobby").classList.remove("on");if(window.BGM)BGM.syncGame(G);render();dealIn();startShow();$("foeName").textContent="MÁY";if(typeof gpuLocReveal==="function")setTimeout(()=>gpuLocReveal(0),320);}
+  closeAll();$("lobby").classList.remove("on");if(window.BGM)BGM.syncGame(G);render();$("foeName").textContent="MÁY";}
 /* ---- Tuyển chọn ---- */
 const DR_GAMES=21,DR_SIZE=12;
 function drDiff(g){return g<6?"thuong":g<14?"kho":"acmong";}
@@ -915,7 +938,7 @@ function encodeDeckCode(ids,name,back){
 function decodeDeckCode(raw){
   const s=String(raw||"").trim();
   if(!s)return {ok:false,err:"Chưa có mã bộ bài."};
-  const m=s.match(/LTTD1-(b\d)-([A-Za-z0-9._]{2,24})(?:-([A-Za-z0-9._\-]+))?/);
+  const m=s.match(/LTTD1-([A-Za-z0-9_]+)-([A-Za-z0-9._]{2,24})(?:-([A-Za-z0-9._\-]+))?/);
   if(m){
     const bk=BACKS[m[1]]?m[1]:"b0",code=m[2];
     if(code.length%2!==0)return {ok:false,err:"Mã bộ bài bị thiếu ký tự."};
@@ -1216,7 +1239,7 @@ $("btnSaveDeck").addEventListener("click",()=>{if(draft.size!==12)return;store.d
 $("btnProfile").addEventListener("click",()=>{$("inName").value=store.name;renderProfile();$("ovProfile").classList.add("on");});
 $("inName").addEventListener("input",ev=>{store.name=ev.target.value.trim().slice(0,12);save();render();renderLobby();});
 $("avGrid").addEventListener("click",ev=>{const b=ev.target.closest("[data-av]");if(!b)return;store.avatar=b.dataset.av;store.avImg="";save();$("avMe").innerHTML=meAv();SFX.play("tap");renderProfile();renderLobby();});
-$("btnAgain").addEventListener("click",()=>{if(G&&G.mode)openModeHub(G.mode.k);else newGame();});
+$("btnAgain").addEventListener("click",()=>{if(G&&G.mode)openModeHub(G.mode.k);else{newGame();runMatchIntro("LƯỢT 1/6","",true);}});
 document.addEventListener("click",ev=>{const o=ev.target.closest(".ov");if(o&&(ev.target===o||ev.target.closest("[data-close]")))o.classList.remove("on");});
 
 $("avMe").innerHTML=meAv();

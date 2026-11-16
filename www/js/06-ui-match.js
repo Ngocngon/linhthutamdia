@@ -117,42 +117,72 @@ async function endTurnUI(auto){
   if(G.online){onlineEnd();return;}
   sel=look=moveSel=null;
   if(!auto){G.cnt.missed=0;missNote="";}
+  /* (0) Nếu vừa đặt/rút thẻ tức thì, chờ hoạt ảnh đặt thẻ (165ms) đáp xuống hoàn tất trước khi úp bài */
+  if(!reduced&&window._placeLockUntil){
+    const rem=window._placeLockUntil-performance.now();
+    if(rem>8)await new Promise(r=>setTimeout(r,rem));
+    window._placeLockUntil=0;
+  }
   if(E.aiWantsRetreat(G,"a")){E.finish(G,"retreatA");showEnd();return;}
   if(!ddPlan)aiMove("a");ddPlan=false;
   const myStaged=G.q.p.filter(a=>a.t==="play").map(a=>a.uid);
   const foeHad=new Set();for(let i=0;i<3;i++)for(const c of G.locs[i].cards.a)foeHad.add(c.uid);
   const steps=E.beginReveal(G);
+  /* (1) PHA ÚP BÀI & KHÓA LƯỢT TUẦN TỰ: Úp thẻ mình (140ms + 40ms/thẻ) -> Hạ thẻ đối thủ (160ms + 50ms/thẻ) */
   G.msg="Hai bên đã đặt bài. Đang lật…";render();
-  if(typeof window.gpuFlipDownMine==="function")window.gpuFlipDownMine(myStaged);
-  if(typeof window.gpuDropFoeStaged==="function")window.gpuDropFoeStaged(foeHad);
+  const myDur=(!reduced&&typeof window.gpuFlipDownMine==="function")?window.gpuFlipDownMine(myStaged):0;
+  const foeDur=(!reduced&&typeof window.gpuDropFoeStaged==="function")?window.gpuDropFoeStaged(foeHad,myDur):0;
   SFX.play("place");
-  await sleep(reduced?35:105);
-   for(const st of steps){
-     const R0=rects0(),P0=powers();
-     const did=E.doStep(G,st);
-     if(!did&&!G.msgs.length)continue;
-     const evs=G.evs.slice();await artReady12(evs);
-     if(G.msgs.length)G.msg=fmt(G.msgs);
-     render();playFx(evs,R0,P0);
-     const hasUlt=!reduced&&(typeof ultOf==="function"&&ultOf(evs)||typeof ultS4Of==="function"&&ultS4Of(evs));
-     const hasFlip=evs.some(e=>e.k==="flip"),hasMore=evs.some(e=>e.k!=="flip");
-     const stepWait=reduced?60:hasUlt?760:hasFlip?(hasMore?310:185):215;
-     await sleep(stepWait);
-   }
-   {const R0=rects0(),P0=powers();E.endTurn(G);const evs=G.evs.slice();
-    if(G.msgs.length||evs.length){G.msg=`<b>Cuối lượt.</b> `+G.msgs.slice(0,8).join(" · ");render();playFx(evs,R0,P0);await sleep(reduced?80:280);}}
-   if(G.turn>=E.turns(G)){await endReveal(G);E.finish(G,"end");showEnd();return;}
-   {const R0=rects0(),P0=powers();E.startTurn(G);const evs=G.evs.slice();
-    G.msg=missNote+turnMsg(G.msgs.slice(0,4));missNote="";resetTimer(true);
-    if(window.BGM)BGM.syncGame(G);
-    if(E.aiWantsSnap(G,"a")){G.snap.a=true;G.pendingDouble++;if(window.BGM)BGM.syncGame(G);G.msg=`<b>Máy đã cược!</b> Mức cược tăng lên ${Math.min(8,G.stake*Math.pow(2,G.pendingDouble))} ngọc. Rút lui ngay thì chỉ mất ${G.stake} ${icn("gems")}.<br>`+G.msg;const q=ctr($("btnSnap"));FX.ring(q.x,q.y,"#ff4d7d",90,6);SFX.play("snap");snapFx("#ff4d7d","×2");}
-    if(G.turn===5&&E.boardCards(G,"p").some(([c])=>!c.sil&&E.is(G,c,"vouy"))){aiMove("a");ddPlan=true;const ps=G.q.a.filter(a=>a.t==="play").map(a=>`${C[a.inst.id].n} vào ${G.locs[a.li].rvl?LOC[G.locs[a.li].id].n:"chiến địa "+(a.li+1)}`);setTimeout(()=>{try{const v=E.boardCards(G,"p").find(([c])=>!c.sil&&E.is(G,c,"vouy"));if(v)eye7(srcPt(v[0].uid),ctr($("avFoe")),"THẤY TRƯỚC");}catch(e){}},420);G.msg+=`<br><b>Vô Uý thấy trước:</b> máy sẽ đặt ${ps.length?ps.join(", "):"không thẻ nào"}.`;}
+  await sleep(reduced?45:Math.max(180,myDur+foeDur+35));
+  /* (2) PHA LẬT BÀI & TUNG CHIÊU TUẦN TỰ TỪNG THẺ MỘT: Thẻ trước xong 100% (FX_UNTIL) mới sang thẻ sau */
+  for(const st of steps){
+    const R0=rects0(),P0=powers();
+    const did=E.doStep(G,st);
+    if(!did&&!G.msgs.length)continue;
+    const evs=G.evs.slice();await artReady12(evs);
+    if(G.msgs.length)G.msg=fmt(G.msgs);
     render();playFx(evs,R0,P0);
-    if(G.newLoc>=0)await sleep(reduced?90:520);
+    const hasFlip=evs.some(e=>e.k==="flip"),hasMore=evs.some(e=>e.k!=="flip");
+    await sleep(reduced?65:hasFlip?(hasMore?720:440):480);
+  }
+  /* (3) PHA CUỐI LƯỢT TUẦN TỰ TỪNG THẺ / CHIẾN ĐỊA / NHIỆM VỤ MỘT */
+  for(const st of E.beginEndTurn(G)){
+    const R0=rects0(),P0=powers();
+    const did=E.stepEndTurn(G,st);
+    if(!did&&!G.msgs.length&&!G.evs.length)continue;
+    const evs=G.evs.slice();await artReady12(evs);
+    if(G.msgs.length)G.msg=`<b>Cuối lượt:</b> `+G.msgs.slice(0,4).join(" · ");
+    render();playFx(evs,R0,P0);
+    await sleep(reduced?65:480);
+  }
+  E.finishEndTurn(G);
+  if(G.turn>=E.turns(G)){await endReveal(G);E.finish(G,"end");showEnd();return;}
+  /* (4) PHA ĐẦU LƯỢT MỚI TÁCH 4 NHỊP RÕ RÀNG: (4a) Lộ diện Chiến Địa -> (4b) Rút bài & Đầu lượt -> (4c) Cược Snap / Vô Uý -> (4d) Băng hiệu Lượt */
+  {
+    const R0=rects0(),P0=powers(),H0=new Map(HAND0);E.startTurn(G);
+    const evs=G.evs.slice(),locEvs=evs.filter(e=>e.k==="loc"),drawEvs=evs.filter(e=>e.k!=="loc");
+    const aiSnap=E.aiWantsSnap(G,"a");
+    if(aiSnap){G.snap.a=true;G.pendingDouble++;}
+    let vouySee=false;
+    G.msg=missNote+turnMsg(G.msgs.slice(0,4));missNote="";resetTimer(true);
+    if(aiSnap)G.msg=`<b>Máy đã cược!</b> Mức cược tăng lên ${Math.min(8,G.stake*Math.pow(2,G.pendingDouble))} ngọc. Rút lui ngay thì chỉ mất ${G.stake} ${icn("gems")}.<br>`+G.msg;
+    if(G.turn===5&&E.boardCards(G,"p").some(([c])=>!c.sil&&E.is(G,c,"vouy"))){aiMove("a");ddPlan=true;vouySee=true;const ps=G.q.a.filter(a=>a.t==="play").map(a=>`${C[a.inst.id].n} vào ${G.locs[a.li].rvl?LOC[G.locs[a.li].id].n:"chiến địa "+(a.li+1)}`);G.msg+=`<br><b>Vô Uý thấy trước:</b> máy sẽ đặt ${ps.length?ps.join(", "):"không thẻ nào"}.`;}
+    if(window.BGM)BGM.syncGame(G);
+    render();
+    /* (4a) Mở Chiến Địa mới (940ms) */
+    if(locEvs.length){playFx(locEvs,R0,P0);await sleep(reduced?80:940);}
+    /* (4b) Rút bài đầu lượt & kỹ năng Đầu Lượt (520ms+) */
+    if(drawEvs.length){HAND0=H0;playFx(drawEvs,R0,P0);await sleep(reduced?60:520);}
+    /* (4c) Máy cược Snap (980ms) hoặc Vô Uý nhìn thấu (820ms) */
+    if(aiSnap){const q=ctr($("btnSnap"));FX.ring(q.x,q.y,"#ff4d7d",90,6);SFX.play("snap");snapFx("#ff4d7d","×2");await sleep(reduced?70:980);}
+    if(vouySee){try{const v=E.boardCards(G,"p").find(([c])=>!c.sil&&E.is(G,c,"vouy"));if(v)eye7(srcPt(v[0].uid),ctr($("avFoe")),"THẤY TRƯỚC");}catch(e){}await sleep(reduced?60:820);}
+    /* (4d) Băng hiệu Lượt mới + xung nhịp Quả cầu năng lượng (780ms) */
     const isFinalTurn=G.turn===E.turns(G);
     banner(isFinalTurn?"LƯỢT CUỐI!":`LƯỢT ${G.turn}/${E.turns(G)}`,"");
-   pulse("#orb",[{transform:"scale(1.42)",filter:"brightness(2.2)"},{transform:"scale(1)",filter:"brightness(1)"}],420);
-   if(G.agatha&&G.agatha.p&&G.turn%2===0&&G.phase==="play"){E.aiPlan(G,"p",200);G.msg="<b>Lão Phù Thuỷ điều khiển lượt này.</b><br>"+G.msg;render();setTimeout(()=>endTurnUI(true),reduced?300:950);}}
+    pulse("#orb",[{transform:"scale(1.42)",filter:"brightness(2.2)"},{transform:"scale(1)",filter:"brightness(1)"}],440);
+    await sleep(reduced?50:780);
+    if(G.agatha&&G.agatha.p&&G.turn%2===0&&G.phase==="play"){E.aiPlan(G,"p",200);G.msg="<b>Lão Phù Thuỷ điều khiển lượt này.</b><br>"+G.msg;render();setTimeout(()=>endTurnUI(true),reduced?240:520);}
+  }
 }
 function showEnd(){
   const r=G.result;
@@ -186,7 +216,7 @@ function newGame(){
   const hs=Object.keys(E.PARTNER);
   const foeDeck=E.themedDeck(hs[Math.floor(Math.random()*hs.length)]);
   foeAv=foeDeck[foeDeck.length-1];$("avFoe").innerHTML=artFace(foeAv);$("avMe").innerHTML=meAv();
-  foeBack=Object.keys(BACKS)[Math.floor(Math.random()*10)];
+  foeBack=Object.keys(BACKS)[Math.floor(Math.random()*Object.keys(BACKS).length)];
   G=E.newGame(store.deck,foeDeck);gameDeck=store.deck.join();$("foeName").textContent="MÁY";
   missNote="";resetTimer(true);
   if(window.BGM&&!$("lobby").classList.contains("on"))BGM.syncGame(G);
@@ -568,7 +598,7 @@ $("infoAct").addEventListener("click",ev=>{
   else if(act==="move"){moveSel=uid;sel=null;}
   SFX.play("tap");render();
 });
-$("btnEnd").addEventListener("click",()=>{if(G.phase==="over"){if(G.mode)openModeHub(G.mode.k);else newGame();}else endTurnUI();});
+$("btnEnd").addEventListener("click",()=>{if(G.phase==="over"){if(G.mode)openModeHub(G.mode.k);else{newGame();runMatchIntro("LƯỢT 1/6","",true);}}else endTurnUI();});
 $("btnSnap").addEventListener("click",()=>{
   if(!playing()||G.snap.p||OL.sub)return;
   G.snap.p=true;G.pendingDouble++;sel=look=moveSel=null;
