@@ -1,6 +1,6 @@
 # Tư liệu hoạt ảnh 4×4 — Linh Thú Tam Địa
 
-**Tiến độ: 3/137 hoạt ảnh.**
+**Tiến độ: 12/137 hoạt ảnh.**
 
 Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→phải, trên→xuống), 1024×1024, mỗi khung 256×256.
 
@@ -16,15 +16,15 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `lat_the` | [bảng](img/v16/v_lat_the.webp) | ![](xem_dong/v_lat_the.webp) |
 | `tang_suc` | [bảng](img/v16/v_tang_suc.webp) | ![](xem_dong/v_tang_suc.webp) |
 | `giam_suc` | [bảng](img/v16/v_giam_suc.webp) | ![](xem_dong/v_giam_suc.webp) |
-| `tieu_diet` | _đang vẽ_ | |
-| `loai_bo` | _đang vẽ_ | |
-| `di_chuyen` | _đang vẽ_ | |
-| `rut_bai` | _đang vẽ_ | |
-| `tao_the` | _đang vẽ_ | |
-| `bien_hinh` | _đang vẽ_ | |
-| `khoa_dia` | _đang vẽ_ | |
-| `nang_luong` | _đang vẽ_ | |
-| `nhan_doi` | _đang vẽ_ | |
+| `tieu_diet` | [bảng](img/v16/v_tieu_diet.webp) | ![](xem_dong/v_tieu_diet.webp) |
+| `loai_bo` | [bảng](img/v16/v_loai_bo.webp) | ![](xem_dong/v_loai_bo.webp) |
+| `di_chuyen` | [bảng](img/v16/v_di_chuyen.webp) | ![](xem_dong/v_di_chuyen.webp) |
+| `rut_bai` | [bảng](img/v16/v_rut_bai.webp) | ![](xem_dong/v_rut_bai.webp) |
+| `tao_the` | [bảng](img/v16/v_tao_the.webp) | ![](xem_dong/v_tao_the.webp) |
+| `bien_hinh` | [bảng](img/v16/v_bien_hinh.webp) | ![](xem_dong/v_bien_hinh.webp) |
+| `khoa_dia` | [bảng](img/v16/v_khoa_dia.webp) | ![](xem_dong/v_khoa_dia.webp) |
+| `nang_luong` | [bảng](img/v16/v_nang_luong.webp) | ![](xem_dong/v_nang_luong.webp) |
+| `nhan_doi` | [bảng](img/v16/v_nhan_doi.webp) | ![](xem_dong/v_nhan_doi.webp) |
 | `sao_chep` | _đang vẽ_ | |
 | `hoi_sinh` | _đang vẽ_ | |
 | `thang` | _đang vẽ_ | |
@@ -180,6 +180,6 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
 | [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (80 chiêu riêng vẽ bằng ChatGPT, 41 hiệu ứng chung vẽ bằng Google Flow) | 121 |
-| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 3 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 12 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).
