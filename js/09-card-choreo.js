@@ -1175,10 +1175,10 @@
     const dstEl = cfg.dstEl || null;
     const isFirstInGrp = !cfg.grp || cfg.grp.i === 0;
     const isMulti = !!(cfg.grp && cfg.grp.n > 1);
-    const L0 = cfg.liftMs != null ? cfg.liftMs : 185;
-    const flyMs = cfg.flyMs != null ? cfg.flyMs : 560;
+    const L0 = cfg.liftMs != null ? cfg.liftMs : 95;
+    const flyMs = cfg.flyMs != null ? cfg.flyMs : 280;
     const isKill = cfg.stepKind === "kill";
-    if (typeof holdFx === "function") holdFx(L0 + flyMs + 520);
+    if (typeof holdFx === "function") holdFx(L0 + flyMs + 150);
 
     if (!sp || !tp) {
       if (cfg.onImpact) fxT(cfg.onImpact, 60);
@@ -1760,14 +1760,24 @@
       const R1 = typeof rects === "function" ? rects() : new Map();
       const W = (u) => (typeof where7 === "function" ? where7(u, R0, R1) : null);
 
-      /* (A) Vứt bỏ bài trên tay bằng đúng vũ khí tranh vẽ riêng */
+      /* (A) Vứt bỏ bài trên tay mình hoặc tay đối phương bằng đúng vũ khí tranh vẽ riêng */
       const discards = evs.filter((e) => e.k === "discard" && e.src > 0);
-      discards.slice(0, 3).forEach((e, idx) => {
+      const hMap = evs._hand0 || (typeof HAND0 !== "undefined" ? HAND0 : null);
+      discards.slice(0, 4).forEach((e, idx) => {
         const sc = anyC(e.src);
         const sid = sc ? (E.ab(sc) || sc.id) : null;
         const sp = W(e.src);
-        const rHand = e.side === "p" && typeof HAND0 !== "undefined" ? HAND0.get(e.uid) : null;
-        const tp = rHand ? { x: rHand.x, y: rHand.y, w: rHand.w, h: rHand.h, html: liteId(e.id) } : (typeof zpt === "function" ? zpt("avFoe") : null);
+        let tp = null;
+        if (e.side === "p") {
+          const rHand = hMap ? hMap.get(e.uid) : null;
+          const hz = typeof zpt === "function" ? zpt("hand") : null;
+          tp = rHand
+            ? { x: rHand.x, y: rHand.y, w: rHand.w, h: rHand.h, html: liteId(e.id) }
+            : (hz ? { x: hz.x + (idx - 0.5) * 20, y: hz.y, w: 52, h: 72, html: liteId(e.id) } : null);
+        } else {
+          const oz = typeof zpt === "function" ? (zpt("oppSub") || zpt("avFoe")) : null;
+          tp = oz ? { x: oz.x + (idx - 0.5) * 18, y: oz.y + 28, w: 50, h: 70, html: liteId(e.id) } : null;
+        }
         if (!sid || !sp || !tp) return;
         const st = resolveStyle(sid, "kill");
         fxT(() => {
@@ -1780,10 +1790,10 @@
             tp,
             r0: tp.html ? tp : null,
             srcEl: mcEl9(e.src),
-            liftMs: 50,
-            flyMs: 245
+            liftMs: 35,
+            flyMs: 185
           });
-        }, idx * 125);
+        }, idx * 95);
       });
 
       /* (B) Chú Cuội (linhtuonglai) phóng rễ đa cổ thụ câu trộm bộ bài đối thủ */
@@ -1886,8 +1896,8 @@
         if (!tp || !dom) return;
         const c = anyC(e.uid);
         const col = c && C[c.id] ? (HC[C[c.id].h] || "#86ff8a") : "#86ff8a";
-        const stDelay = idx * 210;
-        if (typeof holdFx === "function") holdFx(stDelay + 1080);
+        const stDelay = idx * 105;
+        if (typeof holdFx === "function") holdFx(stDelay + 360);
         dom.style.opacity = "0";
         fxT(() => {
           SFX.play("summon");
@@ -1898,25 +1908,25 @@
           document.body.appendChild(gate);
           gate.animate([
             { transform: "translate(-50%,-50%) scale(0.25) rotate(-90deg)", opacity: 0 },
-            { transform: "translate(-50%,-50%) scale(1.16) rotate(25deg)", opacity: 1, offset: 0.32 },
-            { transform: "translate(-50%,-50%) scale(1.06) rotate(120deg)", opacity: 0.88, offset: 0.72 },
-            { transform: "translate(-50%,-50%) scale(1.36) rotate(210deg)", opacity: 0 }
-          ], { duration: 960, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => gate.remove();
-          fxT(() => gate.remove(), 1060);
+            { transform: "translate(-50%,-50%) scale(1.14) rotate(25deg)", opacity: 1, offset: 0.30 },
+            { transform: "translate(-50%,-50%) scale(1.04) rotate(120deg)", opacity: 0.85, offset: 0.72 },
+            { transform: "translate(-50%,-50%) scale(1.32) rotate(210deg)", opacity: 0 }
+          ], { duration: 540, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => gate.remove();
+          fxT(() => gate.remove(), 620);
 
           fxT(() => {
             if (!dom.isConnected) return;
             dom.style.opacity = "";
             dom.animate([
-              { opacity: 0, transform: "perspective(650px) translate3d(0, 32px, -40px) rotateX(40deg) scale(0.28)" },
-              { opacity: 1, transform: "perspective(650px) translate3d(0, -14px, 36px) rotateX(-8deg) scale(1.24)", offset: 0.58 },
+              { opacity: 0, transform: "perspective(650px) translate3d(0, 24px, -30px) rotateX(32deg) scale(0.42)" },
+              { opacity: 1, transform: "perspective(650px) translate3d(0, -8px, 24px) rotateX(-6deg) scale(1.15)", offset: 0.56 },
               { opacity: 1, transform: "perspective(650px) translate3d(0, 0, 0) scale(1)" }
-            ], { duration: 680, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
-            spawnPaintedBurst("song_xung", tp.x, tp.y, 136, col, 400);
+            ], { duration: 360, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+            spawnPaintedBurst("song_xung", tp.x, tp.y, 136, col, 320);
             if (idx === 0 && c && C[c.id] && window.pushOppNotif) {
               window.pushOppNotif(`${C[c.id].n} ▸ Triệu hồi`, col);
             }
-          }, 280);
+          }, 95);
         }, stDelay);
       });
 
@@ -2384,6 +2394,40 @@
         ], { duration: 480, fill: "forwards" });
         if (window.pushOppNotif) pushOppNotif(`${d.n.toUpperCase()} ▸ HOẠT CẢNH ĐẨY TRANH VẼ RIÊNG (${pushK.toUpperCase()})!`, "#ffd65a");
         setTimeout(() => { gSrc.remove(); gDst.remove(); }, 920);
+        return;
+      }
+
+      if (/vứt bỏ/.test(txt)) {
+        const foeDisc = /đối thủ|địch/.test(txt) && !/tay bạn/.test(txt);
+        const hz = foeDisc
+          ? (typeof zpt === "function" ? (zpt("oppSub") || zpt("avFoe")) : null)
+          : (typeof zpt === "function" ? zpt("hand") : null);
+        const tpD = hz
+          ? { x: hz.x, y: foeDisc ? hz.y + 28 : hz.y - 8, w: 54, h: 76, html: demoCardHTML(foeDisc ? "satvuong" : "cuongnhan", 0) }
+          : Object.assign({}, tpOpp, { html: demoCardHTML("satvuong", 0) });
+        const gDisc = ghost(tpD, tpD.html, "g9");
+        const stD = resolveStyle(cardId, "kill");
+        if (window.pushOppNotif) pushOppNotif(`${d.n.toUpperCase()} ▸ CHÉM VỨT BỎ BÀI ${foeDisc ? "ĐỐI PHƯƠNG" : "TRÊN TAY"}!`, "#ff9a4d");
+        executeChoreoStrike({
+          style: stD,
+          stepKind: "kill",
+          srcUid: -1,
+          srcId: cardId,
+          sp,
+          tp: tpD,
+          r0: tpD,
+          srcEl: gSrc,
+          dstEl: gDisc,
+          liftMs: 35,
+          flyMs: 195,
+          onImpact: () => {
+            gDisc.remove();
+            SFX.play("destroy");
+            if (typeof CFX !== "undefined" && CFX.burn) CFX.burn(tpD);
+            FX.float(tpD.x, tpD.y - 18, "VỨT BỎ!", "#ff9a4d");
+          }
+        });
+        setTimeout(() => { gSrc.remove(); if (gDisc.isConnected) gDisc.remove(); }, 860);
         return;
       }
 

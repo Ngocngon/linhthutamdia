@@ -756,8 +756,12 @@ body:has(#lobby:not(.on)) #toastX.on {
   }
 }
 #board .mc.land,
-#board .mc.gpu-slam {
-  animation: gpuCardSlam 0.18s cubic-bezier(0.18, 0.95, 0.32, 1) both !important;
+#board .mc.gpu-slam,
+#board .mc.qf.q6.land,
+#board .mc.qf.q6.gpu-slam {
+  animation: gpuCardSlam 0.14s cubic-bezier(0.18, 0.95, 0.32, 1) both !important;
+  animation-duration: 0.14s !important;
+  animation-play-state: running !important;
   z-index: 12 !important;
 }
 #board .mc.gpu-fly-wait {
@@ -767,20 +771,23 @@ body:has(#lobby:not(.on)) #toastX.on {
 
 @keyframes gpuCardFlip {
   0% {
-    transform: perspective(680px) translate3d(0, 0, 0) rotateY(180deg) scale(0.96);
+    transform: perspective(680px) translate3d(0, 0, 0) rotateY(-84deg) scale(0.92);
+    opacity: 0.45;
   }
-  42% {
-    transform: perspective(680px) translate3d(0, -8px, 28px) rotateY(82deg) scale(1.18);
-  }
-  76% {
-    transform: perspective(680px) translate3d(0, -2px, 8px) rotateY(-6deg) scale(1.06);
+  52% {
+    transform: perspective(680px) translate3d(0, -5px, 18px) rotateY(7deg) scale(1.10);
+    opacity: 1;
   }
   100% {
     transform: perspective(680px) translate3d(0, 0, 0) rotateY(0deg) scale(1);
+    opacity: 1;
   }
 }
-#board .mc.flip {
-  animation: gpuCardFlip 0.42s cubic-bezier(0.2, 0.95, 0.32, 1) both !important;
+#board .mc.flip,
+#board .mc.qf.q6.flip {
+  animation: gpuCardFlip 0.24s cubic-bezier(0.2, 0.95, 0.32, 1) both !important;
+  animation-duration: 0.24s !important;
+  animation-play-state: running !important;
   z-index: 11 !important;
 }
 
@@ -818,8 +825,19 @@ body:has(#lobby:not(.on)) #toastX.on {
 }
 
 /* ===== BẢNG TEST HIỆU ỨNG & ÂM THANH LUÔN HIỂN THỊ KHI BẬT (PERSISTENT VFX LAB) ===== */
+#app > .sub {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
+}
 .sub .tools {
   gap: 4px !important;
+  align-items: center !important;
+}
+.sub .tools.r {
+  margin-left: auto !important;
+  justify-content: flex-end !important;
 }
 .sub .tb {
   padding: 0 7px !important;

@@ -105,8 +105,8 @@ if(!store.spdV2){store.spdV2=1;store.spd="vua";if(store.bgm===undefined)store.bg
 if(!store.bgmV4){store.bgmV4=1;store.battleBgm=false;save();}
 const SPDV={cham:1.3,vua:1.0,nhanh:0.78};let SPD=SPDV[store.spd]||1.0;const fxT=(f,ms,...a)=>setTimeout(f,(+ms||0)*SPD,...a);
 let FXHOLD=0,FX_UNTIL=0;
-function holdFx(ms){const d=(+ms||0);if(d>0)FX_UNTIL=Math.max(FX_UNTIL,performance.now()+d*SPD+28);}
-const sleep=async ms=>{const h=FXHOLD;FXHOLD=0;const w0=Math.max(36,(ms+h)*SPD+32);await new Promise(r=>setTimeout(r,w0));while(true){const h2=FXHOLD;FXHOLD=0;const rem=Math.max(h2*SPD,FX_UNTIL-performance.now());if(rem<=16)break;await new Promise(r=>setTimeout(r,Math.min(2000,rem)));}};
+function holdFx(ms){const d=Math.min(720,+ms||0);if(d>0)FX_UNTIL=Math.max(FX_UNTIL,performance.now()+d*SPD);}
+const sleep=async ms=>{const h=Math.min(620,FXHOLD);FXHOLD=0;const tEnd=Math.max(performance.now()+Math.max(24,Math.max(+ms||0,h)*SPD),FX_UNTIL);const w0=tEnd-performance.now();if(w0>4)await new Promise(r=>setTimeout(r,w0));while(true){const h2=Math.min(520,FXHOLD);FXHOLD=0;if(h2>0)FX_UNTIL=Math.max(FX_UNTIL,performance.now()+h2*SPD);const rem=FX_UNTIL-performance.now();if(rem<=12)break;await new Promise(r=>setTimeout(r,Math.min(650,rem)));}};
 let reduced=store.fx==="off";document.body.classList.toggle("rm",reduced);
 const playing=()=>G.phase==="play";
 
