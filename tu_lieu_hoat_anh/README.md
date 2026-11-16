@@ -170,3 +170,16 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `baithu` | _đang vẽ_ | |
 | `daudanthieunu` | _đang vẽ_ | |
 | `phonghiem` | _đang vẽ_ | |
+
+## Toàn bộ ảnh game (đúng đường dẫn trong app)
+
+| Thư mục | Nội dung | Số ảnh |
+|---|---|---|
+| [`img/c/`](img/c) | Ảnh thẻ bài, tên tệp = mã thẻ | 585 |
+| [`img/l/`](img/l) | Ảnh chiến địa | 120 |
+| [`img/a/`](img/a) | Nền đấu trường | 10 |
+| [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
+| [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (80 chiêu riêng vẽ bằng ChatGPT, 41 hiệu ứng chung vẽ bằng Google Flow) | 121 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 3 |
+
+Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).
