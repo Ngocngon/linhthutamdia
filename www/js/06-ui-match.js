@@ -15,7 +15,7 @@ function patchBoard(html){const b=$("board"),t=document.createElement("template"
   BC=keys;}
 /* patchBoard: thẻ đang lật bị dựng lại thì giữ tiếp hoạt ảnh lật, không chạy lại từ đầu */
 const _pb12=patchBoard;
-patchBoard=function(html){const fl=new Map();try{for(const m of document.querySelectorAll("#board .mc.flip")){const a=m.getAnimations?m.getAnimations().find(x=>x.animationName==="flip"&&x.playState==="running"):null;if(a)fl.set(m.dataset.mc,{el:m,t:a.currentTime||0});}}catch(e){}
+patchBoard=function(html){const fl=new Map();try{for(const m of document.querySelectorAll("#board .mc.flip")){const a=m.getAnimations?m.getAnimations().find(x=>/^(flip|flip3|gpuCardFlip)$/.test(x.animationName)&&x.playState==="running"):null;if(a)fl.set(m.dataset.mc,{el:m,t:a.currentTime||0});}}catch(e){}
   _pb12(html);if(!fl.size)return;for(const [u,o] of fl){const n=document.querySelector(`#board [data-mc="${u}"]`);if(n&&n!==o.el&&!n.classList.contains("flip")){n.style.animationDelay=(-o.t)+"ms";n.classList.add("flip");n.addEventListener("animationend",()=>{n.style.animationDelay="";},{once:true});}}};
 function render0(){
   const play=playing();
@@ -73,14 +73,14 @@ function render0(){
       if(!any)extra=E.cost(G,selInst)>G.energy.p?` <span class="warn">Không đủ năng lượng.</span>`:` <span class="warn">Chưa có chiến địa nào đặt được.</span>`;
       else if(selInst.id==="boxit")extra=` <span class="warn">Chạm chiến địa để đặt vào phe Máy.</span>`;}
     if(play&&selInst){acts+=`<button type="button" class="ib alt" data-do="zoomsel">🔍 Chi tiết thẻ</button>`;}
-    info=cardInfo(selInst,-1,"hand")+markList(selInst).map(([i,col,t])=>`<br><span style="color:${col}">${i}</span> <i>${t}</i>`).join("")+extra;
+    info=cardInfo(selInst,-1,"hand")+markList(selInst,"hand").map(([i,col,t])=>`<br><span style="color:${col}">${i}</span> <i>${t}</i>`).join("")+extra;
   }else if(look){
     if(look.kind==="loc"){const L=G.locs[look.li];info=L.rvl?`<b>${LOC[L.id].n}</b><br>${LOC[L.id].x}`:`<b>Chiến địa chưa lộ diện</b><br>Sẽ lộ diện ở lượt ${look.li+1}. Bạn vẫn đặt bài vào đây được.`;}
     else{
       const f=findAny(look.uid);
       if(f){
-        info=cardInfo(f.inst,f.li,f.where);
-        if(f.inst.ab&&f.inst.ab!==f.inst.id)info+=`<br><i>Đang mang kỹ năng của <b>${C[f.inst.ab].n}</b>: ${C[f.inst.ab].x}</i>`;
+        info=cardInfo(f.inst,f.li,f.where)+markList(f.inst,f.where).map(([i,col,t])=>`<br><span style="color:${col}">${i}</span> <i>${t}</i>`).join("");
+        if(f.inst.ab&&f.inst.ab!==f.inst.id&&!f.inst.sil)info+=`<br><i>Kỹ năng gốc đang mượn: ${C[f.inst.ab].x}</i>`;
         if(f.where==="board"&&f.inst.side==="p"&&f.inst.rev&&!f.inst.sil&&E.is(G,f.inst,"vitthamtu")){const dk=G.deck.p;if(EYEL!==look){EYEL=look;const u=f.inst.uid;setTimeout(()=>{try{eye7(srcPt(u),ctr($("meSub")),"XEM ĐỈNH BÀI");}catch(e){}},80);}info+=`<br><i>Thẻ trên cùng bộ bài: <b>${dk.length?C[dk[dk.length-1].id].n:"hết bài"}</b></i>`;}
         if(play&&f.where==="board"&&f.inst.side==="p"){
           if(E.queued(G,"p",f.inst.uid,"act"))acts+=`<button type="button" class="ib alt" data-do="unact">Huỷ kích hoạt</button>`;
@@ -95,7 +95,7 @@ function render0(){
   if(!(drag&&drag.on)){$("hand").dataset.n=G.hand.p.length;$("hand").style.setProperty("--n",Math.max(1,G.hand.p.length));const hh=G.hand.p.length?G.hand.p.map((c,ix,ar)=>{const kk=ix-(ar.length-1)/2;
     const d=C[c.id],cs=E.cost(G,c),pw=handPow(c);
     const no=play&&![0,1,2].some(li=>E.canPlay(G,"p",c,li));
-    return `<button type="button" class="hc${c.uid===sel?" sel":""}${no?" no":""}${c.sil?" sil":""}${qCls(c.id)}" style="--i:${ix};--k:${kk};--a:${Math.abs(kk)};--hc:${HC[d.h]}${qSt(c.id)}" data-hc="${c.uid}" aria-label="${d.n}, năng lượng ${cs}, sức mạnh ${pw}">${art(c.id)}<span class="cst ${cs<d.c?"up":cs>d.c?"down":""}">${cs}</span><span class="pwh ${pw>d.p?"up":pw<d.p?"down":""}">${pw}</span><span class="n">${logo(d.id)}</span>${spk(d.id)}${markBadges(c)}<i class="fl"></i>${c.ug?`<span class="ugb">⬆${c.ug}</span>`:""}</button>`;
+    return `<button type="button" class="hc${c.uid===sel?" sel":""}${no?" no":""}${c.sil?" sil":""}${qCls(c.id)}" style="--i:${ix};--k:${kk};--a:${Math.abs(kk)};--hc:${HC[d.h]}${qSt(c.id)}" data-hc="${c.uid}" aria-label="${d.n}, năng lượng ${cs}, sức mạnh ${pw}">${art(c.id)}<span class="cst ${cs<d.c?"up":cs>d.c?"down":""}">${cs}</span><span class="pwh ${pw>d.p?"up":pw<d.p?"down":""}">${pw}</span><span class="n">${logo(d.id)}</span>${spk(d.id)}${markBadges(c,"hand")}<i class="fl"></i>${c.ug?`<span class="ugb">⬆${c.ug}</span>`:""}</button>`;
   }).join(""):`<div class="empty">Hết bài trên tay</div>`;const he=$("hand");if(he._h!==hh||he.children.length===0){he._h=hh;he.innerHTML=hh;}}
   $("orb").textContent=String(G.energy.p);$("btnEnd").classList.toggle("nudge",!!(play&&G.phase==="play"&&!G.hand.p.some(c=>[0,1,2].some(li=>E.canPlay(G,"p",c,li)))));
   const end=$("btnEnd");
@@ -119,12 +119,14 @@ async function endTurnUI(auto){
   if(!auto){G.cnt.missed=0;missNote="";}
   if(E.aiWantsRetreat(G,"a")){E.finish(G,"retreatA");showEnd();return;}
   if(!ddPlan)aiMove("a");ddPlan=false;
+  const myStaged=G.q.p.filter(a=>a.t==="play").map(a=>a.uid);
   const foeHad=new Set();for(let i=0;i<3;i++)for(const c of G.locs[i].cards.a)foeHad.add(c.uid);
   const steps=E.beginReveal(G);
   G.msg="Hai bên đã đặt bài. Đang lật…";render();
+  if(typeof window.gpuFlipDownMine==="function")window.gpuFlipDownMine(myStaged);
   if(typeof window.gpuDropFoeStaged==="function")window.gpuDropFoeStaged(foeHad);
   SFX.play("place");
-  await sleep(reduced?80:230);
+  await sleep(reduced?35:105);
    for(const st of steps){
      const R0=rects0(),P0=powers();
      const did=E.doStep(G,st);
@@ -132,18 +134,21 @@ async function endTurnUI(auto){
      const evs=G.evs.slice();await artReady12(evs);
      if(G.msgs.length)G.msg=fmt(G.msgs);
      render();playFx(evs,R0,P0);
-     await sleep(reduced?140:(G.msgs.length>1?560:420)+(evs.some(e=>e.k==="flip")?580:0));
+     const hasUlt=!reduced&&(typeof ultOf==="function"&&ultOf(evs)||typeof ultS4Of==="function"&&ultS4Of(evs));
+     const hasFlip=evs.some(e=>e.k==="flip"),hasMore=evs.some(e=>e.k!=="flip");
+     const stepWait=reduced?60:hasUlt?760:hasFlip?(hasMore?310:185):215;
+     await sleep(stepWait);
    }
    {const R0=rects0(),P0=powers();E.endTurn(G);const evs=G.evs.slice();
-    if(G.msgs.length||evs.length){G.msg=`<b>Cuối lượt.</b> `+G.msgs.slice(0,8).join(" · ");render();playFx(evs,R0,P0);await sleep(reduced?160:640);}}
+    if(G.msgs.length||evs.length){G.msg=`<b>Cuối lượt.</b> `+G.msgs.slice(0,8).join(" · ");render();playFx(evs,R0,P0);await sleep(reduced?80:280);}}
    if(G.turn>=E.turns(G)){await endReveal(G);E.finish(G,"end");showEnd();return;}
    {const R0=rects0(),P0=powers();E.startTurn(G);const evs=G.evs.slice();
     G.msg=missNote+turnMsg(G.msgs.slice(0,4));missNote="";resetTimer(true);
     if(window.BGM)BGM.syncGame(G);
     if(E.aiWantsSnap(G,"a")){G.snap.a=true;G.pendingDouble++;if(window.BGM)BGM.syncGame(G);G.msg=`<b>Máy đã cược!</b> Mức cược tăng lên ${Math.min(8,G.stake*Math.pow(2,G.pendingDouble))} ngọc. Rút lui ngay thì chỉ mất ${G.stake} ${icn("gems")}.<br>`+G.msg;const q=ctr($("btnSnap"));FX.ring(q.x,q.y,"#ff4d7d",90,6);SFX.play("snap");snapFx("#ff4d7d","×2");}
-    if(G.turn===5&&E.boardCards(G,"p").some(([c])=>!c.sil&&E.is(G,c,"vouy"))){aiMove("a");ddPlan=true;const ps=G.q.a.filter(a=>a.t==="play").map(a=>`${C[a.inst.id].n} vào ${G.locs[a.li].rvl?LOC[G.locs[a.li].id].n:"chiến địa "+(a.li+1)}`);setTimeout(()=>{try{const v=E.boardCards(G,"p").find(([c])=>!c.sil&&E.is(G,c,"vouy"));if(v)eye7(srcPt(v[0].uid),ctr($("avFoe")),"THẤY TRƯỚC");}catch(e){}},650);G.msg+=`<br><b>Vô Uý thấy trước:</b> máy sẽ đặt ${ps.length?ps.join(", "):"không thẻ nào"}.`;}
+    if(G.turn===5&&E.boardCards(G,"p").some(([c])=>!c.sil&&E.is(G,c,"vouy"))){aiMove("a");ddPlan=true;const ps=G.q.a.filter(a=>a.t==="play").map(a=>`${C[a.inst.id].n} vào ${G.locs[a.li].rvl?LOC[G.locs[a.li].id].n:"chiến địa "+(a.li+1)}`);setTimeout(()=>{try{const v=E.boardCards(G,"p").find(([c])=>!c.sil&&E.is(G,c,"vouy"));if(v)eye7(srcPt(v[0].uid),ctr($("avFoe")),"THẤY TRƯỚC");}catch(e){}},420);G.msg+=`<br><b>Vô Uý thấy trước:</b> máy sẽ đặt ${ps.length?ps.join(", "):"không thẻ nào"}.`;}
     render();playFx(evs,R0,P0);
-    if(G.newLoc>=0)await sleep(reduced?140:1150);
+    if(G.newLoc>=0)await sleep(reduced?90:520);
     const isFinalTurn=G.turn===E.turns(G);
     banner(isFinalTurn?"LƯỢT CUỐI!":`LƯỢT ${G.turn}/${E.turns(G)}`,"");
    pulse("#orb",[{transform:"scale(1.42)",filter:"brightness(2.2)"},{transform:"scale(1)",filter:"brightness(1)"}],420);
@@ -264,14 +269,89 @@ function brk(inst,li,where){const d=C[inst.id],sg=n=>(n>0?"+":"−")+Math.abs(n)
   if(inst.ab&&inst.ab!==inst.id&&C[inst.ab])notes.push(`⟳ Đang mang kỹ năng của <b>${esc(C[inst.ab].n)}</b>.`);
   if(!P&&!Cc&&!notes.length)return "";
   return `<div class="brk"><div class="bkc"><h5>Năng lượng <b>${cc}</b></h5><ul><li>Gốc <b>${d.c}</b></li>${Cc}</ul></div><div class="bkp"><h5>Sức mạnh <b>${cur}</b></h5><ul><li>Gốc <b>${d.p}</b></li>${P}</ul></div>${notes.length?`<p>${notes.join("<br>")}</p>`:""}</div>`;}
+const NICO_SPELLS=[
+  ["😈","#ff5a7a","Phép lượt này: Biến thẻ tiếp theo bạn đặt thành Tiểu Quỷ (6 sức mạnh)."],
+  ["💀","#ff8a3c","Phép lượt này: Tiêu huỷ thẻ tiếp theo bạn đặt để rút 2 thẻ."],
+  ["➜","#5ce6ff","Phép lượt này: Dời thẻ tiếp theo bạn đặt sang phải 1 chiến địa."],
+  ["+2","#7dff96","Phép lượt này: Cộng +2 sức mạnh cho thẻ tiếp theo bạn đặt."],
+  ["🌀","#c48cff","Phép lượt này: Thay đổi chiến địa nơi bạn đặt thẻ tiếp theo."],
+  ["❐","#7fe8ff","Phép lượt này: Thêm bản sao của thẻ tiếp theo bạn đặt vào tay."],
+  ["×2","#ffd65a","Phép lượt này: Nhân đôi sức mạnh của Tiểu Phù Sư."]
+];
+const HERBIE_MODES=[
+  ["×2","#ff7ae6","Kích Hoạt lượt này: Nhân đôi sức mạnh thẻ này."],
+  ["⚡2","#5ce6ff","Kích Hoạt lượt này: Lượt sau +2 năng lượng."],
+  ["+1✦","#7dff96","Kích Hoạt lượt này: +1 sức mạnh cho 2 thẻ ở mỗi chiến địa khác."],
+  ["🪨4","#ffd65a","Kích Hoạt lượt này: Triệu hồi Hòn Đá 4 sức mạnh tại đây."]
+];
+function questProg(c){
+  if(!G||!c||c.sil)return null;
+  const s=c.side||c.own||"p",abId=E.ab(c),done=!!c.done;
+  if(abId==="kysituduc"){const v=Math.min(4,c.prog||0);return [v,4,done,`${v}/4`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/4 thẻ bị tiêu huỷ"}.`];}
+  if(abId==="kysidichkhuyen"){const v=Math.min(3,E.boardCards(G,s).filter(([k])=>C[k.id].c>=4).length);return [v,3,done,`${v}/3`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/3 thẻ 4⚡+ trên bàn"}.`];}
+  if(abId==="kysibaitu"){const v=Math.min(6,Math.max(0,(G.cnt&&G.cnt.crCost?G.cnt.crCost[s]:0)-(c.base||0)));return [v,6,done,`${v}/6`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/6 năng lượng thẻ tạo ra"}.`];}
+  if(abId==="kysichienxa"){const v=Math.min(6,new Set(E.boardCards(G,s).filter(([k])=>k!==c).map(([k,kl])=>E.power(G,k,kl))).size);return [v,6,done,`${v}/6`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/6 mức sức mạnh khác nhau"}.`];}
+  if(abId==="kysitudich"){let n=0;for(const sd of E.SIDES)for(const [k] of E.boardCards(G,sd))if(k.bonus<0)n-=k.bonus;const v=Math.min(5,n);return [v,5,done,`${v}/5`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/5 điểm sức mạnh bị trừ"}.`];}
+  if(abId==="kysinguyetyeu"){const v=Math.min(3,E.boardCards(G,s).filter(([k])=>C[E.ab(k)].t==="none").length);return [v,3,done,`${v}/3`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/3 thẻ không kỹ năng"}.`];}
+  if(abId==="kysidoibao"){const v=Math.min(2,G.usStreak?(G.usStreak[s]||0):0);return [v,2,done,`${v}/2`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/2 lượt dư năng lượng liên tiếp"}.`];}
+  if(abId==="kysivuottu"){let p=E.basePow(c)+c.bonus;try{const f=E.find(G,c.uid);if(f&&c.rev)p=E.power(G,c,f.li);}catch(e){}const v=Math.min(6,Math.max(0,p));return [v,6,done,`${v}/6`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/6 sức mạnh hiện có"}.`];}
+  if(abId==="khoinguyenvuong"){const v=[0,1,2].filter(x=>G.locs[x].cards[s].filter(k=>k.rev).length>=2).length;return [v,3,done,`${v}/3`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/3 chiến địa đủ ≥2 thẻ"}.`];}
+  if(abId==="huyettruonglao"){const v=Math.min(3,E.boardCards(G,s).filter(([k])=>k.stl).length);return [v,3,done,`${v}/3`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/3 thẻ đã hút sức mạnh"}.`];}
+  if(abId==="loantuong"){const v=Math.min(3,c.q||0);return [v,3,done,`${v}/3`,`Tiến độ Nhiệm Vụ: ${done?"Đã hoàn thành":v+"/3 thẻ Lật đã đặt"}.`];}
+  if(abId==="trungphatcogiap"&&c.mkn){return [done?1:0,1,done,`⌖${c.mkn}`,done?`Nhiệm Vụ tại chiến địa ${c.mkn}: Đã hoàn thành (+1 năng lượng tối đa).`:`Đang đánh dấu chiến địa ${c.mkn}: thắng ở đó cuối lượt để +1 năng lượng tối đa.`];}
+  return null;
+}
 const MARKS=[["surge","⚡","#7fe0ff",c=>`Được ${C.diennu?C.diennu.n:"Lôi Quang Tiên"} truyền điện: khi đặt thẻ này, thẻ trên cùng bộ bài cũng nhận −1 năng lượng, +1 sức mạnh.`],
   ["sil","⊘","#b8c0dc",c=>`Bị ${srcN(c.silBy)} vô hiệu hoá: mất kỹ năng, giữ nguyên sức mạnh hiện có.`],
   ["cr","✦","#ffd65a",c=>`Thẻ được tạo ra bởi ${srcN(c.by)} (không có sẵn trong bộ bài ban đầu).`],
   ["ab","⟳","#c45cff",c=>c.ab&&c.ab!==c.id&&C[c.ab]?`Đang mang kỹ năng của ${C[c.ab].n}.`:""],
   ["zg","♾","#ff7ac0",()=>"Sẽ biến thành bản sao của "+C.bayxacnuotsao.n+" khi thẻ đó lật."],
   ["evil","☠","#ff4d5e",()=>"Thẻ ÁC của Lục Ác: đặt đủ 6 thẻ ÁC để hợp thể."]];
-function markList(c){const r=[];for(const [k,i,col,fn] of MARKS)if(c[k]){const t=fn(c);if(t)r.push([i,col,t]);}return r;}
-function markBadges(c){const m=markList(c);return m.length?`<span class="hmk">${m.map(([i,col])=>`<i style="--mc:${col}">${i}</i>`).join("")}</span>`:"";}
+function markList(c,where){
+  const r=[];
+  if(!c)return r;
+  if(G&&!c.sil){
+    const s=c.side||c.own||"p";
+    if(E.is(G,c,"chutruongnu")){
+      const onBoardWait=where==="board"&&c.rev&&(G.nico&&G.nico[s]===c.uid);
+      const inHandOrStaged=where!=="board"||!c.rev;
+      if(inHandOrStaged||onBoardWait){
+        const sp=NICO_SPELLS[(G.turn||1)%7];
+        if(sp)r.push([sp[0],sp[1],onBoardWait?`Đang chờ thẻ tiếp theo bạn đặt · ${sp[2]}`:sp[2]]);
+      }
+    }
+    if(where==="board"&&c.rev&&!c.act&&E.is(G,c,"trolymay")){
+      const md=HERBIE_MODES[(((G.turn-c.turn)%4)+4)%4];
+      if(md)r.push([md[0],md[1],md[2]]);
+    }
+    if(E.is(G,c,"bavuongmienvien")&&!c.rev){
+      const n=G.shots&&G.shots[s]?G.shots[s].length:0;
+      r.push(["🎯"+n,n>0?"#ffd65a":"#9fb4d8",n>0?`Đã nạp ${n} Phát Bắn sẵn sàng khai hoả khi lật.`:"Chưa nạp Phát Bắn nào (đặt thẻ vừa rút trong lượt để nạp)."]);
+    }
+    if(E.is(G,c,"hauduethoikhong")&&!c.act){
+      const lv=c.lv||1;
+      r.push(["★"+lv,"#7fe8ff",`Cấp triệu hồi hiện tại: tạo thẻ ${lv} năng lượng.`]);
+    }
+    if(where==="hand"&&c.dr===G.turn&&(/Rút Nhanh/i.test(C[E.ab(c)].x||"")||(G.tff&&G.tff[s]))){
+      r.push(["⚡","#ffe066","Rút Nhanh đang kích hoạt trong lượt này!"]);
+    }
+    const qp=questProg(c);
+    if(qp&&(where==="board"||qp[0]>0||E.ab(c)==="trungphatcogiap")){
+      r.push([qp[2]?"✓":qp[3],qp[2]?"#7dff96":"#ffd65a",qp[4]]);
+    }
+  }
+  for(const [k,i,col,fn] of MARKS)if(c[k]){
+    if(where==="board"&&(k==="cr"||k==="sil"))continue;
+    const t=fn(c);if(t)r.push([i,col,t]);
+  }
+  return r;
+}
+function markBadges(c,where){
+  const m=markList(c,where);
+  if(!m.length)return "";
+  const lim=where&&where!=="hand"?m.slice(0,2):m.slice(0,3);
+  return `<span class="hmk${where&&where!=="hand"?" bmk":""}">${lim.map(([i,col])=>`<i class="${i.length>1?"w":""}" style="--mc:${col}">${i}</i>`).join("")}</span>`;
+}
 function handPow(c){const b=E.basePow(c)+c.bonus,v=[];for(let li=0;li<3;li++){if(G.locs[li].gone)continue;try{v.push(E.power(G,c,li));}catch(e){v.push(b);}}if(!v.length)return b;v.sort((x,y)=>x-y);return v[Math.floor(v.length/2)];}
 function meAv(){return store.avImg?`<img class="art pic" src="${store.avImg}" alt="" draggable="false">`:artFace(store.avatar);}
 /* ===== tài khoản: khách + liên kết ===== */
@@ -457,13 +537,17 @@ function paintZoom(){const z=$("zoom");let id=null;
   if(f&&f.inst.rev){pw=E.power(G,f.inst,f.li);const b0=E.basePow(f.inst),bn=f.inst.bonus,og=pw-b0-bn;br=`<div class="zb">Gốc <b>${b0}</b>${bn?` · cộng trừ <b class="${bn>0?"up":"down"}">${bn>0?"+":"−"}${Math.abs(bn)}</b>`:""}${og?` · Duy Trì và chiến địa <b class="${og>0?"up":"down"}">${og>0?"+":"−"}${Math.abs(og)}</b>`:""} = <b>${pw}</b></div>`;}
   const hc=G.hand.p.find(c=>c.uid===look.uid),qd=G.q.p.find(a=>a.t==="play"&&a.uid===look.uid);let cs=d.c;
   if(hc){cs=E.cost(G,hc);pw=handPow(hc);}else if(f){try{cs=E.cost(G,f.inst);}catch(e){}}
-  try{const bi=hc||(f&&f.inst);if(bi)br=brk(bi,f?f.li:-1,hc?"hand":"board")||br;}catch(e){}
+  const zWhere=hc?"hand":qd?"staged":"board",bi=hc||(qd&&qd.inst)||(f&&f.inst);
+  try{if(bi)br=brk(bi,f?f.li:-1,hc?"hand":"board")||br;}catch(e){}
+  const mkNotes=bi?markList(bi,zWhere).map(([i,col,t])=>`<div class="zmk"><b style="color:${col}">${i}</b> <span>${esc(t)}</span></div>`).join(""):"";
   const lv=f&&f.inst.own!=="p"?0:lvl(id),qn=QN[lv]||QN[0],kw=kwfx;
   let act=$("infoAct").innerHTML;
   if(hc&&playing()&&!OL.sub){const can=[0,1,2].some(li=>E.canPlay(G,"p",hc,li));act=can?`<button type="button" class="ib" data-zdo="pick">Chọn để đặt</button>`:`<span class="znot">Chưa đặt được: ${cs>G.energy.p?"thiếu năng lượng":"không còn chỗ phù hợp"}</span>`;}
   if(qd&&playing()&&!OL.sub)act=`<button type="button" class="ib alt" data-zdo="unplay">Rút lại thẻ này</button>`;
-  z.innerHTML=`${lv?`<div class="zq" style="--qc:${qn[1]}">${esc(qn[0])} · Cấp ${lv}</div>`:""}<span class="gc${qCls(id)}" style="--hc:${HC[d.h]}${qSt(id)};display:block">${art(id)}<span class="cst${cs<d.c?" up":cs>d.c?" down":""}">${cs}</span><span class="pwh ${pw>d.p?"up":pw<d.p?"down":""}">${pw}</span><span class="n">${logo(id)}</span></span>
-  <div class="zt">${kw(skillText(d))}${br}</div>${hc?`<div class="zhint">Kéo thẻ hoặc chạm chiến địa để đặt ngay.</div>`:""}<div class="zact">${act}</div><button type="button" class="zcl" aria-label="Đóng">✕</button>`;z.classList.add("on");}
+  let skTxt=skillText(d);
+  if(bi){const qp=questProg(bi);if(qp)skTxt=skTxt.replace(/\(\d+\/\d+\)/,qp[2]?"(Hoàn thành ✓)":`(${qp[0]}/${qp[1]})`);}
+  z.innerHTML=`${lv?`<div class="zq" style="--qc:${qn[1]}">${esc(qn[0])} · Cấp ${lv}</div>`:""}<span class="gc${qCls(id)}" style="--hc:${HC[d.h]}${qSt(id)};display:block">${art(id)}<span class="cst${cs<d.c?" up":cs>d.c?" down":""}">${cs}</span><span class="pwh ${pw>d.p?"up":pw<d.p?"down":""}">${pw}</span><span class="n">${logo(id)}</span>${bi?markBadges(bi,zWhere):""}</span>
+  <div class="zt">${kw(skTxt)}${mkNotes}${br}</div>${hc?`<div class="zhint">Kéo thẻ hoặc chạm chiến địa để đặt ngay.</div>`:""}<div class="zact">${act}</div><button type="button" class="zcl" aria-label="Đóng">✕</button>`;z.classList.add("on");}
 $("hand").addEventListener("click",ev=>{
   const hc=ev.target.closest("[data-hc]");if(!hc)return;
   const uid=+hc.dataset.hc;

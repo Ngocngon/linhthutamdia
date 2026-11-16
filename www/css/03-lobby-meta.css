@@ -681,11 +681,19 @@ body.rm .stfx{display:none}
 #ovDeck .spk{display:none}
 /* khi mở bảng phủ (có làm mờ nền), dừng hoạt ảnh của màn phía sau để trình duyệt khỏi làm mờ lại mỗi khung hình */
 body:has(.ov.on) #scene,body:has(.ov.on) #scene *,body:has(.ov.on) #scene::before,body:has(.ov.on) #scene::after,body:has(.ov.on) #scene *::before,body:has(.ov.on) #scene *::after,body:has(.ov.on) #amb,body:has(.ov.on) #amb *,body:has(.ov.on) #amb::before,body:has(.ov.on) #amb::after,body:has(.ov.on) #amb *::before,body:has(.ov.on) #amb *::after,body:has(.ov.on) #app,body:has(.ov.on) #app *,body:has(.ov.on) #app::before,body:has(.ov.on) #app::after,body:has(.ov.on) #app *::before,body:has(.ov.on) #app *::after,body:has(.ov.on) #lobby,body:has(.ov.on) #lobby *,body:has(.ov.on) #lobby::before,body:has(.ov.on) #lobby::after,body:has(.ov.on) #lobby *::before,body:has(.ov.on) #lobby *::after{animation-play-state:paused!important}
+#board .mc.flip,#board .mc.land,#board .mc.gpu-slam{animation-play-state:running!important}
 /* lấp lánh của thẻ cấp cao rất nặng khi có nhiều thẻ: chỉ giữ ở màn xem thẻ lớn */
 .spk{display:none}.bigc .spk,.rvz .spk{display:block}
-/* huy hiệu nhận diện thẻ ở tay */
-.hmk{position:absolute;left:3px;top:28%;z-index:6;display:flex;flex-direction:column;gap:2px;pointer-events:none}
-.hmk i{display:grid;place-items:center;width:15px;height:15px;border-radius:50%;background:#0b0a24;color:var(--mc);font:900 10px/1 system-ui,sans-serif;font-style:normal;box-shadow:0 0 0 1.5px var(--mc),0 0 6px var(--mc)}
+/* huy hiệu chỉ thị nhỏ trên thẻ ở tay, thẻ đặt chờ, thẻ trên bàn & bảng phóng to */
+.hmk{position:absolute;left:2px;top:24%;z-index:9;display:flex;flex-direction:column;align-items:flex-start;gap:2px;pointer-events:none}
+.hmk i{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 3px;border-radius:999px;background:rgba(9,8,34,.94);color:var(--mc);font:900 10px/1 system-ui,-apple-system,sans-serif;font-style:normal;letter-spacing:-.02em;white-space:nowrap;box-shadow:0 0 0 1.5px var(--mc),0 2px 5px rgba(0,0,0,.75),0 0 7px color-mix(in srgb,var(--mc) 65%,transparent)}
+.hmk i.w{font-size:9px;padding:0 4px}
+#board .mc>.hmk.bmk{left:1px;top:22%;gap:1.5px;z-index:9}
+#board .mc>.hmk.bmk i{min-width:14px;height:14px;padding:0 2.5px;font-size:clamp(8px,11cqw,11px);box-shadow:0 0 0 1.2px var(--mc),0 1px 4px rgba(0,0,0,.85),0 0 6px color-mix(in srgb,var(--mc) 65%,transparent)}
+#zoom .gc>.hmk{left:5px;top:24%;gap:4px}
+#zoom .gc>.hmk i{min-width:22px;height:22px;padding:0 5px;font-size:12.5px}
+.zmk{display:flex;align-items:flex-start;gap:6px;margin-top:5px;padding:4px 8px;border-radius:8px;background:rgba(14,18,52,.82);border:1px solid rgba(145,168,255,.28);font-size:12px;line-height:1.3;text-align:left}
+.zmk b{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:999px;background:#090824;box-shadow:0 0 0 1.3px currentColor;font-size:11px;font-style:normal}
 /* bản sao thẻ dùng cho hiệu ứng có hình */
 .fxg.fxchip{z-index:16;will-change:transform,opacity;box-shadow:0 0 14px rgba(255,255,255,.55);border-radius:9px}
 .fxg.fxecho,.fxg.fxdup{z-index:13;will-change:transform,opacity;opacity:.6}
@@ -721,13 +729,13 @@ body.rm #orb::after,body.rm #btnEnd::after{animation:none}
 .tb{white-space:nowrap}
 @media (max-width:380px){.tb{font-size:11px;padding:0 6px;letter-spacing:0}.final{font-size:11.5px;letter-spacing:0}}
 .cube .ch{white-space:nowrap}
-/* ===== đặt thẻ / lật thẻ: chậm và rõ hơn, chỉ dùng xoay-dời-mờ để card đồ hoạ tự xử lý ===== */
-.mc.land{animation:land3 .62s cubic-bezier(.25,1.25,.4,1)}
-@keyframes land3{0%{transform:translateY(-70px) scale(1.5) rotate(-7deg);opacity:0}45%{transform:translateY(4px) scale(1.04) rotate(1deg);opacity:1}70%{transform:translateY(-3px) scale(.97)}100%{transform:none;opacity:1}}
-.mc.flip{animation:flip3 .95s cubic-bezier(.3,.9,.3,1)}
-@keyframes flip3{0%{transform:perspective(600px) rotateY(180deg) scale(1)}30%{transform:perspective(600px) translateY(-16px) rotateY(110deg) scale(1.3)}60%{transform:perspective(600px) translateY(-10px) rotateY(0) scale(1.34)}78%{transform:scale(.95)}90%{transform:scale(1.04)}100%{transform:none}}
-.mc.flip::before{animation:mcsheen .6s .55s ease-out forwards}
-.mc.flip::after{animation:revring .8s .5s ease-out both}
+/* ===== đặt thẻ / lật thẻ: nhanh gọn, dứt khoát ===== */
+.mc.land{animation:land3 .22s cubic-bezier(.2,1,.32,1)}
+@keyframes land3{0%{transform:translateY(-28px) scale(1.18) rotate(-3deg);opacity:.2}65%{transform:translateY(2px) scale(.98);opacity:1}100%{transform:none;opacity:1}}
+.mc.flip{animation:flip3 .24s cubic-bezier(.2,.95,.32,1)}
+@keyframes flip3{0%{transform:perspective(600px) rotateY(-84deg) scale(.94);opacity:.45}52%{transform:perspective(600px) translateY(-5px) rotateY(8deg) scale(1.10);opacity:1}100%{transform:none;opacity:1}}
+.mc.flip::before{animation:mcsheen .34s .14s ease-out forwards}
+.mc.flip::after{animation:revring .42s .12s ease-out both}
 /* thẻ bị vô hiệu hoá trên tay */
 .hc.sil .art{filter:grayscale(1) brightness(.62)}
 /* bảng nguyên nhân tăng/giảm ngay dưới thẻ khi xem: cột trái = năng lượng, cột phải = sức mạnh, đúng vị trí hai con số trên thẻ */
@@ -787,7 +795,7 @@ body.rm .fx7lock,body.rm .fx7shd,body.rm .fx7eye{display:none!important}
 #lamb .lamb::before,#lamb .lamb::after{animation:none!important}
 #lamb .lamb i{animation-duration:calc(var(--t) * 2.4)!important}
 #board .spk{display:none!important}
-#board .qf.q6,#board .qf.q6:not(.qcc){animation-duration:30s!important}
+#board .qf.q6:not(.flip):not(.land):not(.gpu-slam),#board .qf.q6:not(.qcc):not(.flip):not(.land):not(.gpu-slam){animation-duration:30s!important}
 #board .qf.q6::before{animation:none!important;opacity:.4}
 #board .qf.q6>.art:not(.pic){animation:qbo2 9s ease-in-out infinite!important}
 #board .qf.q4>.cst,#board .qf.q5>.cst,#board .qf.q6>.cst{animation:none!important}

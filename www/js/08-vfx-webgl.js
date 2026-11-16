@@ -1923,8 +1923,8 @@
         { opacity: 1, transform: "perspective(650px) translate3d(0, -14px, 38px) rotateX(-10deg) scale(1.24)", offset: 0.56 },
         { opacity: 1, transform: "perspective(650px) translate3d(0, 2px, 0) scale(0.97)", offset: 0.84 },
         { opacity: 1, transform: "perspective(650px) translate3d(0, 0, 0) scale(1)" }
-      ], { duration: 780 });
-      if (typeof holdFx === "function") holdFx(920);
+      ], { duration: 420 });
+      if (typeof holdFx === "function") holdFx(380);
     };
 
     CFX.morph = function (el) {
@@ -2073,7 +2073,7 @@
     const sw = origin ? Math.max(44, origin.w) : tw * 1.18;
     const sh = origin ? Math.max(62, origin.h) : th * 1.18;
     const dx = tx - sx, dy = ty - sy;
-    const dur = origin && origin.fromDrag ? 128 : 152;
+    const dur = origin && origin.fromDrag ? 96 : 118;
 
     mc.classList.add("gpu-fly-wait");
     mc.classList.remove("land");
@@ -2192,6 +2192,25 @@
     setTimeout(fin, dur + 40);
   }
 
+  window.gpuFlipDownMine = function (uids) {
+    if (reduced || !G || !Array.isArray(uids) || !uids.length) return;
+    uids.forEach((uid, idx) => {
+      const mc = document.querySelector(`#board .side.me [data-mc="${uid}"]`);
+      if (!mc) return;
+      const r = mc.getBoundingClientRect();
+      const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
+      setTimeout(() => {
+        if (!mc.isConnected) return;
+        smoothAnim(mc, [
+          { transform: "perspective(580px) translate3d(0, -6px, 18px) rotateY(-95deg) scale(1.06)", filter: "brightness(1.35)" },
+          { transform: "perspective(580px) translate3d(0, 1px, 0) rotateY(0deg) scale(0.97)", filter: "brightness(1)", offset: 0.78 },
+          { transform: "perspective(580px) translate3d(0, 0, 0) rotateY(0deg) scale(1)", filter: "none" }
+        ], { duration: 120, easing: "cubic-bezier(0.2, 0.95, 0.32, 1)" });
+        FX.ring(tx, ty, "#5ee6ff", 38, 2.6);
+      }, idx * 22);
+    });
+  };
+
   window.gpuDropFoeStaged = function (foeHad) {
     if (reduced || !G) return;
     const av = $id("avFoe");
@@ -2204,22 +2223,22 @@
       const r = mc.getBoundingClientRect();
       const tx = r.left + r.width / 2, ty = r.top + r.height / 2;
       const dx = sx - tx, dy = sy - ty;
-      const delay = idx * 52;
+      const delay = idx * 26;
       idx++;
       mc.style.opacity = "0";
       setTimeout(() => {
         if (!mc.isConnected) return;
         mc.style.opacity = "";
         smoothAnim(mc, [
-          { transform: `perspective(620px) translate3d(${(dx * 0.45).toFixed(1)}px, ${Math.min(-38, dy * 0.45).toFixed(1)}px, 48px) scale(1.22) rotateZ(${(dx >= 0 ? 7 : -7)}deg)`, opacity: 0.4 },
-          { transform: "perspective(620px) translate3d(0, 2px, 0) scale(0.95)", opacity: 1, offset: 0.72 },
+          { transform: `perspective(620px) translate3d(${(dx * 0.38).toFixed(1)}px, ${Math.min(-28, dy * 0.38).toFixed(1)}px, 36px) scale(1.16) rotateZ(${(dx >= 0 ? 6 : -6)}deg)`, opacity: 0.45 },
+          { transform: "perspective(620px) translate3d(0, 1.5px, 0) scale(0.96)", opacity: 1, offset: 0.74 },
           { transform: "perspective(620px) translate3d(0, 0, 0) scale(1)", opacity: 1 }
-        ], { duration: 185, easing: "cubic-bezier(0.18, 0.95, 0.32, 1)" });
+        ], { duration: 125, easing: "cubic-bezier(0.18, 0.95, 0.32, 1)" });
         setTimeout(() => {
           FX.dust(tx, ty + r.height * 0.4, "#ffd8d0");
-          FX.ring(tx, ty, "#ff7a5a", 46, 3);
-          GLFX.impulseShake(2.6, 0, 1);
-        }, 135);
+          FX.ring(tx, ty, "#ff7a5a", 42, 2.8);
+          GLFX.impulseShake(2.2, 0, 1);
+        }, 90);
       }, delay);
     });
   };
@@ -2381,7 +2400,7 @@
       const cx = lr.left + lr.width / 2, cy = lr.top + lr.height / 2;
       const hw = lr.width * 0.5, hh = lr.height * 0.45;
 
-      if (typeof holdFx === "function") holdFx(1280);
+      if (typeof holdFx === "function") holdFx(540);
       SFX.play("loc");
       lw.classList.remove("gpu-loc-rev");
       void lw.offsetWidth;
