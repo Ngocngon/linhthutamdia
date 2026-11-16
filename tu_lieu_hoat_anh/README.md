@@ -1,6 +1,6 @@
 # Tư liệu hoạt ảnh 4×4 — Linh Thú Tam Địa
 
-**Tiến độ: 12/137 hoạt ảnh.**
+**Tiến độ: 14/137 hoạt ảnh.**
 
 Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→phải, trên→xuống), 1024×1024, mỗi khung 256×256.
 
@@ -25,8 +25,8 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `khoa_dia` | [bảng](img/v16/v_khoa_dia.webp) | ![](xem_dong/v_khoa_dia.webp) |
 | `nang_luong` | [bảng](img/v16/v_nang_luong.webp) | ![](xem_dong/v_nang_luong.webp) |
 | `nhan_doi` | [bảng](img/v16/v_nhan_doi.webp) | ![](xem_dong/v_nhan_doi.webp) |
-| `sao_chep` | _đang vẽ_ | |
-| `hoi_sinh` | _đang vẽ_ | |
+| `sao_chep` | [bảng](img/v16/v_sao_chep.webp) | ![](xem_dong/v_sao_chep.webp) |
+| `hoi_sinh` | [bảng](img/v16/v_hoi_sinh.webp) | ![](xem_dong/v_hoi_sinh.webp) |
 | `thang` | _đang vẽ_ | |
 | `thua` | _đang vẽ_ | |
 | `cuoc_x2` | _đang vẽ_ | |
@@ -180,6 +180,6 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
 | [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (toàn bộ vẽ bằng ChatGPT; 41 hiệu ứng chung và 22 ảnh giao diện đã vẽ lại 16/11 thay ảnh Google Flow) | 121 |
-| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 12 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 14 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).
