@@ -1,6 +1,6 @@
 # Tư liệu hoạt ảnh 4×4 — Linh Thú Tam Địa
 
-**Tiến độ: 63/137 hoạt ảnh.**
+**Tiến độ: 90/137 hoạt ảnh.**
 
 Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→phải, trên→xuống), 1024×1024, mỗi khung 256×256.
 
@@ -96,33 +96,33 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `nuthantien` | [bảng](img/v16/v_nuthantien.webp) | ![](xem_dong/v_nuthantien.webp) |
 | `bangca` | [bảng](img/v16/v_bangca.webp) | ![](xem_dong/v_bangca.webp) |
 | `kenuotsao` | [bảng](img/v16/v_kenuotsao.webp) | ![](xem_dong/v_kenuotsao.webp) |
-| `maynuotthoigian` | _đang vẽ_ | |
-| `nghichtuvuong` | _đang vẽ_ | |
-| `nuloimienvien` | _đang vẽ_ | |
-| `thuanung` | _đang vẽ_ | |
-| `satvuong` | _đang vẽ_ | |
-| `baonu` | _đang vẽ_ | |
-| `channu` | _đang vẽ_ | |
-| `bavuongmienvien` | _đang vẽ_ | |
-| `aosi` | _đang vẽ_ | |
-| `baochuahauthe` | _đang vẽ_ | |
-| `chonvacay` | _đang vẽ_ | |
-| `chutruongnu` | _đang vẽ_ | |
-| `dakhuc` | _đang vẽ_ | |
-| `docnutrang` | _đang vẽ_ | |
-| `hongtam` | _đang vẽ_ | |
-| `huyetmenu` | _đang vẽ_ | |
-| `kiemquyen` | _đang vẽ_ | |
-| `kysidichkhuyen` | _đang vẽ_ | |
-| `langthan` | _đang vẽ_ | |
-| `matocvutru` | _đang vẽ_ | |
-| `namtuocmatna` | _đang vẽ_ | |
-| `nhannhenquai` | _đang vẽ_ | |
-| `nhendotham` | _đang vẽ_ | |
-| `nuhongtam` | _đang vẽ_ | |
-| `phonglinhnu` | _đang vẽ_ | |
-| `saotrongdau` | _đang vẽ_ | |
-| `tamlinhtu` | _đang vẽ_ | |
+| `maynuotthoigian` | [bảng](img/v16/v_maynuotthoigian.webp) | ![](xem_dong/v_maynuotthoigian.webp) |
+| `nghichtuvuong` | [bảng](img/v16/v_nghichtuvuong.webp) | ![](xem_dong/v_nghichtuvuong.webp) |
+| `nuloimienvien` | [bảng](img/v16/v_nuloimienvien.webp) | ![](xem_dong/v_nuloimienvien.webp) |
+| `thuanung` | [bảng](img/v16/v_thuanung.webp) | ![](xem_dong/v_thuanung.webp) |
+| `satvuong` | [bảng](img/v16/v_satvuong.webp) | ![](xem_dong/v_satvuong.webp) |
+| `baonu` | [bảng](img/v16/v_baonu.webp) | ![](xem_dong/v_baonu.webp) |
+| `channu` | [bảng](img/v16/v_channu.webp) | ![](xem_dong/v_channu.webp) |
+| `bavuongmienvien` | [bảng](img/v16/v_bavuongmienvien.webp) | ![](xem_dong/v_bavuongmienvien.webp) |
+| `aosi` | [bảng](img/v16/v_aosi.webp) | ![](xem_dong/v_aosi.webp) |
+| `baochuahauthe` | [bảng](img/v16/v_baochuahauthe.webp) | ![](xem_dong/v_baochuahauthe.webp) |
+| `chonvacay` | [bảng](img/v16/v_chonvacay.webp) | ![](xem_dong/v_chonvacay.webp) |
+| `chutruongnu` | [bảng](img/v16/v_chutruongnu.webp) | ![](xem_dong/v_chutruongnu.webp) |
+| `dakhuc` | [bảng](img/v16/v_dakhuc.webp) | ![](xem_dong/v_dakhuc.webp) |
+| `docnutrang` | [bảng](img/v16/v_docnutrang.webp) | ![](xem_dong/v_docnutrang.webp) |
+| `hongtam` | [bảng](img/v16/v_hongtam.webp) | ![](xem_dong/v_hongtam.webp) |
+| `huyetmenu` | [bảng](img/v16/v_huyetmenu.webp) | ![](xem_dong/v_huyetmenu.webp) |
+| `kiemquyen` | [bảng](img/v16/v_kiemquyen.webp) | ![](xem_dong/v_kiemquyen.webp) |
+| `kysidichkhuyen` | [bảng](img/v16/v_kysidichkhuyen.webp) | ![](xem_dong/v_kysidichkhuyen.webp) |
+| `langthan` | [bảng](img/v16/v_langthan.webp) | ![](xem_dong/v_langthan.webp) |
+| `matocvutru` | [bảng](img/v16/v_matocvutru.webp) | ![](xem_dong/v_matocvutru.webp) |
+| `namtuocmatna` | [bảng](img/v16/v_namtuocmatna.webp) | ![](xem_dong/v_namtuocmatna.webp) |
+| `nhannhenquai` | [bảng](img/v16/v_nhannhenquai.webp) | ![](xem_dong/v_nhannhenquai.webp) |
+| `nhendotham` | [bảng](img/v16/v_nhendotham.webp) | ![](xem_dong/v_nhendotham.webp) |
+| `nuhongtam` | [bảng](img/v16/v_nuhongtam.webp) | ![](xem_dong/v_nuhongtam.webp) |
+| `phonglinhnu` | [bảng](img/v16/v_phonglinhnu.webp) | ![](xem_dong/v_phonglinhnu.webp) |
+| `saotrongdau` | [bảng](img/v16/v_saotrongdau.webp) | ![](xem_dong/v_saotrongdau.webp) |
+| `tamlinhtu` | [bảng](img/v16/v_tamlinhtu.webp) | ![](xem_dong/v_tamlinhtu.webp) |
 | `thetdich` | _đang vẽ_ | |
 | `thuyhau` | _đang vẽ_ | |
 | `tieulong` | _đang vẽ_ | |
@@ -180,6 +180,6 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
 | [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (toàn bộ vẽ bằng ChatGPT; 41 hiệu ứng chung và 22 ảnh giao diện đã vẽ lại 16/11 thay ảnh Google Flow) | 121 |
-| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 63 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 90 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).
