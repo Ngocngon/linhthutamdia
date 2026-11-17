@@ -1,6 +1,6 @@
 # Tư liệu hoạt ảnh 4×4 — Linh Thú Tam Địa
 
-**Tiến độ: 22/137 hoạt ảnh.**
+**Tiến độ: 38/137 hoạt ảnh.**
 
 Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→phải, trên→xuống), 1024×1024, mỗi khung 256×256.
 
@@ -35,27 +35,27 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `sao_tang` | [bảng](img/v16/v_sao_tang.webp) | ![](xem_dong/v_sao_tang.webp) |
 | `hut_keo` | [bảng](img/v16/v_hut_keo.webp) | ![](xem_dong/v_hut_keo.webp) |
 | `khien_chan` | [bảng](img/v16/v_khien_chan.webp) | ![](xem_dong/v_khien_chan.webp) |
-| `doc_lan` | _đang vẽ_ | |
-| `dong_bang` | _đang vẽ_ | |
-| `thieu_dot` | _đang vẽ_ | |
-| `set_danh` | _đang vẽ_ | |
+| `doc_lan` | [bảng](img/v16/v_doc_lan.webp) | ![](xem_dong/v_doc_lan.webp) |
+| `dong_bang` | [bảng](img/v16/v_dong_bang.webp) | ![](xem_dong/v_dong_bang.webp) |
+| `thieu_dot` | [bảng](img/v16/v_thieu_dot.webp) | ![](xem_dong/v_thieu_dot.webp) |
+| `set_danh` | [bảng](img/v16/v_set_danh.webp) | ![](xem_dong/v_set_danh.webp) |
 
 ## Chiêu thức dùng chung
 
 | Mã | Bảng 4×4 | Xem động |
 |---|---|---|
-| `kiem` | _đang vẽ_ | |
-| `dao` | _đang vẽ_ | |
-| `ten` | _đang vẽ_ | |
-| `tay` | _đang vẽ_ | |
-| `xich` | _đang vẽ_ | |
-| `bua_chu` | _đang vẽ_ | |
-| `guong` | _đang vẽ_ | |
-| `co` | _đang vẽ_ | |
-| `trong` | _đang vẽ_ | |
-| `so` | _đang vẽ_ | |
-| `cong` | _đang vẽ_ | |
-| `gio` | _đang vẽ_ | |
+| `kiem` | [bảng](img/v16/v_kiem.webp) | ![](xem_dong/v_kiem.webp) |
+| `dao` | [bảng](img/v16/v_dao.webp) | ![](xem_dong/v_dao.webp) |
+| `ten` | [bảng](img/v16/v_ten.webp) | ![](xem_dong/v_ten.webp) |
+| `tay` | [bảng](img/v16/v_tay.webp) | ![](xem_dong/v_tay.webp) |
+| `xich` | [bảng](img/v16/v_xich.webp) | ![](xem_dong/v_xich.webp) |
+| `bua_chu` | [bảng](img/v16/v_bua_chu.webp) | ![](xem_dong/v_bua_chu.webp) |
+| `guong` | [bảng](img/v16/v_guong.webp) | ![](xem_dong/v_guong.webp) |
+| `co` | [bảng](img/v16/v_co.webp) | ![](xem_dong/v_co.webp) |
+| `trong` | [bảng](img/v16/v_trong.webp) | ![](xem_dong/v_trong.webp) |
+| `so` | [bảng](img/v16/v_so.webp) | ![](xem_dong/v_so.webp) |
+| `cong` | [bảng](img/v16/v_cong.webp) | ![](xem_dong/v_cong.webp) |
+| `gio` | [bảng](img/v16/v_gio.webp) | ![](xem_dong/v_gio.webp) |
 | `lua` | _đang vẽ_ | |
 | `day` | _đang vẽ_ | |
 | `khien` | _đang vẽ_ | |
@@ -180,6 +180,6 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
 | [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (toàn bộ vẽ bằng ChatGPT; 41 hiệu ứng chung và 22 ảnh giao diện đã vẽ lại 16/11 thay ảnh Google Flow) | 121 |
-| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 22 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 38 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).

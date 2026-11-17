@@ -204,7 +204,7 @@
   "tep": "img/v16/v_doc_lan.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6023,
@@ -213,7 +213,7 @@
   "tep": "img/v16/v_dong_bang.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6024,
@@ -222,7 +222,7 @@
   "tep": "img/v16/v_thieu_dot.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6025,
@@ -231,7 +231,7 @@
   "tep": "img/v16/v_set_danh.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6030,
@@ -240,7 +240,7 @@
   "tep": "img/v16/v_kiem.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6031,
@@ -249,7 +249,7 @@
   "tep": "img/v16/v_dao.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6032,
@@ -258,7 +258,7 @@
   "tep": "img/v16/v_ten.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6033,
@@ -267,7 +267,7 @@
   "tep": "img/v16/v_tay.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6034,
@@ -276,7 +276,7 @@
   "tep": "img/v16/v_xich.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6035,
@@ -285,7 +285,7 @@
   "tep": "img/v16/v_bua_chu.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6036,
@@ -294,7 +294,7 @@
   "tep": "img/v16/v_guong.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6037,
@@ -303,7 +303,7 @@
   "tep": "img/v16/v_co.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6038,
@@ -312,7 +312,7 @@
   "tep": "img/v16/v_trong.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6039,
@@ -321,7 +321,7 @@
   "tep": "img/v16/v_so.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6040,
@@ -330,7 +330,7 @@
   "tep": "img/v16/v_cong.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6041,
@@ -339,7 +339,7 @@
   "tep": "img/v16/v_gio.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6042,
