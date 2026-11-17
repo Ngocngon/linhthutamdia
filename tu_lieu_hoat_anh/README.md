@@ -1,6 +1,6 @@
 # Tư liệu hoạt ảnh 4×4 — Linh Thú Tam Địa
 
-**Tiến độ: 38/137 hoạt ảnh.**
+**Tiến độ: 63/137 hoạt ảnh.**
 
 Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→phải, trên→xuống), 1024×1024, mỗi khung 256×256.
 
@@ -56,46 +56,46 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `so` | [bảng](img/v16/v_so.webp) | ![](xem_dong/v_so.webp) |
 | `cong` | [bảng](img/v16/v_cong.webp) | ![](xem_dong/v_cong.webp) |
 | `gio` | [bảng](img/v16/v_gio.webp) | ![](xem_dong/v_gio.webp) |
-| `lua` | _đang vẽ_ | |
-| `day` | _đang vẽ_ | |
-| `khien` | _đang vẽ_ | |
-| `ngoc` | _đang vẽ_ | |
-| `bua` | _đang vẽ_ | |
+| `lua` | [bảng](img/v16/v_lua.webp) | ![](xem_dong/v_lua.webp) |
+| `day` | [bảng](img/v16/v_day.webp) | ![](xem_dong/v_day.webp) |
+| `khien` | [bảng](img/v16/v_khien.webp) | ![](xem_dong/v_khien.webp) |
+| `ngoc` | [bảng](img/v16/v_ngoc.webp) | ![](xem_dong/v_ngoc.webp) |
+| `bua` | [bảng](img/v16/v_bua.webp) | ![](xem_dong/v_bua.webp) |
 
 ## Va chạm / vụ nổ / vệt chém
 
 | Mã | Bảng 4×4 | Xem động |
 |---|---|---|
-| `no_lua` | _đang vẽ_ | |
-| `no_set` | _đang vẽ_ | |
-| `no_doc` | _đang vẽ_ | |
-| `no_bang` | _đang vẽ_ | |
-| `no_sang` | _đang vẽ_ | |
-| `no_toi` | _đang vẽ_ | |
-| `bui_dap` | _đang vẽ_ | |
-| `manh_vo` | _đang vẽ_ | |
-| `vet_chem` | _đang vẽ_ | |
-| `vet_cao` | _đang vẽ_ | |
+| `no_lua` | [bảng](img/v16/v_no_lua.webp) | ![](xem_dong/v_no_lua.webp) |
+| `no_set` | [bảng](img/v16/v_no_set.webp) | ![](xem_dong/v_no_set.webp) |
+| `no_doc` | [bảng](img/v16/v_no_doc.webp) | ![](xem_dong/v_no_doc.webp) |
+| `no_bang` | [bảng](img/v16/v_no_bang.webp) | ![](xem_dong/v_no_bang.webp) |
+| `no_sang` | [bảng](img/v16/v_no_sang.webp) | ![](xem_dong/v_no_sang.webp) |
+| `no_toi` | [bảng](img/v16/v_no_toi.webp) | ![](xem_dong/v_no_toi.webp) |
+| `bui_dap` | [bảng](img/v16/v_bui_dap.webp) | ![](xem_dong/v_bui_dap.webp) |
+| `manh_vo` | [bảng](img/v16/v_manh_vo.webp) | ![](xem_dong/v_manh_vo.webp) |
+| `vet_chem` | [bảng](img/v16/v_vet_chem.webp) | ![](xem_dong/v_vet_chem.webp) |
+| `vet_cao` | [bảng](img/v16/v_vet_cao.webp) | ![](xem_dong/v_vet_cao.webp) |
 
 ## Khung hào quang lá bài (lặp vô hạn)
 
 | Mã | Bảng 4×4 | Xem động |
 |---|---|---|
-| `khung_lua` | _đang vẽ_ | |
-| `khung_nuoc` | _đang vẽ_ | |
-| `khung_set` | _đang vẽ_ | |
-| `khung_moc` | _đang vẽ_ | |
+| `khung_lua` | [bảng](img/v16/v_khung_lua.webp) | ![](xem_dong/v_khung_lua.webp) |
+| `khung_nuoc` | [bảng](img/v16/v_khung_nuoc.webp) | ![](xem_dong/v_khung_nuoc.webp) |
+| `khung_set` | [bảng](img/v16/v_khung_set.webp) | ![](xem_dong/v_khung_set.webp) |
+| `khung_moc` | [bảng](img/v16/v_khung_moc.webp) | ![](xem_dong/v_khung_moc.webp) |
 
 ## Chiêu riêng của 80 thẻ
 
 | Mã | Bảng 4×4 | Xem động |
 |---|---|---|
-| `kiemnuuminh` | _đang vẽ_ | |
-| `nuloithan` | _đang vẽ_ | |
-| `tonu` | _đang vẽ_ | |
-| `nuthantien` | _đang vẽ_ | |
-| `bangca` | _đang vẽ_ | |
-| `kenuotsao` | _đang vẽ_ | |
+| `kiemnuuminh` | [bảng](img/v16/v_kiemnuuminh.webp) | ![](xem_dong/v_kiemnuuminh.webp) |
+| `nuloithan` | [bảng](img/v16/v_nuloithan.webp) | ![](xem_dong/v_nuloithan.webp) |
+| `tonu` | [bảng](img/v16/v_tonu.webp) | ![](xem_dong/v_tonu.webp) |
+| `nuthantien` | [bảng](img/v16/v_nuthantien.webp) | ![](xem_dong/v_nuthantien.webp) |
+| `bangca` | [bảng](img/v16/v_bangca.webp) | ![](xem_dong/v_bangca.webp) |
+| `kenuotsao` | [bảng](img/v16/v_kenuotsao.webp) | ![](xem_dong/v_kenuotsao.webp) |
 | `maynuotthoigian` | _đang vẽ_ | |
 | `nghichtuvuong` | _đang vẽ_ | |
 | `nuloimienvien` | _đang vẽ_ | |
@@ -180,6 +180,6 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
 | [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (toàn bộ vẽ bằng ChatGPT; 41 hiệu ứng chung và 22 ảnh giao diện đã vẽ lại 16/11 thay ảnh Google Flow) | 121 |
-| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 38 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 63 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).

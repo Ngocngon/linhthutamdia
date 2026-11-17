@@ -348,7 +348,7 @@
   "tep": "img/v16/v_lua.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6043,
@@ -357,7 +357,7 @@
   "tep": "img/v16/v_day.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6044,
@@ -366,7 +366,7 @@
   "tep": "img/v16/v_khien.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6045,
@@ -375,7 +375,7 @@
   "tep": "img/v16/v_ngoc.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6046,
@@ -384,7 +384,7 @@
   "tep": "img/v16/v_bua.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6050,
@@ -393,7 +393,7 @@
   "tep": "img/v16/v_no_lua.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6051,
@@ -402,7 +402,7 @@
   "tep": "img/v16/v_no_set.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6052,
@@ -411,7 +411,7 @@
   "tep": "img/v16/v_no_doc.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6053,
@@ -420,7 +420,7 @@
   "tep": "img/v16/v_no_bang.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6054,
@@ -429,7 +429,7 @@
   "tep": "img/v16/v_no_sang.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6055,
@@ -438,7 +438,7 @@
   "tep": "img/v16/v_no_toi.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6056,
@@ -447,7 +447,7 @@
   "tep": "img/v16/v_bui_dap.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6057,
@@ -456,7 +456,7 @@
   "tep": "img/v16/v_manh_vo.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6058,
@@ -465,7 +465,7 @@
   "tep": "img/v16/v_vet_chem.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6059,
@@ -474,7 +474,7 @@
   "tep": "img/v16/v_vet_cao.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6060,
@@ -483,7 +483,7 @@
   "tep": "img/v16/v_khung_lua.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6061,
@@ -492,7 +492,7 @@
   "tep": "img/v16/v_khung_nuoc.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6062,
@@ -501,7 +501,7 @@
   "tep": "img/v16/v_khung_set.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6063,
@@ -510,7 +510,7 @@
   "tep": "img/v16/v_khung_moc.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6100,
@@ -519,7 +519,7 @@
   "tep": "img/v16/v_kiemnuuminh.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6101,
@@ -528,7 +528,7 @@
   "tep": "img/v16/v_nuloithan.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6102,
@@ -537,7 +537,7 @@
   "tep": "img/v16/v_tonu.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6103,
@@ -546,7 +546,7 @@
   "tep": "img/v16/v_nuthantien.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6104,
@@ -555,7 +555,7 @@
   "tep": "img/v16/v_bangca.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6105,
@@ -564,7 +564,7 @@
   "tep": "img/v16/v_kenuotsao.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6106,
