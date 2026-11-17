@@ -132,7 +132,7 @@
   "tep": "img/v16/v_thang.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6015,
@@ -141,7 +141,7 @@
   "tep": "img/v16/v_thua.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6016,
@@ -150,7 +150,7 @@
   "tep": "img/v16/v_cuoc_x2.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6017,
@@ -159,7 +159,7 @@
   "tep": "img/v16/v_hien_dia.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6018,
@@ -168,7 +168,7 @@
   "tep": "img/v16/v_song_xung.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6019,
@@ -177,7 +177,7 @@
   "tep": "img/v16/v_sao_tang.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6020,
@@ -186,7 +186,7 @@
   "tep": "img/v16/v_hut_keo.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6021,
@@ -195,7 +195,7 @@
   "tep": "img/v16/v_khien_chan.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6022,
