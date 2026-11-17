@@ -21,20 +21,76 @@ body.rm #fxgl {
   display: none !important;
 }
 
-/* Hoạt ảnh 16 khung hình 4x4 (v16: lật thẻ, tăng sức, giảm sức) */
+/* Hoạt ảnh 16 khung hình 4x4 (v16: toàn bộ 96 bảng hoạt ảnh có kênh alpha trong suốt) */
+@keyframes v16LoopX {
+  from { background-position-x: 0%; }
+  to { background-position-x: 133.333333%; }
+}
+@keyframes v16LoopY {
+  from { background-position-y: 0%; }
+  to { background-position-y: 133.333333%; }
+}
 .fx-v16 {
   position: fixed;
   pointer-events: none;
   z-index: 30;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) rotate(var(--v16r, 0deg));
   background-repeat: no-repeat;
   background-size: 400% 400%;
-  mix-blend-mode: screen;
-  filter: brightness(1.12) saturate(1.18);
+  filter: drop-shadow(0 3px 10px rgba(0, 0, 0, 0.42));
   will-change: background-position, opacity, transform;
 }
-body.rm .fx-v16 {
+.v16-sp {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  pointer-events: none;
+  user-select: none;
+  will-change: background-position;
+}
+.choreo-burst:has(.v16-sp),
+.choreo-mark:has(.v16-sp),
+.vb11:has(.v16-sp) {
+  mix-blend-mode: normal !important;
+}
+/* Khung hào quang lá bài Duy Trì 16 khung lặp vô hạn (khung_lua, khung_nuoc, khung_set, khung_moc) */
+#board .mc.ong {
+  overflow: visible !important;
+}
+#board .mc.ong > .art {
+  border-radius: 8px;
+}
+#board .mc.ong > .mn {
+  z-index: 5 !important;
+  border-radius: 0 0 8px 8px;
+}
+#board .mc > .kh16,
+.fxg .mc > .kh16 {
+  position: absolute;
+  left: -34%;
+  top: -10.5%;
+  width: 168%;
+  height: 121%;
+  z-index: 2;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  background-position: 0% 0%;
+  animation:
+    v16LoopX 0.30s steps(4, end) infinite,
+    v16LoopY 1.20s steps(4, end) infinite;
+  will-change: background-position;
+}
+body.rm .fx-v16,
+body.rm .v16-sp {
   display: none !important;
+}
+body.rm #board .mc > .kh16,
+body.rm .fxg .mc > .kh16 {
+  animation: none !important;
 }
 
 /* Ánh đèn sân khấu GPU siêu nhẹ */
@@ -1378,9 +1434,17 @@ body.rm .ult-s4 {
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 14px var(--lc, var(--gc, #7fe8ff)));
 }
+.gpu-loc-seal .v16-sp,
+.gpu-summon-gate .v16-sp,
+.choreo-mirror-fx .v16-sp {
+  grid-area: 1 / 1;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 12px var(--lc, var(--gc, #7fe8ff)));
+}
 .gpu-loc-seal .ls-icon {
-  width: 56%;
-  height: 56%;
+  width: 62%;
+  height: 62%;
 }
 .locw.gpu-loc-rev {
   z-index: 16 !important;

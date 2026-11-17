@@ -23,23 +23,23 @@
 
   /* ==================== 1. ĐĂNG KÝ & NẠP SẴN KHO 133 TRANH VẼ ĐẠO CỤ ĐÔNG SƠN (.WEBP) ==================== */
   const NEW_PAINTED_VFX = {
-    nam_dam_lua: "img/v/v_nam_dam_lua.webp?v=gpu10",
-    quyen_nuoc:  "img/v/v_quyen_nuoc.webp?v=gpu10",
-    cung_doc:    "img/v/v_cung_doc.webp?v=gpu10",
-    ham_nanh:    "img/v/v_ham_nanh.webp?v=gpu10",
-    ham_tren:    "img/v/v_ham_tren.webp?v=gpu10",
-    ham_duoi:    "img/v/v_ham_duoi.webp?v=gpu10",
-    bua_ren:     "img/v/v_bua_ren.webp?v=gpu10",
-    luoi_nhen:   "img/v/v_luoi_nhen.webp?v=gpu10",
-    re_da:       "img/v/v_re_da.webp?v=gpu10",
-    quan_co:     "img/v/v_quan_co.webp?v=gpu10",
-    phao_tre:    "img/v/v_phao_tre.webp?v=gpu10",
-    vet_lom:     "img/v/v_vet_lom.webp?v=gpu10"
+    nam_dam_lua: "img/v/v_nam_dam_lua.webp?v=gpu18",
+    quyen_nuoc:  "img/v/v_quyen_nuoc.webp?v=gpu18",
+    cung_doc:    "img/v/v_cung_doc.webp?v=gpu18",
+    ham_nanh:    "img/v/v_ham_nanh.webp?v=gpu18",
+    ham_tren:    "img/v/v_ham_tren.webp?v=gpu18",
+    ham_duoi:    "img/v/v_ham_duoi.webp?v=gpu18",
+    bua_ren:     "img/v/v_bua_ren.webp?v=gpu18",
+    luoi_nhen:   "img/v/v_luoi_nhen.webp?v=gpu18",
+    re_da:       "img/v/v_re_da.webp?v=gpu18",
+    quan_co:     "img/v/v_quan_co.webp?v=gpu18",
+    phao_tre:    "img/v/v_phao_tre.webp?v=gpu18",
+    vet_lom:     "img/v/v_vet_lom.webp?v=gpu18"
   };
 
   if (typeof IMGS === "object" && IMGS) {
     if (!IMGS.v) IMGS.v = {};
-    Object.assign(IMGS.v, NEW_PAINTED_VFX);
+    for (const k in NEW_PAINTED_VFX) if (!IMGS.v[k]) IMGS.v[k] = NEW_PAINTED_VFX[k];
   }
 
   const VFX_IMG_CACHE = new Map();
@@ -47,7 +47,7 @@
   function vfxUrl(key) {
     if (!key) return "";
     if (typeof IMGS === "object" && IMGS && IMGS.v && IMGS.v[key]) return IMGS.v[key];
-    return `img/v/v_${key}.webp?v=gpu17`;
+    return `img/v/v_${key}.webp?v=gpu18`;
   }
 
   function getVfxImg(key) {
@@ -88,7 +88,11 @@
     for (const cid of DEMO_CARD_IDS) spLoad(cid);
   }
 
-  function spriteHtml(key) {
+  function spriteHtml(key, durMs, f0, f1) {
+    if (typeof window.v16Html === "function") {
+      const h16 = window.v16Html(key, durMs || 460, f0 != null ? f0 : 0, f1 != null ? f1 : 15);
+      if (h16) return h16;
+    }
     const u = vfxUrl(key);
     getVfxImg(key);
     return `<img src="${u}" alt="" draggable="false">`;
@@ -361,8 +365,9 @@
     const W = w || 128;
     const H = h || W;
     d.style.cssText = `width:${W.toFixed(0)}px;height:${H.toFixed(0)}px;left:${(x - W / 2).toFixed(1)}px;top:${(y - H / 2).toFixed(1)}px;--cp-glow:${glowCol || "#ffd65a"};z-index:${zIndex || 38}`;
-    d.innerHTML = htmlOrKey && htmlOrKey.charAt(0) === "<" ? htmlOrKey : spriteHtml(htmlOrKey);
+    d.innerHTML = htmlOrKey && htmlOrKey.charAt(0) === "<" ? htmlOrKey : spriteHtml(htmlOrKey, 440, 1, 14);
     document.body.appendChild(d);
+    if (typeof window.v16Activate === "function") window.v16Activate(d);
     return d;
   }
 
@@ -371,17 +376,27 @@
     const d = document.createElement("div");
     d.className = "choreo-burst";
     const S = size || 168;
+    const D = durMs || 460;
+    const hasV16 = typeof IMGS === "object" && IMGS && IMGS.v16 && !!IMGS.v16[key];
     d.style.cssText = `width:${S.toFixed(0)}px;height:${S.toFixed(0)}px;left:${(x - S / 2).toFixed(1)}px;top:${(y - S / 2).toFixed(1)}px;--cb-glow:${glowCol || "#ffb84d"}`;
-    d.innerHTML = spriteHtml(key);
+    d.innerHTML = spriteHtml(key, D, 0, 15);
     document.body.appendChild(d);
-    const D = durMs || 420;
+    if (typeof window.v16Activate === "function") window.v16Activate(d);
     const r0 = rotDeg || 0;
-    const a = d.animate([
-      { transform: `rotate(${r0}deg) scale(0.28)`, opacity: 0.95, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
-      { transform: `rotate(${r0 + 10}deg) scale(1.10)`, opacity: 1, offset: 0.25 },
-      { transform: `rotate(${r0 + 16}deg) scale(1.18)`, opacity: 0.88, offset: 0.62 },
-      { transform: `rotate(${r0 + 24}deg) scale(1.34)`, opacity: 0 }
-    ], { duration: D, easing: "linear", fill: "forwards" });
+    const kf = hasV16
+      ? [
+          { transform: `rotate(${r0}deg) scale(0.88)`, opacity: 0.96, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+          { transform: `rotate(${r0 + 2}deg) scale(1.04)`, opacity: 1, offset: 0.22 },
+          { transform: `rotate(${r0 + 4}deg) scale(1.06)`, opacity: 1, offset: 0.86 },
+          { transform: `rotate(${r0 + 6}deg) scale(1.08)`, opacity: 0 }
+        ]
+      : [
+          { transform: `rotate(${r0}deg) scale(0.28)`, opacity: 0.95, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
+          { transform: `rotate(${r0 + 10}deg) scale(1.10)`, opacity: 1, offset: 0.25 },
+          { transform: `rotate(${r0 + 16}deg) scale(1.18)`, opacity: 0.88, offset: 0.62 },
+          { transform: `rotate(${r0 + 24}deg) scale(1.34)`, opacity: 0 }
+        ];
+    const a = d.animate(kf, { duration: D, easing: "linear", fill: "forwards" });
     a.onfinish = () => d.remove();
     fxT(() => d.remove(), D + 100);
     return d;
@@ -392,10 +407,11 @@
     const d = document.createElement("div");
     d.className = "choreo-mark" + (screenMode ? " choreo-mark-screen" : "");
     const S = size || 142;
-    d.style.cssText = `width:${S.toFixed(0)}px;height:${S.toFixed(0)}px;left:${(x - S / 2).toFixed(1)}px;top:${(y - S / 2).toFixed(1)}px;--cm-glow:${glowCol || "#ff8a3d"}`;
-    d.innerHTML = htmlOrKey && htmlOrKey.charAt(0) === "<" ? htmlOrKey : spriteHtml(htmlOrKey);
-    document.body.appendChild(d);
     const D = durMs || 560;
+    d.style.cssText = `width:${S.toFixed(0)}px;height:${S.toFixed(0)}px;left:${(x - S / 2).toFixed(1)}px;top:${(y - S / 2).toFixed(1)}px;--cm-glow:${glowCol || "#ff8a3d"}`;
+    d.innerHTML = htmlOrKey && htmlOrKey.charAt(0) === "<" ? htmlOrKey : spriteHtml(htmlOrKey, D, 0, 15);
+    document.body.appendChild(d);
+    if (typeof window.v16Activate === "function") window.v16Activate(d);
     const r = rotDeg || 0;
     const a = d.animate([
       { transform: `rotate(${r}deg) scale(0.42)`, opacity: 0, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
@@ -597,6 +613,7 @@
       /* Ngay khoảnh khắc chạm mục tiêu: Bung lưới nhện pha lê / nổ tia lửa móc khoá! */
       if (!latchedFxDone && phase !== "extend") {
         latchedFxDone = true;
+        if (typeof window.playV16 === "function") window.playV16("hut_keo", r0.x, r0.y, Math.max(118, (r0.w || 56) * 2.05), 480, 0);
         if (kind === "web" || kind === "silk") {
           const netSz = Math.max(142, (r0.w || 56) * 2.35);
           snareOverlay = spawnProp("luoi_nhen", r0.x, r0.y, netSz, netSz, "#9ef6ff", 38, true);
@@ -1237,6 +1254,7 @@
 
       fxT(() => {
         SFX.play(style === "shield_bash" ? "horn" : "punch");
+        if (typeof window.playV16 === "function") window.playV16(style === "water_fist" ? "dong_bang" : style === "shield_bash" ? "khien_chan" : "thieu_dot", tp.x, tp.y, 132, 480, 0);
         triggerPaintedImpact(tp, {
           col,
           burst: burstKey,
@@ -1509,6 +1527,7 @@
 
         fxT(() => {
           SFX.play("gavel");
+          if (typeof window.playV16 === "function" && !isYama) window.playV16("set_danh", tp.x, tp.y, 152, 520, 0);
           if (window.GLFX && GLFX.arc) GLFX.arc(tp.x, Math.max(18, tp.y - 210), tp.x, tp.y, "#8cf4ff", 15, 1.25, true, 0.34);
           triggerPaintedImpact(tp, {
             col,
@@ -1546,6 +1565,7 @@
 
       fxT(() => {
         SFX.play(isVenom ? "e_doc" : "silence");
+        if (isVenom && typeof window.playV16 === "function") window.playV16("doc_lan", tp.x, tp.y, 138, 500, 0);
         triggerPaintedImpact(tp, {
           col,
           burst: isVenom ? "no_doc" : "no_toi",
@@ -1713,8 +1733,9 @@
             const mir = document.createElement("div");
             mir.className = "choreo-mirror-fx";
             mir.style.cssText = `left:${s.tp.x}px;top:${s.tp.y}px;width:136px;height:136px;--gc:#8cf4ff`;
-            mir.innerHTML = `<img src="img/v/v_guong.webp?v=gpu17" alt="">`;
+            mir.innerHTML = spriteHtml("guong", 640, 0, 15);
             document.body.appendChild(mir);
+            if (typeof window.v16Activate === "function") window.v16Activate(mir);
             mir.animate([
               { transform: "translate(-50%,-50%) scale(0.35) rotate(-25deg)", opacity: 0 },
               { transform: "translate(-50%,-50%) scale(1.15) rotate(0deg)", opacity: 1, offset: 0.35 },
@@ -1857,8 +1878,9 @@
           const mir = document.createElement("div");
           mir.className = "choreo-mirror-fx";
           mir.style.cssText = `left:${fp.x}px;top:${fp.y}px;width:146px;height:146px;--gc:#7fe8ff`;
-          mir.innerHTML = `<img src="img/v/v_an_mat.webp?v=gpu17" alt=""><img src="img/v/v_guong.webp?v=gpu17" alt="">`;
+          mir.innerHTML = `<img src="img/v/v_an_mat.webp?v=gpu18" alt="">` + spriteHtml("guong", mirMs + showMs + 100, 0, 15);
           document.body.appendChild(mir);
+          if (typeof window.v16Activate === "function") window.v16Activate(mir);
           mir.animate([
             { transform: "translate(-50%,-50%) scale(0.28) rotate(-35deg)", opacity: 0 },
             { transform: "translate(-50%,-50%) scale(1.18) rotate(0deg)", opacity: 1, offset: 0.36 },
@@ -1924,8 +1946,9 @@
           const gate = document.createElement("div");
           gate.className = "gpu-summon-gate";
           gate.style.cssText = `left:${tp.x}px;top:${tp.y}px;width:146px;height:146px;--gc:${col}`;
-          gate.innerHTML = `<img src="img/v/v_an_vong.webp?v=gpu17" alt=""><img src="img/v/v_cong.webp?v=gpu17" alt="">`;
+          gate.innerHTML = `<img src="img/v/v_an_vong.webp?v=gpu18" alt="">` + spriteHtml("cong", 520, 0, 15);
           document.body.appendChild(gate);
+          if (typeof window.v16Activate === "function") window.v16Activate(gate);
           gate.animate([
             { transform: "translate(-50%,-50%) scale(0.25) rotate(-90deg)", opacity: 0 },
             { transform: "translate(-50%,-50%) scale(1.14) rotate(25deg)", opacity: 1, offset: 0.30 },

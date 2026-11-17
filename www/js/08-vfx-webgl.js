@@ -1919,8 +1919,10 @@
       const gate = document.createElement("div");
       gate.className = "gpu-summon-gate";
       gate.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(96, r.width * 2.1)}px;height:${Math.max(96, r.width * 2.1)}px;--gc:${col}`;
-      gate.innerHTML = `<img src="img/v/v_cong.webp?v=gpu17" alt="">`;
+      const g16 = typeof window.v16Html === "function" ? window.v16Html("cong", 540, 0, 15) : "";
+      gate.innerHTML = g16 || `<img src="img/v/v_cong.webp?v=gpu18" alt="">`;
       document.body.appendChild(gate);
+      if (typeof window.v16Activate === "function") window.v16Activate(gate);
       gate.animate([
         { transform: "translate(-50%,-50%) scale(0.25) rotate(-90deg)", opacity: 0 },
         { transform: "translate(-50%,-50%) scale(1.12) rotate(35deg)", opacity: 0.95, offset: 0.35 },
@@ -2281,19 +2283,19 @@
   /* ==================== HỆ THỐNG VFX CHIẾN ĐỊA ĐỘNG & HIỆU ỨNG TRỰC QUAN TRÊN 2 PHẦN SÂN ==================== */
   const LOC_FIELD_MAP = {};
   const LOC_FIELD_META = {
-    shield:      { col: "#6ef3ff", img: "img/v/v_khien.webp?v=gpu17",    sig: "img/v/v_an_khien.webp?v=gpu17", tag: "Khiên Bất Diệt" },
-    poison:      { col: "#62ff8e", img: "img/v/v_no_doc.webp?v=gpu17",   sig: "img/v/v_an_xich.webp?v=gpu17",  tag: "Chướng Khí Độc" },
-    frost:       { col: "#9eeeff", img: "img/v/v_no_bang.webp?v=gpu17",  sig: "img/v/v_khung_nuoc.webp?v=gpu17", tag: "Băng Sương Hàn" },
-    lava_kill:   { col: "#ff5436", img: "img/v/v_so.webp?v=gpu17",       sig: "img/v/v_lua.webp?v=gpu17",      tag: "Hoả Ngục Huỷ" },
-    lock_chain:  { col: "#ffd269", img: "img/v/v_xich.webp?v=gpu17",     sig: "img/v/v_an_khoa.webp?v=gpu17",  tag: "Xiềng Phong Ấn" },
-    forge:       { col: "#ff9a3c", img: "img/v/v_bua_ren.webp?v=gpu17",  sig: "img/v/v_lua.webp?v=gpu17",      tag: "Lửa Rèn Thần" },
-    double_drum: { col: "#ffe066", img: "img/v/v_trong.webp?v=gpu17",    sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Cộng Hưởng ×2" },
-    wind_move:   { col: "#74ffdf", img: "img/v/v_gio.webp?v=gpu17",      sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Gió Dịch Chuyển" },
-    summon_gate: { col: "#95ff75", img: "img/v/v_cong.webp?v=gpu17",     sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Cổng Triệu Hồi" },
-    mirror_clone:{ col: "#86d8ff", img: "img/v/v_guong.webp?v=gpu17",    sig: "img/v/v_an_mat.webp?v=gpu17",   tag: "Gương Nhân Bản" },
-    energy_gem:  { col: "#4fd8ff", img: "img/v/v_ngoc.webp?v=gpu17",     sig: "img/v/v_an_ngoc.webp?v=gpu17",  tag: "Mạch Tinh Thể" },
-    blessing:    { col: "#ffd96a", img: "img/v/v_sao_tang.webp?v=gpu17", sig: "img/v/v_an_co.webp?v=gpu17",    tag: "Linh Khí Hộ Trì" },
-    cosmic_rule: { col: "#cf88ff", img: "img/v/v_bua_chu.webp?v=gpu17",  sig: "img/v/v_an_vong.webp?v=gpu17",  tag: "Kỳ Giới Biến Luật" }
+    shield:      { col: "#6ef3ff", k16: "khien",    img: "img/v/v_khien.webp?v=gpu18",    sig: "img/v/v_an_khien.webp?v=gpu18", tag: "Khiên Bất Diệt" },
+    poison:      { col: "#62ff8e", k16: "no_doc",   img: "img/v/v_no_doc.webp?v=gpu18",   sig: "img/v/v_an_xich.webp?v=gpu18",  tag: "Chướng Khí Độc" },
+    frost:       { col: "#9eeeff", k16: "no_bang",  img: "img/v/v_no_bang.webp?v=gpu18",  sig: "img/v/v_khung_nuoc.webp?v=gpu18", tag: "Băng Sương Hàn" },
+    lava_kill:   { col: "#ff5436", k16: "so",       img: "img/v/v_so.webp?v=gpu18",       sig: "img/v/v_lua.webp?v=gpu18",      tag: "Hoả Ngục Huỷ" },
+    lock_chain:  { col: "#ffd269", k16: "xich",     img: "img/v/v_xich.webp?v=gpu18",     sig: "img/v/v_an_khoa.webp?v=gpu18",  tag: "Xiềng Phong Ấn" },
+    forge:       { col: "#ff9a3c", k16: "bua",      img: "img/v/v_bua_ren.webp?v=gpu18",  sig: "img/v/v_lua.webp?v=gpu18",      tag: "Lửa Rèn Thần" },
+    double_drum: { col: "#ffe066", k16: "trong",    img: "img/v/v_trong.webp?v=gpu18",    sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Cộng Hưởng ×2" },
+    wind_move:   { col: "#74ffdf", k16: "gio",      img: "img/v/v_gio.webp?v=gpu18",      sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Gió Dịch Chuyển" },
+    summon_gate: { col: "#95ff75", k16: "cong",     img: "img/v/v_cong.webp?v=gpu18",     sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Cổng Triệu Hồi" },
+    mirror_clone:{ col: "#86d8ff", k16: "guong",    img: "img/v/v_guong.webp?v=gpu18",    sig: "img/v/v_an_mat.webp?v=gpu18",   tag: "Gương Nhân Bản" },
+    energy_gem:  { col: "#4fd8ff", k16: "ngoc",     img: "img/v/v_ngoc.webp?v=gpu18",     sig: "img/v/v_an_ngoc.webp?v=gpu18",  tag: "Mạch Tinh Thể" },
+    blessing:    { col: "#ffd96a", k16: "sao_tang", img: "img/v/v_sao_tang.webp?v=gpu18", sig: "img/v/v_an_co.webp?v=gpu18",    tag: "Linh Khí Hộ Trì" },
+    cosmic_rule: { col: "#cf88ff", k16: "bua_chu",  img: "img/v/v_bua_chu.webp?v=gpu18",  sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Kỳ Giới Biến Luật" }
   };
 
   function classifyLocField(id) {
@@ -2446,8 +2448,10 @@
       const seal = document.createElement("div");
       seal.className = "gpu-loc-seal";
       seal.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(126, lr.width * 1.42)}px;height:${Math.max(126, lr.width * 1.42)}px;--lc:${col}`;
-      seal.innerHTML = `<img class="ls-ring" src="img/v/v_an_vong.webp?v=gpu17" alt=""><img class="ls-icon" src="${(fMeta && fMeta.img) || "img/v/v_bua_chu.webp?v=gpu17"}" alt="">`;
+      const ic16 = typeof window.v16Html === "function" ? window.v16Html((fMeta && fMeta.k16) || "bua_chu", 840, 0, 15, "ls-icon") : "";
+      seal.innerHTML = `<img class="ls-ring" src="img/v/v_an_vong.webp?v=gpu18" alt="">` + (ic16 || `<img class="ls-icon" src="${(fMeta && fMeta.img) || "img/v/v_bua_chu.webp?v=gpu18"}" alt="">`);
       document.body.appendChild(seal);
+      if (typeof window.v16Activate === "function") window.v16Activate(seal);
       seal.animate([
         { transform: "translate(-50%,-50%) scale(0.32) rotate(-80deg)", opacity: 0 },
         { transform: "translate(-50%,-50%) scale(1.16) rotate(12deg)", opacity: 1, offset: 0.32 },
@@ -3471,6 +3475,7 @@
         const lr = ln.getBoundingClientRect();
         const lx = lr.left + lr.width / 2, ly = lr.top + lr.height / 2;
         SFX.play("chain");
+        if (typeof window.playV16 === "function") window.playV16("khoa_dia", lx, ly, Math.max(148, lr.width * 1.15), 620, 0);
         GLFX.arc(lr.left + 6, ly - 55, lr.right - 6, ly + 55, "#59e8ff", 9, 0.35, false, 0.45);
         GLFX.arc(lr.right - 6, ly - 55, lr.left + 6, ly + 55, "#59e8ff", 9, 0.35, false, 0.45);
         FX.wave(lx, ly, "#59e8ff", 110);
@@ -3485,6 +3490,7 @@
         const sl = getLaneSlotRect(1, "me", 0);
         const g = ghost(sl, sampleDemoCardHTML("kimquy", 3), "g9");
         SFX.play("shield");
+        if (typeof window.playV16 === "function") window.playV16("khien_chan", sl.x, sl.y, 148, 620, 0);
         FX.ring(sl.x, sl.y, "#ffd65a", 68, 6);
         FX.ring(sl.x, sl.y, "#7fe8ff", 52, 4);
         FX.holo(sl.x, sl.y, "#ffd65a", 34);
@@ -3497,6 +3503,10 @@
       case "fire": {
         SFX.play("boom");
         SFX.play("e_lua");
+        if (typeof window.playV16 === "function") {
+          window.playV16("thieu_dot", cx, cy, 220, 660, 0);
+          window.playV16("no_lua", cx, cy, 240, 560, 60);
+        }
         FX.pillar(cx, cy + 60, "#ff6a1f", 72, 260);
         FX.wave(cx, cy, "#ff8a2b", 165);
         FX.burst(cx, cy, "#ff5518", 55, 320);
@@ -3510,6 +3520,7 @@
 
       case "thunder": {
         SFX.play("e_sam");
+        if (typeof window.playV16 === "function") window.playV16("set_danh", cx, cy, 220, 620, 0);
         const targets = [
           [cx - 115, cy - 45],
           [cx + 115, cy - 35],
@@ -3521,6 +3532,7 @@
         targets.forEach(([tx, ty], i) => {
           setTimeout(() => {
             SFX.play("e_sam");
+            if (typeof window.playV16 === "function") window.playV16(i % 2 ? "no_set" : "set_danh", tx, ty, 136, 500, 0);
             GLFX.arc(cx, cy, tx, ty, i % 2 ? "#b99aff" : "#3fe0ff", 12, 1.3, true, 0.34);
             FX.sparks(tx, ty, "#7fe8ff", 24, 280);
             FX.ring(tx, ty, "#ffffff", 74);
@@ -3534,6 +3546,10 @@
 
       case "frost": {
         SFX.play("e_bang");
+        if (typeof window.playV16 === "function") {
+          window.playV16("dong_bang", cx, cy, 220, 640, 0);
+          window.playV16("no_bang", cx, cy, 236, 560, 50);
+        }
         FX.wave(cx, cy, "#9ef0ff", 160);
         FX.rays(cx, cy, "#dffaff", 145);
         FX.shards(cx, cy, "#7fe8ff");
