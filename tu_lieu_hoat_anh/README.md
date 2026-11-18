@@ -1,6 +1,6 @@
 # Tư liệu hoạt ảnh 4×4 — Linh Thú Tam Địa
 
-**Tiến độ: 96/137 hoạt ảnh.**
+**Tiến độ: 130/137 hoạt ảnh.**
 
 Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→phải, trên→xuống), 1024×1024, mỗi khung 256×256.
 
@@ -129,40 +129,40 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `virutcosinh` | [bảng](img/v16/v_virutcosinh.webp) | ![](xem_dong/v_virutcosinh.webp) |
 | `hoavatnu` | [bảng](img/v16/v_hoavatnu.webp) | ![](xem_dong/v_hoavatnu.webp) |
 | `longbattu` | [bảng](img/v16/v_longbattu.webp) | ![](xem_dong/v_longbattu.webp) |
-| `bachho` | _đang vẽ_ | |
-| `mehoacnu` | _đang vẽ_ | |
-| `quyensu` | _đang vẽ_ | |
-| `cohoang` | _đang vẽ_ | |
-| `cunemthantoc` | _đang vẽ_ | |
-| `linhgaccuoi` | _đang vẽ_ | |
-| `bangvuong` | _đang vẽ_ | |
-| `cotnu` | _đang vẽ_ | |
-| `cucquang` | _đang vẽ_ | |
-| `culongco` | _đang vẽ_ | |
-| `hongve` | _đang vẽ_ | |
-| `kysivuottu` | _đang vẽ_ | |
-| `tuthanmienvien` | _đang vẽ_ | |
-| `quangpho` | _đang vẽ_ | |
-| `nhennu` | _đang vẽ_ | |
-| `thukieu` | _đang vẽ_ | |
-| `batkhacan` | _đang vẽ_ | |
-| `kiemlongnhan` | _đang vẽ_ | |
-| `tutraonu` | _đang vẽ_ | |
-| `bato` | _đang vẽ_ | |
-| `huyetdichhangxom` | _đang vẽ_ | |
-| `nhenhacdich` | _đang vẽ_ | |
-| `nhenngaymoi` | _đang vẽ_ | |
-| `nhennon` | _đang vẽ_ | |
-| `batty` | _đang vẽ_ | |
-| `nhennhan` | _đang vẽ_ | |
-| `phongnu` | _đang vẽ_ | |
-| `tunu` | _đang vẽ_ | |
-| `chomay` | _đang vẽ_ | |
-| `cuongdomienvien` | _đang vẽ_ | |
-| `kysibaitu` | _đang vẽ_ | |
-| `kysinguyetyeu` | _đang vẽ_ | |
-| `nhennoiloan` | _đang vẽ_ | |
-| `thachquaisokhai` | _đang vẽ_ | |
+| `bachho` | [bảng](img/v16/v_bachho.webp) | ![](xem_dong/v_bachho.webp) |
+| `mehoacnu` | [bảng](img/v16/v_mehoacnu.webp) | ![](xem_dong/v_mehoacnu.webp) |
+| `quyensu` | [bảng](img/v16/v_quyensu.webp) | ![](xem_dong/v_quyensu.webp) |
+| `cohoang` | [bảng](img/v16/v_cohoang.webp) | ![](xem_dong/v_cohoang.webp) |
+| `cunemthantoc` | [bảng](img/v16/v_cunemthantoc.webp) | ![](xem_dong/v_cunemthantoc.webp) |
+| `linhgaccuoi` | [bảng](img/v16/v_linhgaccuoi.webp) | ![](xem_dong/v_linhgaccuoi.webp) |
+| `bangvuong` | [bảng](img/v16/v_bangvuong.webp) | ![](xem_dong/v_bangvuong.webp) |
+| `cotnu` | [bảng](img/v16/v_cotnu.webp) | ![](xem_dong/v_cotnu.webp) |
+| `cucquang` | [bảng](img/v16/v_cucquang.webp) | ![](xem_dong/v_cucquang.webp) |
+| `culongco` | [bảng](img/v16/v_culongco.webp) | ![](xem_dong/v_culongco.webp) |
+| `hongve` | [bảng](img/v16/v_hongve.webp) | ![](xem_dong/v_hongve.webp) |
+| `kysivuottu` | [bảng](img/v16/v_kysivuottu.webp) | ![](xem_dong/v_kysivuottu.webp) |
+| `tuthanmienvien` | [bảng](img/v16/v_tuthanmienvien.webp) | ![](xem_dong/v_tuthanmienvien.webp) |
+| `quangpho` | [bảng](img/v16/v_quangpho.webp) | ![](xem_dong/v_quangpho.webp) |
+| `nhennu` | [bảng](img/v16/v_nhennu.webp) | ![](xem_dong/v_nhennu.webp) |
+| `thukieu` | [bảng](img/v16/v_thukieu.webp) | ![](xem_dong/v_thukieu.webp) |
+| `batkhacan` | [bảng](img/v16/v_batkhacan.webp) | ![](xem_dong/v_batkhacan.webp) |
+| `kiemlongnhan` | [bảng](img/v16/v_kiemlongnhan.webp) | ![](xem_dong/v_kiemlongnhan.webp) |
+| `tutraonu` | [bảng](img/v16/v_tutraonu.webp) | ![](xem_dong/v_tutraonu.webp) |
+| `bato` | [bảng](img/v16/v_bato.webp) | ![](xem_dong/v_bato.webp) |
+| `huyetdichhangxom` | [bảng](img/v16/v_huyetdichhangxom.webp) | ![](xem_dong/v_huyetdichhangxom.webp) |
+| `nhenhacdich` | [bảng](img/v16/v_nhenhacdich.webp) | ![](xem_dong/v_nhenhacdich.webp) |
+| `nhenngaymoi` | [bảng](img/v16/v_nhenngaymoi.webp) | ![](xem_dong/v_nhenngaymoi.webp) |
+| `nhennon` | [bảng](img/v16/v_nhennon.webp) | ![](xem_dong/v_nhennon.webp) |
+| `batty` | [bảng](img/v16/v_batty.webp) | ![](xem_dong/v_batty.webp) |
+| `nhennhan` | [bảng](img/v16/v_nhennhan.webp) | ![](xem_dong/v_nhennhan.webp) |
+| `phongnu` | [bảng](img/v16/v_phongnu.webp) | ![](xem_dong/v_phongnu.webp) |
+| `tunu` | [bảng](img/v16/v_tunu.webp) | ![](xem_dong/v_tunu.webp) |
+| `chomay` | [bảng](img/v16/v_chomay.webp) | ![](xem_dong/v_chomay.webp) |
+| `cuongdomienvien` | [bảng](img/v16/v_cuongdomienvien.webp) | ![](xem_dong/v_cuongdomienvien.webp) |
+| `kysibaitu` | [bảng](img/v16/v_kysibaitu.webp) | ![](xem_dong/v_kysibaitu.webp) |
+| `kysinguyetyeu` | [bảng](img/v16/v_kysinguyetyeu.webp) | ![](xem_dong/v_kysinguyetyeu.webp) |
+| `nhennoiloan` | [bảng](img/v16/v_nhennoiloan.webp) | ![](xem_dong/v_nhennoiloan.webp) |
+| `thachquaisokhai` | [bảng](img/v16/v_thachquaisokhai.webp) | ![](xem_dong/v_thachquaisokhai.webp) |
 | `thiettam` | _đang vẽ_ | |
 | `hongphuthuy` | _đang vẽ_ | |
 | `songchuynu` | _đang vẽ_ | |
@@ -180,7 +180,7 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
 | [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (toàn bộ vẽ bằng ChatGPT; 41 hiệu ứng chung và 22 ảnh giao diện đã vẽ lại 16/11 thay ảnh Google Flow) | 121 |
-| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 96 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 130 |
 | [`anh_goc_chatgpt/`](anh_goc_chatgpt) | Ảnh lưới GỐC ChatGPT chưa cắt (thẻ, chiến địa, mặt lưng, giao diện, hiệu ứng) — xem README trong thư mục | 225 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).
