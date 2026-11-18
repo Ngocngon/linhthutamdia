@@ -1,6 +1,6 @@
 # Tư liệu hoạt ảnh 4×4 — Linh Thú Tam Địa
 
-**Tiến độ: 130/137 hoạt ảnh.**
+**Tiến độ: 136/137 hoạt ảnh.**
 
 Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→phải, trên→xuống), 1024×1024, mỗi khung 256×256.
 
@@ -163,13 +163,13 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | `kysinguyetyeu` | [bảng](img/v16/v_kysinguyetyeu.webp) | ![](xem_dong/v_kysinguyetyeu.webp) |
 | `nhennoiloan` | [bảng](img/v16/v_nhennoiloan.webp) | ![](xem_dong/v_nhennoiloan.webp) |
 | `thachquaisokhai` | [bảng](img/v16/v_thachquaisokhai.webp) | ![](xem_dong/v_thachquaisokhai.webp) |
-| `thiettam` | _đang vẽ_ | |
-| `hongphuthuy` | _đang vẽ_ | |
-| `songchuynu` | _đang vẽ_ | |
-| `socnu` | _đang vẽ_ | |
+| `thiettam` | [bảng](img/v16/v_thiettam.webp) | ![](xem_dong/v_thiettam.webp) |
+| `hongphuthuy` | [bảng](img/v16/v_hongphuthuy.webp) | ![](xem_dong/v_hongphuthuy.webp) |
+| `songchuynu` | [bảng](img/v16/v_songchuynu.webp) | ![](xem_dong/v_songchuynu.webp) |
+| `socnu` | [bảng](img/v16/v_socnu.webp) | ![](xem_dong/v_socnu.webp) |
 | `baithu` | _đang vẽ_ | |
-| `daudanthieunu` | _đang vẽ_ | |
-| `phonghiem` | _đang vẽ_ | |
+| `daudanthieunu` | [bảng](img/v16/v_daudanthieunu.webp) | ![](xem_dong/v_daudanthieunu.webp) |
+| `phonghiem` | [bảng](img/v16/v_phonghiem.webp) | ![](xem_dong/v_phonghiem.webp) |
 
 ## Toàn bộ ảnh game (đúng đường dẫn trong app)
 
@@ -180,7 +180,7 @@ Mỗi tệp là một bảng 4×4 = 16 khung hình liên tiếp (đọc trái→
 | [`img/a/`](img/a) | Nền đấu trường | 10 |
 | [`img/u/`](img/u) | Giao diện (gói thẻ, rương, chế độ...) và 28 mặt lưng mới `bk_*` (chưa gắn vào game) | 50 |
 | [`img/v/`](img/v) | Vật thể chiêu thức 1 khung đang dùng trong game (toàn bộ vẽ bằng ChatGPT; 41 hiệu ứng chung và 22 ảnh giao diện đã vẽ lại 16/11 thay ảnh Google Flow) | 121 |
-| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 130 |
+| [`img/v16/`](img/v16) | Hoạt ảnh 4×4 mới (bảng trên) | 136 |
 | [`anh_goc_chatgpt/`](anh_goc_chatgpt) | Ảnh lưới GỐC ChatGPT chưa cắt (thẻ, chiến địa, mặt lưng, giao diện, hiệu ứng) — xem README trong thư mục | 225 |
 
 Đã kiểm: không có hai tệp nào trùng nội dung trong thư mục này. Không gồm bảng ghép `img/s` và ảnh thu nhỏ (chỉ là bản ghép lại của `img/c`).

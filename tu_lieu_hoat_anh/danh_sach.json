@@ -1176,7 +1176,7 @@
   "tep": "img/v16/v_thiettam.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6174,
@@ -1185,7 +1185,7 @@
   "tep": "img/v16/v_hongphuthuy.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6175,
@@ -1194,7 +1194,7 @@
   "tep": "img/v16/v_songchuynu.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6176,
@@ -1203,7 +1203,7 @@
   "tep": "img/v16/v_socnu.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6177,
@@ -1221,7 +1221,7 @@
   "tep": "img/v16/v_daudanthieunu.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  },
  {
   "so": 6179,
@@ -1230,6 +1230,6 @@
   "tep": "img/v16/v_phonghiem.webp",
   "luoi": "4x4",
   "khung": 16,
-  "xong": false
+  "xong": true
  }
 ]
