@@ -2284,5 +2284,225 @@
  {
   "tep": "the/nguyetthach_rieng.png",
   "noi_dung": "Nguyệt Thạch (ảnh đơn, vẽ lại 15/11)"
+ },
+ {
+  "tep": "hieu_ung_rieng/g8000.jpg",
+  "luoi": 8000,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "kiemnuuminh",
+   "nuloithan",
+   "tonu",
+   "nuthantien"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8001.jpg",
+  "luoi": 8001,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "bangca",
+   "kenuotsao",
+   "maynuotthoigian",
+   "nghichtuvuong"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8002.jpg",
+  "luoi": 8002,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "nuloimienvien",
+   "thuanung",
+   "satvuong",
+   "baonu"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8003.jpg",
+  "luoi": 8003,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "channu",
+   "bavuongmienvien",
+   "aosi",
+   "baochuahauthe"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8004.jpg",
+  "luoi": 8004,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "chonvacay",
+   "chutruongnu",
+   "dakhuc",
+   "docnutrang"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8005.jpg",
+  "luoi": 8005,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "hongtam",
+   "huyetmenu",
+   "kiemquyen",
+   "kysidichkhuyen"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8006.jpg",
+  "luoi": 8006,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "langthan",
+   "matocvutru",
+   "namtuocmatna",
+   "nhannhenquai"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8007.jpg",
+  "luoi": 8007,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "nhendotham",
+   "nuhongtam",
+   "phonglinhnu",
+   "saotrongdau"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8008.jpg",
+  "luoi": 8008,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "tamlinhtu",
+   "thetdich",
+   "thuyhau",
+   "tieulong"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8009.jpg",
+  "luoi": 8009,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "virutcosinh",
+   "hoavatnu",
+   "longbattu",
+   "bachho"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8010.jpg",
+  "luoi": 8010,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "mehoacnu",
+   "quyensu",
+   "cohoang",
+   "cunemthantoc"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8011.jpg",
+  "luoi": 8011,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "linhgaccuoi",
+   "bangvuong",
+   "cotnu",
+   "cucquang"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8012.jpg",
+  "luoi": 8012,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "culongco",
+   "hongve",
+   "kysivuottu",
+   "tuthanmienvien"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8013.jpg",
+  "luoi": 8013,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "quangpho",
+   "nhennu",
+   "thukieu",
+   "batkhacan"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8014.jpg",
+  "luoi": 8014,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "kiemlongnhan",
+   "tutraonu",
+   "bato",
+   "huyetdichhangxom"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8015.jpg",
+  "luoi": 8015,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "nhenhacdich",
+   "nhenngaymoi",
+   "nhennon",
+   "batty"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8016.jpg",
+  "luoi": 8016,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "nhennhan",
+   "phongnu",
+   "tunu",
+   "chomay"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8017.jpg",
+  "luoi": 8017,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "cuongdomienvien",
+   "kysibaitu",
+   "kysinguyetyeu",
+   "nhennoiloan"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8018.jpg",
+  "luoi": 8018,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "thachquaisokhai",
+   "thiettam",
+   "hongphuthuy",
+   "songchuynu"
+  ]
+ },
+ {
+  "tep": "hieu_ung_rieng/g8019.jpg",
+  "luoi": 8019,
+  "loai": "vật thể chiêu riêng (vẽ lại thay Flow 18/11)",
+  "o_trai_phai_tren_duoi": [
+   "socnu",
+   "baithu",
+   "daudanthieunu",
+   "phonghiem"
+  ]
  }
 ]

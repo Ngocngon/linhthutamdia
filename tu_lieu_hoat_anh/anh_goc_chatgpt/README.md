@@ -8,6 +8,7 @@ Toàn bộ ảnh lưới gốc do ChatGPT vẽ (chưa cắt), lưu JPG chất l�
 | [`the/`](the) | Thẻ bài: g005–g053 lô thử 13/11, g1000–g1167 lô chính và vẽ lại, g3000–g3018 thẻ phụ (tên tệp ghi mã 4 thẻ) | 173 |
 | [`chien_dia/`](chien_dia) | Chiến địa g2000–g2027 | 28 |
 | [`mat_lung/`](mat_lung) | Mặt lưng 7 phẩm chất g4000–g4006 | 7 |
+| [`hieu_ung_rieng/`](hieu_ung_rieng) | Vật thể chiêu riêng 80 thẻ, vẽ lại thay ảnh Flow 18/11: g8000–g8019 | 20 |
 | [`giao_dien_hieu_ung/`](giao_dien_hieu_ung) | Vẽ lại thay ảnh Flow 16/11: giao diện g7000–g7005, hiệu ứng chung g7010–g7020 | 17 |
 
 Tra lưới nào chứa thẻ nào: `danh_sach.json`.
@@ -239,3 +240,23 @@ Tra lưới nào chứa thẻ nào: `danh_sach.json`.
 | [the/g3017=bayxac+kientho+quy+da.jpg](the/g3017=bayxac+kientho+quy+da.jpg) | thẻ phụ | bayxac, kientho, quy, da |
 | [the/g3018=nuhondoc+vetcandoc+aoanh+bansaota.jpg](the/g3018=nuhondoc+vetcandoc+aoanh+bansaota.jpg) | thẻ phụ | nuhondoc, vetcandoc, aoanh, bansaota |
 | [the/nguyetthach_rieng.png](the/nguyetthach_rieng.png) |  | Nguyệt Thạch (ảnh đơn, vẽ lại 15/11) |
+| [hieu_ung_rieng/g8000.jpg](hieu_ung_rieng/g8000.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | kiemnuuminh, nuloithan, tonu, nuthantien |
+| [hieu_ung_rieng/g8001.jpg](hieu_ung_rieng/g8001.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | bangca, kenuotsao, maynuotthoigian, nghichtuvuong |
+| [hieu_ung_rieng/g8002.jpg](hieu_ung_rieng/g8002.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | nuloimienvien, thuanung, satvuong, baonu |
+| [hieu_ung_rieng/g8003.jpg](hieu_ung_rieng/g8003.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | channu, bavuongmienvien, aosi, baochuahauthe |
+| [hieu_ung_rieng/g8004.jpg](hieu_ung_rieng/g8004.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | chonvacay, chutruongnu, dakhuc, docnutrang |
+| [hieu_ung_rieng/g8005.jpg](hieu_ung_rieng/g8005.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | hongtam, huyetmenu, kiemquyen, kysidichkhuyen |
+| [hieu_ung_rieng/g8006.jpg](hieu_ung_rieng/g8006.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | langthan, matocvutru, namtuocmatna, nhannhenquai |
+| [hieu_ung_rieng/g8007.jpg](hieu_ung_rieng/g8007.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | nhendotham, nuhongtam, phonglinhnu, saotrongdau |
+| [hieu_ung_rieng/g8008.jpg](hieu_ung_rieng/g8008.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | tamlinhtu, thetdich, thuyhau, tieulong |
+| [hieu_ung_rieng/g8009.jpg](hieu_ung_rieng/g8009.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | virutcosinh, hoavatnu, longbattu, bachho |
+| [hieu_ung_rieng/g8010.jpg](hieu_ung_rieng/g8010.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | mehoacnu, quyensu, cohoang, cunemthantoc |
+| [hieu_ung_rieng/g8011.jpg](hieu_ung_rieng/g8011.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | linhgaccuoi, bangvuong, cotnu, cucquang |
+| [hieu_ung_rieng/g8012.jpg](hieu_ung_rieng/g8012.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | culongco, hongve, kysivuottu, tuthanmienvien |
+| [hieu_ung_rieng/g8013.jpg](hieu_ung_rieng/g8013.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | quangpho, nhennu, thukieu, batkhacan |
+| [hieu_ung_rieng/g8014.jpg](hieu_ung_rieng/g8014.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | kiemlongnhan, tutraonu, bato, huyetdichhangxom |
+| [hieu_ung_rieng/g8015.jpg](hieu_ung_rieng/g8015.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | nhenhacdich, nhenngaymoi, nhennon, batty |
+| [hieu_ung_rieng/g8016.jpg](hieu_ung_rieng/g8016.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | nhennhan, phongnu, tunu, chomay |
+| [hieu_ung_rieng/g8017.jpg](hieu_ung_rieng/g8017.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | cuongdomienvien, kysibaitu, kysinguyetyeu, nhennoiloan |
+| [hieu_ung_rieng/g8018.jpg](hieu_ung_rieng/g8018.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | thachquaisokhai, thiettam, hongphuthuy, songchuynu |
+| [hieu_ung_rieng/g8019.jpg](hieu_ung_rieng/g8019.jpg) | vật thể chiêu riêng (vẽ lại thay Flow 18/11) | socnu, baithu, daudanthieunu, phonghiem |
