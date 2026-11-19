@@ -447,19 +447,23 @@ setTimeout(accBoot,0);
 function renderProfile(){renderAcc();
   $("avGrid").innerHTML=store.avs.map(k=>`<button type="button" class="avb${store.avatar===k?" on":""}" style="--hc:${HC[C[k].h]}" data-av="${k}" aria-label="${C[k].n}">${artFace(k)}</button>`).join("");
 }
-/* ---- đồng hồ lượt & dây cháy Marvel Snap ---- */
-function resetTimer(armed){tLeft=TURN_SEC;tArmed=armed;tLast=0;tBeep=0;paintTimer();}
+/* ---- đồng hồ lượt 90s & dây cháy Marvel Snap (chỉ cập nhật chữ mỗi giây để nhẹ DOM) ---- */
+let _tPrevKey="";
+function resetTimer(armed){tLeft=TURN_SEC;tArmed=armed;tLast=0;tBeep=0;_tPrevKey="";paintTimer();}
 function paintTimer(){
   if(!G)return;
-  const play=playing(),bar=$("tbar"),prog=play?Math.max(0,Math.min(1,tLeft/TURN_SEC)):0;
-  $("tfill").style.transform=`scaleX(${prog.toFixed(4)})`;
-  bar.style.setProperty("--tprog",prog.toFixed(4));
-  const low=play&&tLeft<=10;
-  bar.classList.toggle("low",low);bar.classList.toggle("idle",!play||!tArmed);
+  const play=playing(),bar=$("tbar"),prog=play?Math.max(0,Math.min(1,tLeft/TURN_SEC)):0,pStr=prog.toFixed(4);
+  $("tfill").style.transform=`scaleX(${pStr})`;
+  bar.style.setProperty("--tprog",pStr);
+  const sec=Math.max(0,Math.ceil(tLeft)),low=play&&tArmed&&sec<=15,idle=!play||!tArmed;
+  const key=`${play?1:0}|${idle?1:0}|${low?1:0}|${G.turn}|${sec}`;
+  if(key===_tPrevKey)return;
+  _tPrevKey=key;
+  bar.classList.toggle("low",low);bar.classList.toggle("idle",idle);
   $("btnEnd").classList.toggle("urgent",low);
   if(play){
     const turnLbl=G.turn===E.turns(G)?"LƯỢT CUỐI":`${G.turn}/${E.turns(G)}`;
-    $("endSub").textContent=low?`🔥 ${Math.max(0,Math.ceil(tLeft))}s · ${turnLbl}`:turnLbl;
+    $("endSub").textContent=tArmed?(low?`🔥 ${sec}s · ${turnLbl}`:`${sec}s · ${turnLbl}`):turnLbl;
   }
 }
 function tickTimer(){

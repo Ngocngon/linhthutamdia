@@ -23,18 +23,18 @@
 
   /* ==================== 1. ĐĂNG KÝ & NẠP SẴN KHO 133 TRANH VẼ ĐẠO CỤ ĐÔNG SƠN (.WEBP) ==================== */
   const NEW_PAINTED_VFX = {
-    nam_dam_lua: "img/v/v_nam_dam_lua.webp?v=gpu18",
-    quyen_nuoc:  "img/v/v_quyen_nuoc.webp?v=gpu18",
-    cung_doc:    "img/v/v_cung_doc.webp?v=gpu18",
-    ham_nanh:    "img/v/v_ham_nanh.webp?v=gpu18",
-    ham_tren:    "img/v/v_ham_tren.webp?v=gpu18",
-    ham_duoi:    "img/v/v_ham_duoi.webp?v=gpu18",
-    bua_ren:     "img/v/v_bua_ren.webp?v=gpu18",
-    luoi_nhen:   "img/v/v_luoi_nhen.webp?v=gpu18",
-    re_da:       "img/v/v_re_da.webp?v=gpu18",
-    quan_co:     "img/v/v_quan_co.webp?v=gpu18",
-    phao_tre:    "img/v/v_phao_tre.webp?v=gpu18",
-    vet_lom:     "img/v/v_vet_lom.webp?v=gpu18"
+    nam_dam_lua: "img/v/v_nam_dam_lua.webp?v=gpu19",
+    quyen_nuoc:  "img/v/v_quyen_nuoc.webp?v=gpu19",
+    cung_doc:    "img/v/v_cung_doc.webp?v=gpu19",
+    ham_nanh:    "img/v/v_ham_nanh.webp?v=gpu19",
+    ham_tren:    "img/v/v_ham_tren.webp?v=gpu19",
+    ham_duoi:    "img/v/v_ham_duoi.webp?v=gpu19",
+    bua_ren:     "img/v/v_bua_ren.webp?v=gpu19",
+    luoi_nhen:   "img/v/v_luoi_nhen.webp?v=gpu19",
+    re_da:       "img/v/v_re_da.webp?v=gpu19",
+    quan_co:     "img/v/v_quan_co.webp?v=gpu19",
+    phao_tre:    "img/v/v_phao_tre.webp?v=gpu19",
+    vet_lom:     "img/v/v_vet_lom.webp?v=gpu19"
   };
 
   if (typeof IMGS === "object" && IMGS) {
@@ -47,7 +47,7 @@
   function vfxUrl(key) {
     if (!key) return "";
     if (typeof IMGS === "object" && IMGS && IMGS.v && IMGS.v[key]) return IMGS.v[key];
-    return `img/v/v_${key}.webp?v=gpu18`;
+    return `img/v/v_${key}.webp?v=gpu19`;
   }
 
   function getVfxImg(key) {
@@ -63,18 +63,10 @@
     return im;
   }
 
-  /* Nạp trước toàn bộ sprite trụ cột ngay khi khởi chạy để khung hình đầu tiên mượt tức thì */
+  /* Chỉ nạp sẵn 8 dải dây kéo ngang dùng trên Canvas2D (toàn bộ 137 tờ v16 đã tải thông minh theo bộ bài trận đấu) */
   const CORE_PRELOAD_KEYS = [
-    "nam_dam_lua", "quyen_nuoc", "cung_doc", "ham_nanh", "ham_tren", "ham_duoi",
-    "bua_ren", "luoi_nhen", "re_da", "quan_co", "phao_tre", "vet_lom",
-    "quyensu", "songchuynu", "baithu", "bachho", "cohoang", "satvuong", "nuloithan",
-    "mehoacnu", "nuthantien", "docnutrang", "chonvacay", "socnu", "thiettam",
-    "kiemquyen", "kiemnuuminh", "kiemlongnhan", "batkhacan", "tutraonu", "thukieu",
-    "tieulong", "batty", "huyetdichhangxom", "nhennhan", "nhenhacdich", "tonu", "bato",
-    "tunu", "phongnu", "kiem", "dao", "bua", "ten", "tay", "xich", "day", "bua_chu",
-    "guong", "co", "trong", "so", "cong", "gio", "lua", "khien", "ngoc",
-    "no_lua", "no_doc", "no_set", "no_bang", "no_sang", "no_toi",
-    "vet_chem", "vet_cao", "manh_vo", "song_xung", "sao_tang", "bui_dap"
+    "luoi_nhen", "re_da", "day", "xich",
+    "batty", "huyetdichhangxom", "nhenhacdich", "nhennhan"
   ];
   for (const k of CORE_PRELOAD_KEYS) getVfxImg(k);
 
@@ -345,14 +337,24 @@
     }
     if (/kiếm|đao|mã tấu|gươm|rìu|thương|giáo|chém/.test(m)) return "slash_cleave";
     if (/độc|rết|nhện|ong|rắn|sương|nhớt|vi-rút/.test(m)) return "venom_hex";
+    if (id && typeof SIGV === "object" && SIGV[id]) {
+      const ku = SIGV[id].kieu;
+      if (ku === "giang") return "sky_hammer";
+      if (ku === "nem_vong") return "throw_daggers";
+      if (ku === "quet") return "slash_cleave";
+    }
     return stepKind === "kill" ? "slash_cleave" : "mystic_seal";
   }
 
-  /* Chọn đúng sprite tranh vẽ riêng của thẻ từ SIGV (79 thẻ có ảnh riêng!) hoặc fallback sang vũ khí Đông Sơn tương ứng */
+  /* Chọn đúng sprite tranh vẽ riêng của thẻ từ SIGV (đủ 80/80 thẻ có tờ 16 khung v16!) hoặc fallback sang vũ khí Đông Sơn */
   function pickCardSpriteKey(srcId, fallbackKey, allowedKieu) {
-    if (srcId && typeof SIGV === "object" && SIGV[srcId] && typeof IMGS === "object" && IMGS.v && IMGS.v[SIGV[srcId].img]) {
-      if (!allowedKieu || allowedKieu.includes(SIGV[srcId].kieu)) {
-        return SIGV[srcId].img;
+    if (srcId && typeof SIGV === "object" && SIGV[srcId]) {
+      const k = String(SIGV[srcId].img || "").replace(/^v_/, "") || srcId;
+      if (typeof IMGS === "object" && IMGS && IMGS.v16 && IMGS.v16[k] && SIGV[srcId].kieu !== "keo") {
+        return k;
+      }
+      if (typeof IMGS === "object" && IMGS && IMGS.v && IMGS.v[k]) {
+        if (!allowedKieu || allowedKieu.includes(SIGV[srcId].kieu)) return k;
       }
     }
     return fallbackKey;
@@ -424,23 +426,22 @@
     return d;
   }
 
-  /* Tạo 3 tàn ảnh phát sáng (Motion-Blur Afterimages) bám theo đường lao của thẻ chiến binh */
-  function spawnCardAfterimages(sp, lx, ly, cardHtml, glowCol) {
+  /* Tạo 2 tàn ảnh nhẹ mượt (chỉ transform + opacity, không dùng filter blur nặng GPU) bám theo đường lao */
+  function spawnCardAfterimages(sp, lx, ly, cardHtml) {
     if (!sp || !cardHtml || (typeof reduced !== "undefined" && reduced)) return;
-    [0.26, 0.54, 0.78].forEach((f, idx) => {
+    [0.34, 0.68].forEach((f, idx) => {
       fxT(() => {
         const ai = ghost(sp, cardHtml, "g9 choreo-afterimage");
-        ai.style.setProperty("--ai-glow", glowCol || "#ffd65a");
         ai.animate([
-          { transform: `perspective(650px) translate3d(${(lx * f).toFixed(1)}px, ${(ly * f).toFixed(1)}px, ${(24 + idx * 10)}px) scale(${(1.06 + idx * 0.06).toFixed(2)})`, opacity: 0.52 - idx * 0.1 },
-          { transform: `perspective(650px) translate3d(${(lx * (f + 0.06)).toFixed(1)}px, ${(ly * (f + 0.06)).toFixed(1)}px, 10px) scale(0.96)`, opacity: 0 }
-        ], { duration: 230, easing: "ease-out", fill: "forwards" }).onfinish = () => ai.remove();
-        fxT(() => ai.remove(), 280);
-      }, 45 + idx * 32);
+          { transform: `perspective(650px) translate3d(${(lx * f).toFixed(1)}px, ${(ly * f).toFixed(1)}px, ${(20 + idx * 8)}px) scale(${(1.04 + idx * 0.04).toFixed(2)})`, opacity: 0.42 - idx * 0.12 },
+          { transform: `perspective(650px) translate3d(${(lx * (f + 0.05)).toFixed(1)}px, ${(ly * (f + 0.05)).toFixed(1)}px, 8px) scale(0.96)`, opacity: 0 }
+        ], { duration: 200, easing: "ease-out", fill: "forwards" }).onfinish = () => ai.remove();
+        fxT(() => ai.remove(), 250);
+      }, 45 + idx * 36);
     });
   }
 
-  /* Cú nổ va chạm đa lớp + Hit-Stop khựng hình 45ms chuẩn game đối kháng AAA */
+  /* Cú nổ va chạm tối ưu hoá GPU: 1 tờ nổ v16 sắc nét + vòng xung kích WebGL + dấu vết mặt thẻ + Hit-Stop 45ms */
   function triggerPaintedImpact(tp, opts) {
     if (!tp) return;
     const o = opts || {};
@@ -450,38 +451,30 @@
     const dstEl = o.dstEl || null;
     const dx = o.dx || 0, dy = o.dy || 0;
     const dist = Math.hypot(dx, dy) || 1;
-    const shake = o.shake != null ? o.shake : 6.8;
+    const shake = o.shake != null ? o.shake : 6.2;
 
-    /* Lớp 1: Vòng sóng xung kích Đông Sơn bùng nở */
-    spawnPaintedBurst("song_xung", tp.x, tp.y, o.ringSize || 186, col, 390, Math.random() * 90);
-    /* Lớp 2: Quả cầu nổ nguyên tố tranh vẽ (lửa / độc / sét / băng / ánh sáng / bóng tối) */
-    spawnPaintedBurst(burstKey, tp.x, tp.y, o.burstSize || 168, col, 430, (Math.random() - 0.5) * 30);
-    /* Lớp 3: Mảnh vỡ hoặc sao văng */
-    if (o.shards !== false) {
-      spawnPaintedBurst(o.shardKey || "manh_vo", tp.x, tp.y, 146, col, 460, (Math.random() - 0.5) * 40);
-    }
-    /* Lớp 4: Dấu ấn vết chém / vết cào / hố lõm trên mặt thẻ */
-    if (decalKey) {
-      spawnMark(decalKey, tp.x, tp.y, o.decalSize || Math.max(132, (tp.w || 56) * 2.15), col, o.decalDur || 520, o.decalRot || 0, o.decalScreen !== false);
+    /* Lớp 1: Quả cầu nổ nguyên tố 16 khung sắc nét (không chồng đè 3-4 tờ nổ cùng lúc gây mù sáng) */
+    spawnPaintedBurst(burstKey, tp.x, tp.y, o.burstSize || 164, col, 440, (Math.random() - 0.5) * 18);
+    /* Lớp 2: Dấu ấn vết chém / vết cào / hố lõm trên mặt thẻ (nếu khác lớp nổ chính) */
+    if (decalKey && decalKey !== burstKey) {
+      spawnMark(decalKey, tp.x, tp.y, o.decalSize || Math.max(128, (tp.w || 56) * 2.05), col, o.decalDur || 480, o.decalRot || 0, o.decalScreen !== false);
     }
 
     if (window.GLFX) {
-      if (GLFX.shockwave) GLFX.shockwave(tp.x, tp.y, col, 165, 0.36);
+      if (GLFX.ring) GLFX.ring(tp.x, tp.y, col, o.ringSize ? o.ringSize * 0.58 : 96, 0.36, 0.88);
       if (GLFX.impulseShake) GLFX.impulseShake(shake, dx / dist, dy / dist);
     }
 
-    /* Hit-Stop 45ms: Thẻ trúng đòn loé sáng trắng-vàng và khựng cứng 45ms trước khi bật nảy 3D! */
+    /* Hit-Stop 45ms: Thẻ trúng đòn khựng nảy 3D sắc gọn */
     if (dstEl && dstEl.isConnected) {
-      dstEl.style.filter = "brightness(2.45) contrast(1.18) saturate(1.3)";
       fxT(() => {
         if (dstEl && dstEl.isConnected) {
-          dstEl.style.filter = "";
           dstEl.animate([
             { transform: "perspective(560px) translate3d(0,0,0) scale(1)" },
-            { transform: `perspective(560px) translate3d(${(dx / dist * 16).toFixed(1)}px, ${(dy / dist * 16).toFixed(1)}px, -28px) rotateX(20deg) rotateZ(${(dx >= 0 ? 7 : -7)}deg) scale(0.84)`, offset: 0.28 },
-            { transform: `perspective(560px) translate3d(${(-dx / dist * 4).toFixed(1)}px, ${(-dy / dist * 4).toFixed(1)}px, 6px) scale(1.04)`, offset: 0.68 },
+            { transform: `perspective(560px) translate3d(${(dx / dist * 15).toFixed(1)}px, ${(dy / dist * 15).toFixed(1)}px, -24px) rotateX(18deg) rotateZ(${(dx >= 0 ? 7 : -7)}deg) scale(0.85)`, offset: 0.28 },
+            { transform: `perspective(560px) translate3d(${(-dx / dist * 4).toFixed(1)}px, ${(-dy / dist * 4).toFixed(1)}px, 6px) scale(1.03)`, offset: 0.68 },
             { transform: "perspective(560px) translate3d(0,0,0) scale(1)" }
-          ], { duration: 340, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+          ], { duration: 320, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
         }
         if (o.afterHitStop) o.afterHitStop();
       }, 45);
@@ -491,11 +484,11 @@
   }
 
   /* ==================== 4. ENGINE DÂY KÉO MESH-RIBBON 60FPS BIẾN DẠNG ẢNH TRANH VẼ (.WEBP) TRÊN CANVAS2D ==================== */
-  /* Cắt lát ảnh sprite ngang (.webp) thành 80 lát dọc và uốn mượt liền mạch 100% trên Canvas2D! */
+  /* Cắt lát ảnh sprite ngang (.webp) thành 48 lát dọc tối ưu hoá tốc độ vẽ 60FPS trên Canvas2D */
   function drawWarpedSpriteRibbon(ctx, img, ptFn, thickness, slices, flipY) {
     if (!img || !img.complete || !img.naturalWidth) return false;
     const iw = img.naturalWidth, ih = img.naturalHeight;
-    const N = Math.max(slices || 80, 76);
+    const N = Math.min(52, Math.max(slices || 48, 36));
     let prev = ptFn(0);
     for (let i = 0; i < N; i++) {
       const u1 = (i + 1) / N;
@@ -1210,11 +1203,10 @@
     /* ---------- NHÓM A1: THIẾT QUYỀN RỒNG LỬA / ẤN CHƯỞNG PHẬT KIM / THỦY TỔ QUYỀN ---------- */
     if (style === "melee_fist" || style === "water_fist" || style === "arena_ko" || style === "shield_bash") {
       const col = style === "water_fist" ? "#3fe0ff" : style === "arena_ko" ? "#ff7a2b" : "#ffd65a";
-      const fistKey = style === "water_fist" ? "quyen_nuoc"
+      const fistKey = style === "water_fist" ? pickCardSpriteKey(srcId, "quyen_nuoc")
         : style === "shield_bash" ? pickCardSpriteKey(srcId, "batkhacan", ["quet", "phong", "nem_vong"])
-        : srcId === "quyensu" ? "quyensu"
-        : "nam_dam_lua";
-      const burstKey = style === "water_fist" ? "no_bang" : "no_lua";
+        : pickCardSpriteKey(srcId, "nam_dam_lua");
+      const burstKey = style === "water_fist" ? "dong_bang" : style === "shield_bash" ? "khien_chan" : "no_lua";
 
       if (isFirstInGrp && srcEl && !isMulti) {
         const g = makeSrcGhost(sp, cfg.srcUid, srcEl);
@@ -1254,7 +1246,6 @@
 
       fxT(() => {
         SFX.play(style === "shield_bash" ? "horn" : "punch");
-        if (typeof window.playV16 === "function") window.playV16(style === "water_fist" ? "dong_bang" : style === "shield_bash" ? "khien_chan" : "thieu_dot", tp.x, tp.y, 132, 480, 0);
         triggerPaintedImpact(tp, {
           col,
           burst: burstKey,
@@ -1346,7 +1337,7 @@
       }
 
       fxT(() => {
-        const ammoKey = isCannon ? "tieulong" : isVenom ? "nuthantien" : pickCardSpriteKey(srcId, "ten", ["phong"]);
+        const ammoKey = pickCardSpriteKey(srcId, isCannon ? "tieulong" : isVenom ? "nuthantien" : "ten", ["phong", "nem_vong"]);
         const ammo = spawnProp(ammoKey, sp.x, sp.y, isCannon ? 132 : 142, isCannon ? 98 : 68, col, 42);
         const arcLift = isMulti ? -Math.min(105, 44 + dist * 0.26) : -Math.min(38, dist * 0.14);
         ammo.animate([
@@ -1447,10 +1438,10 @@
         ], { duration: 440 });
       }
 
-      /* Nếu là Bạch Hổ / Lang Thần: Phóng linh thú tranh vẽ v_bachho.webp / v_langthan.webp vồ tới trước khi ngoạm! */
-      if (srcId === "bachho" || srcId === "langthan") {
+      /* Nếu thẻ linh thú có tờ hoạt ảnh riêng (bachho, langthan, culongco, chomay...): phóng linh thú v16 vồ tới! */
+      if (style !== "claw_rip" && srcId && typeof SIGV === "object" && SIGV[srcId] && SIGV[srcId].kieu !== "keo") {
         fxT(() => {
-          const beast = spawnProp(srcId, sp.x, sp.y, 168, 136, "#ffd65a", 42);
+          const beast = spawnProp(pickCardSpriteKey(srcId, srcId), sp.x, sp.y, 168, 136, "#ffd65a", 42);
           beast.animate([
             { transform: `translate3d(0,0,0) scaleX(${dirSign}) scale(0.5)`, opacity: 0, easing: "cubic-bezier(0.16, 1, 0.3, 1)" },
             { transform: `translate3d(${(dx * 0.6).toFixed(1)}px, ${(dy * 0.6 - 32).toFixed(1)}px, 0) scaleX(${dirSign}) scale(1.26)`, opacity: 1, offset: 0.45 },
@@ -1527,11 +1518,10 @@
 
         fxT(() => {
           SFX.play("gavel");
-          if (typeof window.playV16 === "function" && !isYama) window.playV16("set_danh", tp.x, tp.y, 152, 520, 0);
           if (window.GLFX && GLFX.arc) GLFX.arc(tp.x, Math.max(18, tp.y - 210), tp.x, tp.y, "#8cf4ff", 15, 1.25, true, 0.34);
           triggerPaintedImpact(tp, {
             col,
-            burst: isYama ? "no_toi" : "no_set",
+            burst: isYama ? "no_toi" : "set_danh",
             decal: "vet_lom",
             decalSize: 172,
             dstEl,
@@ -1565,10 +1555,9 @@
 
       fxT(() => {
         SFX.play(isVenom ? "e_doc" : "silence");
-        if (isVenom && typeof window.playV16 === "function") window.playV16("doc_lan", tp.x, tp.y, 138, 500, 0);
         triggerPaintedImpact(tp, {
           col,
-          burst: isVenom ? "no_doc" : "no_toi",
+          burst: isVenom ? "doc_lan" : "no_toi",
           decal: isVenom ? null : "xich",
           decalSize: 132,
           shards: false,
@@ -1714,6 +1703,7 @@
         flyMs: T8.FLY,
         col: typeof col10 === "function" ? col10(s) : "#ffd65a",
         onImpact: () => {
+          s._choreoHit = 1;
           if (grp) {
             SAYOFF++;
             try { hit8(s); } catch (e) {} finally { SAYOFF--; }
@@ -1878,7 +1868,7 @@
           const mir = document.createElement("div");
           mir.className = "choreo-mirror-fx";
           mir.style.cssText = `left:${fp.x}px;top:${fp.y}px;width:146px;height:146px;--gc:#7fe8ff`;
-          mir.innerHTML = `<img src="img/v/v_an_mat.webp?v=gpu18" alt="">` + spriteHtml("guong", mirMs + showMs + 100, 0, 15);
+          mir.innerHTML = `<img src="img/v/v_an_mat.webp?v=gpu19" alt="">` + spriteHtml("guong", mirMs + showMs + 100, 0, 15);
           document.body.appendChild(mir);
           if (typeof window.v16Activate === "function") window.v16Activate(mir);
           mir.animate([
@@ -1946,7 +1936,7 @@
           const gate = document.createElement("div");
           gate.className = "gpu-summon-gate";
           gate.style.cssText = `left:${tp.x}px;top:${tp.y}px;width:146px;height:146px;--gc:${col}`;
-          gate.innerHTML = `<img src="img/v/v_an_vong.webp?v=gpu18" alt="">` + spriteHtml("cong", 520, 0, 15);
+          gate.innerHTML = `<img src="img/v/v_an_vong.webp?v=gpu19" alt="">` + spriteHtml("cong", 520, 0, 15);
           document.body.appendChild(gate);
           if (typeof window.v16Activate === "function") window.v16Activate(gate);
           gate.animate([

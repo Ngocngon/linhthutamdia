@@ -494,7 +494,7 @@
     const locKind = gl.getAttribLocation(prog, "aKind");
     const locRes = gl.getUniformLocation(prog, "uRes");
 
-    const MAX_QUADS = 3800;
+    const MAX_QUADS = 1600;
     const FLOATS_PER_VERT = 9;
     const FLOATS_PER_QUAD = FLOATS_PER_VERT * 6;
     const vboData = new Float32Array(MAX_QUADS * FLOATS_PER_QUAD);
@@ -724,61 +724,59 @@
     }
 
     let ambTimer = 0;
+    function isBattleVisible() {
+      if (reduced || store.gpu === false || document.hidden || !G || G.phase === "over") return false;
+      const lobby = $id("lobby");
+      if (lobby && lobby.classList.contains("on")) return false;
+      return !document.querySelector(".ov.on");
+    }
+
     function stepAmbient(dt) {
-      if (reduced || store.gpu === false || document.hidden) return;
+      if (!isBattleVisible()) return;
       ambTimer += dt;
-      if (ambTimer < 0.08) return;
+      if (ambTimer < 0.24) return;
       ambTimer = 0;
 
-      const lobby = $id("lobby");
-      if (lobby && lobby.classList.contains("on")) {
-        if (particles.length < 160) {
-          const gold = Math.random() < 0.38;
-          emit({
-            x: rnd(20, W - 20),
-            y: rnd(H * 0.15, H * 0.92),
-            vx: rnd(-14, 14),
-            vy: rnd(-38, -14),
-            turb: 26,
-            c: gold ? "#ffd65a" : (Math.random() < 0.5 ? "#3fe0ff" : "#a87bff"),
-            kind: gold ? 3 : 0,
-            s0: rnd(4, 9.5),
-            s1: 1,
-            dur: rnd(1.8, 3.4),
-            a: rnd(0.28, 0.56)
-          });
-        }
-        return;
-      }
-
-      if (!G || particles.length > 420) return;
+      if (particles.length > 48) return;
+      const lrs = window._gpuLaneRects;
+      if (!lrs) return;
       for (let li = 0; li < 3; li++) {
         const L = G.locs && G.locs[li];
-        if (!L || !L.rvl || L.gone) continue;
-        const ln = document.querySelector(`#board [data-lane="${li}"]`);
-        if (!ln) continue;
-        const r = ln.getBoundingClientRect();
-        if (r.width < 10 || Math.random() > 0.52) continue;
+        const r = lrs[li];
+        if (!L || !L.rvl || L.gone || !r || r.width < 10 || Math.random() > 0.42) continue;
         const th = (typeof LTH !== "undefined" && LTH[L.id]) || "thieng";
         const px = rnd(r.left + 8, r.right - 8);
         const py = rnd(r.top + 14, r.bottom - 14);
         if (th === "lua") {
-          emit({ x: px, y: r.bottom - rnd(4, 30), vx: rnd(-16, 16), vy: rnd(-75, -35), turb: 32, c: Math.random() < 0.5 ? "#ff7a1f" : "#ffd06a", kind: 1, stretch: 0.018, s0: rnd(5, 9), s1: 1.5, dur: rnd(0.9, 1.6), a: 0.6 });
+          emit({ x: px, y: r.bottom - rnd(4, 30), vx: rnd(-14, 14), vy: rnd(-68, -32), turb: 26, c: Math.random() < 0.5 ? "#ff7a1f" : "#ffd06a", kind: 1, stretch: 0.018, s0: rnd(4.5, 8), s1: 1.5, dur: rnd(0.85, 1.4), a: 0.55 });
         } else if (th === "suong") {
-          emit({ x: px, y: r.top + rnd(0, 40), vx: rnd(-18, 18), vy: rnd(22, 52), turb: 20, c: "#dff6ff", kind: 3, s0: rnd(5, 9), s1: 2, dur: rnd(1.2, 2.0), a: 0.52, vrot: rnd(-2, 2) });
+          emit({ x: px, y: r.top + rnd(0, 36), vx: rnd(-14, 14), vy: rnd(20, 46), turb: 16, c: "#dff6ff", kind: 3, s0: rnd(4.5, 8), s1: 2, dur: rnd(1.1, 1.8), a: 0.48, vrot: rnd(-1.6, 1.6) });
         } else if (th === "nuoc") {
-          emit({ x: px, y: py, vx: rnd(-10, 10), vy: rnd(-38, -16), turb: 18, c: "#40e0ff", kind: 0, s0: rnd(5, 10), s1: 2, dur: rnd(1.1, 1.9), a: 0.46 });
+          emit({ x: px, y: py, vx: rnd(-8, 8), vy: rnd(-34, -14), turb: 14, c: "#40e0ff", kind: 0, s0: rnd(4.5, 8.5), s1: 2, dur: rnd(1.0, 1.7), a: 0.42 });
         } else if (th === "toi") {
-          emit({ x: px, y: py, vx: rnd(-14, 14), vy: rnd(-28, -8), turb: 28, c: "#b45cff", kind: 0, s0: rnd(7, 13), s1: 2, dur: rnd(1.2, 2.1), a: 0.44 });
+          emit({ x: px, y: py, vx: rnd(-12, 12), vy: rnd(-24, -8), turb: 22, c: "#b45cff", kind: 0, s0: rnd(6, 11), s1: 2, dur: rnd(1.1, 1.8), a: 0.4 });
         } else if (th === "rung") {
-          emit({ x: px, y: py, vx: rnd(-18, 18), vy: rnd(-30, -8), turb: 30, c: Math.random() < 0.35 ? "#ffe27a" : "#74f268", kind: 0, s0: rnd(4.5, 8.5), s1: 1.5, dur: rnd(1.2, 2.2), a: 0.5 });
+          emit({ x: px, y: py, vx: rnd(-14, 14), vy: rnd(-26, -8), turb: 24, c: Math.random() < 0.35 ? "#ffe27a" : "#74f268", kind: 0, s0: rnd(4, 7.5), s1: 1.5, dur: rnd(1.1, 1.9), a: 0.45 });
         } else {
-          emit({ x: px, y: py, vx: rnd(-10, 10), vy: rnd(-34, -12), turb: 16, c: "#ffd86b", kind: 3, s0: rnd(5, 9), s1: 1.5, dur: rnd(1.2, 2.0), a: 0.48 });
+          emit({ x: px, y: py, vx: rnd(-8, 8), vy: rnd(-30, -10), turb: 14, c: "#ffd86b", kind: 3, s0: rnd(4.5, 8), s1: 1.5, dur: rnd(1.1, 1.8), a: 0.44 });
         }
       }
     }
 
+    let canvasCleared = false;
     function frame(now) {
+      rafId = 0;
+      if (document.hidden || reduced || store.gpu === false) {
+        particles.length = 0;
+        segments.length = 0;
+        if (!canvasCleared) {
+          gl.clearColor(0, 0, 0, 0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          canvasCleared = true;
+        }
+        return;
+      }
+
       const rawDt = Math.min(0.05, Math.max(0.001, (now - lastT) / 1000));
       lastT = now;
       fpsSmooth = fpsSmooth * 0.92 + (1 / rawDt) * 0.08;
@@ -787,15 +785,20 @@
       stepShake(rawDt);
       stepAmbient(rawDt);
 
-      gl.clearColor(0, 0, 0, 0);
-      gl.clear(gl.COLOR_BUFFER_BIT);
-
-      if (reduced || store.gpu === false) {
-        particles.length = 0;
-        segments.length = 0;
-        rafId = requestAnimationFrame(frame);
+      const hasWork = particles.length > 0 || segments.length > 0 || cam.active;
+      if (!hasWork) {
+        if (!canvasCleared) {
+          gl.clearColor(0, 0, 0, 0);
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          canvasCleared = true;
+        }
+        if (isBattleVisible()) rafId = requestAnimationFrame(frame);
         return;
       }
+
+      canvasCleared = false;
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
 
       let qi = 0;
 
@@ -883,13 +886,18 @@
         gl.drawArrays(gl.TRIANGLES, 0, qi * 6);
       }
 
-      rafId = requestAnimationFrame(frame);
+      if (particles.length > 0 || segments.length > 0 || cam.active || isBattleVisible()) {
+        rafId = requestAnimationFrame(frame);
+      }
     }
 
-    ensureLoop();
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && isBattleVisible()) ensureLoop();
+    });
 
     return {
       ok: true,
+      wake: ensureLoop,
       count: () => particles.length + segments.length,
       fps: () => Math.round(fpsSmooth),
       emit,
@@ -944,11 +952,7 @@
   }
 
   if (typeof FX === "object" && FX && GLFX.ok) {
-    const _ring2d = FX.ring.bind(FX);
-    const _shards2d = FX.shards.bind(FX);
     const _sigil2d = FX.sigil.bind(FX);
-    const _miasma2d = FX.miasma.bind(FX);
-    const _puff2d = FX.puff.bind(FX);
 
     FX.float = function (x, y, txt, c) {
       if (reduced || !txt) return;
@@ -958,35 +962,35 @@
 
     FX.burst = function (x, y, c, n, sp) {
       if (reduced) return;
-      const cnt = Math.min(85, Math.round((n || 22) * 1.4));
-      const speed = Math.max(150, (sp || 180) * 1.32);
-      GLFX.emit({ x, y, c, kind: 0, s0: 14, s1: 48, dur: 0.28, a: 0.75 });
+      const cnt = Math.min(32, Math.round((n || 18) * 0.95));
+      const speed = Math.max(150, (sp || 180) * 1.25);
+      GLFX.emit({ x, y, c, kind: 0, s0: 14, s1: 46, dur: 0.26, a: 0.72 });
       for (let i = 0; i < cnt; i++) {
-        const a = rnd(0, 6.283), v = rnd(0.28, 1.08) * speed;
+        const a = rnd(0, 6.283), v = rnd(0.28, 1.05) * speed;
         GLFX.emit({
           x, y,
           vx: Math.cos(a) * v,
           vy: Math.sin(a) * v,
           gy: 110,
           drag: 2.4,
-          turb: 24,
+          turb: 20,
           c: i % 5 === 0 ? "#ffffff" : c,
           kind: i % 3 === 0 ? 1 : 0,
           stretch: 0.032,
-          s0: rnd(5.5, 12),
+          s0: rnd(5, 11),
           s1: 1.5,
-          dur: rnd(0.38, 0.76),
-          a: 0.95
+          dur: rnd(0.34, 0.64),
+          a: 0.92
         });
       }
     };
 
     FX.sparks = function (x, y, c, n, sp) {
       if (reduced) return;
-      const cnt = Math.min(80, Math.round((n || 18) * 1.55));
-      const speed = Math.max(210, (sp || 260) * 1.25);
+      const cnt = Math.min(28, Math.round((n || 14) * 1.0));
+      const speed = Math.max(200, (sp || 250) * 1.18);
       for (let i = 0; i < cnt; i++) {
-        const a = rnd(0, 6.283), v = rnd(0.38, 1.15) * speed;
+        const a = rnd(0, 6.283), v = rnd(0.38, 1.12) * speed;
         GLFX.emit({
           x, y,
           vx: Math.cos(a) * v,
@@ -995,131 +999,128 @@
           drag: 1.9,
           c: i % 4 === 0 ? "#ffffff" : c,
           kind: 1,
-          stretch: 0.042,
-          s0: rnd(5, 10),
+          stretch: 0.04,
+          s0: rnd(4.5, 9.5),
           s1: 1.2,
-          dur: rnd(0.32, 0.66),
-          a: 1.0
+          dur: rnd(0.28, 0.56),
+          a: 0.96
         });
       }
     };
 
-    FX.ring = function (x, y, c, r1, w) {
+    FX.ring = function (x, y, c, r1) {
       if (reduced) return;
-      const rad = Math.max(52, (r1 || 56) * 1.22);
-      GLFX.ring(x, y, c, rad, 0.45, 0.9);
-      _ring2d(x, y, c, r1, w);
+      const rad = Math.max(50, (r1 || 54) * 1.2);
+      GLFX.ring(x, y, c, rad, 0.42, 0.88);
     };
 
     FX.wave = function (x, y, c, r) {
       if (reduced) return;
-      const rad = Math.max(74, (r || 72) * 1.32);
-      GLFX.ring(x, y, c, rad, 0.48, 0.95);
-      GLFX.ring(x, y, "#ffffff", rad * 0.66, 0.35, 0.84);
-      GLFX.emit({ x, y, c, kind: 0, s0: 18, s1: rad * 0.88, dur: 0.34, a: 0.54 });
+      const rad = Math.max(72, (r || 70) * 1.28);
+      GLFX.ring(x, y, c, rad, 0.44, 0.92);
+      GLFX.ring(x, y, "#ffffff", rad * 0.65, 0.32, 0.78);
     };
 
     FX.glow = function (x, y, c, r, dur) {
       if (reduced) return;
-      const rad = Math.max(54, (r || 68) * 1.25);
-      GLFX.emit({ x, y, c, kind: 0, s0: rad * 0.35, s1: rad * 1.12, dur: dur || 0.46, a: 0.7, drag: 0 });
+      const rad = Math.max(52, (r || 64) * 1.2);
+      GLFX.emit({ x, y, c, kind: 0, s0: rad * 0.35, s1: rad * 1.08, dur: dur || 0.42, a: 0.65, drag: 0 });
     };
 
     FX.rays = function (x, y, c, r) {
       if (reduced) return;
-      const rad = Math.max(70, (r || 74) * 1.32);
-      GLFX.emit({ x, y, c, kind: 3, s0: rad * 0.35, s1: rad * 1.25, dur: 0.6, a: 0.9, vrot: 1.2 });
-      GLFX.emit({ x, y, c: "#ffffff", kind: 3, s0: rad * 0.25, s1: rad * 0.95, dur: 0.5, a: 0.78, rot: 0.785, vrot: -1.0 });
+      const rad = Math.max(68, (r || 72) * 1.28);
+      GLFX.emit({ x, y, c, kind: 3, s0: rad * 0.35, s1: rad * 1.2, dur: 0.52, a: 0.86, vrot: 1.2 });
+      GLFX.emit({ x, y, c: "#ffffff", kind: 3, s0: rad * 0.25, s1: rad * 0.9, dur: 0.44, a: 0.74, rot: 0.785, vrot: -1.0 });
     };
 
     FX.shards = function (x, y, c) {
       if (reduced) return;
-      _shards2d(x, y, c);
-      for (let i = 0; i < 20; i++) {
-        const a = rnd(0, 6.283), v = rnd(80, 255);
+      for (let i = 0; i < 12; i++) {
+        const a = rnd(0, 6.283), v = rnd(80, 240);
         GLFX.emit({
-          x: x + rnd(-12, 12),
-          y: y + rnd(-14, 14),
+          x: x + rnd(-10, 10),
+          y: y + rnd(-12, 12),
           vx: Math.cos(a) * v,
-          vy: Math.sin(a) * v - 70,
+          vy: Math.sin(a) * v - 65,
           gy: 540,
           drag: 1.1,
           c: i % 3 === 0 ? "#eef4ff" : c,
           kind: 4,
-          s0: rnd(7, 13.5),
+          s0: rnd(6.5, 12.5),
           s1: 2,
           vrot: rnd(-10, 10),
-          dur: rnd(0.46, 0.88),
-          a: 0.95
+          dur: rnd(0.4, 0.75),
+          a: 0.92
         });
       }
     };
 
     FX.rise = function (x, y, c, n) {
       if (reduced) return;
-      const cnt = Math.round((n || 16) * 1.45);
+      const cnt = Math.min(18, Math.round((n || 12) * 1.0));
       for (let i = 0; i < cnt; i++) {
         GLFX.emit({
-          x: x + rnd(-22, 22),
-          y: y + rnd(-6, 22),
-          vx: rnd(-20, 20),
-          vy: rnd(-150, -65),
-          gy: -42,
-          turb: 34,
+          x: x + rnd(-20, 20),
+          y: y + rnd(-6, 20),
+          vx: rnd(-18, 18),
+          vy: rnd(-140, -60),
+          gy: -38,
+          turb: 28,
           c: i % 4 === 0 ? "#ffffff" : c,
           kind: i % 3 === 0 ? 3 : 0,
-          s0: rnd(6, 11.5),
+          s0: rnd(5.5, 10.5),
           s1: 2,
-          dur: rnd(0.54, 1.0),
-          delay: rnd(0, 0.16),
-          a: 0.88
+          dur: rnd(0.48, 0.88),
+          delay: rnd(0, 0.14),
+          a: 0.85
         });
       }
     };
 
     FX.trail = function (x1, y1, x2, y2, c) {
       if (reduced) return;
-      const steps = 20;
+      const steps = 12;
       for (let i = 0; i <= steps; i++) {
         const t = i / steps;
         const px = x1 + (x2 - x1) * t;
-        const py = y1 + (y2 - y1) * t - Math.sin(t * Math.PI) * 26;
+        const py = y1 + (y2 - y1) * t - Math.sin(t * Math.PI) * 24;
         GLFX.emit({
-          x: px + rnd(-3.5, 3.5),
-          y: py + rnd(-3.5, 3.5),
-          vx: rnd(-22, 22),
-          vy: rnd(-22, 22),
+          x: px + rnd(-3, 3),
+          y: py + rnd(-3, 3),
+          vx: rnd(-18, 18),
+          vy: rnd(-18, 18),
           c: i % 4 === 0 ? "#ffffff" : c,
           kind: i % 3 === 0 ? 3 : 0,
-          s0: 4 + 7.5 * t,
+          s0: 4 + 6.5 * t,
           s1: 1,
-          dur: 0.42,
-          delay: t * 0.15,
-          a: 0.88
+          dur: 0.36,
+          delay: t * 0.14,
+          a: 0.85
         });
       }
     };
 
     FX.comet = function (x1, y1, x2, y2, c) {
       if (reduced) return;
-      const steps = 28;
+      const steps = 14;
       for (let i = 0; i <= steps; i++) {
         const t = i / steps;
         const px = x1 + (x2 - x1) * t;
-        const py = y1 + (y2 - y1) * t - Math.sin(t * Math.PI) * 32;
+        const py = y1 + (y2 - y1) * t - Math.sin(t * Math.PI) * 30;
         GLFX.emit({
           x: px,
           y: py,
-          vx: (x2 - x1) * 0.22 + rnd(-20, 20),
-          vy: (y2 - y1) * 0.22 + rnd(-20, 20),
+          vx: (x2 - x1) * 0.2 + rnd(-16, 16),
+          vy: (y2 - y1) * 0.2 + rnd(-16, 16),
           c: i % 3 === 0 ? "#ffffff" : c,
           kind: 1,
-          stretch: 0.028,
-          s0: 5 + 9.5 * t,
+          stretch: 0.026,
+          s0: 5 + 8.5 * t,
           s1: 1.5,
-          dur: 0.44,
-          delay: t * 0.18,
-          a: 0.96
+          dur: 0.38,
+          delay: t * 0.16,
+          a: 0.92
         });
       }
     };
@@ -1211,10 +1212,10 @@
 
     FX.holo = function (x, y, c, n) {
       if (reduced) return;
-      const cnt = Math.min(85, Math.max(30, n || 52));
+      const cnt = Math.min(36, Math.max(18, n || 28));
       const pal = [c || "#3fe0ff", "#ffd65a", "#ff5ae0", "#3dffb4", "#ffffff"];
       for (let i = 0; i < cnt; i++) {
-        const a = rnd(0, 6.283), v = rnd(90, 410);
+        const a = rnd(0, 6.283), v = rnd(90, 360);
         GLFX.emit({
           x: x + rnd(-8, 8),
           y: y + rnd(-8, 8),
@@ -1224,28 +1225,26 @@
           drag: 1.8,
           c: pal[i % pal.length],
           kind: i % 2 ? 3 : 4,
-          s0: rnd(7, 14.5),
+          s0: rnd(6.5, 13),
           s1: 2,
           vrot: rnd(-6, 6),
-          dur: rnd(0.54, 1.1),
-          delay: rnd(0, 0.1),
-          a: 0.95
+          dur: rnd(0.46, 0.92),
+          delay: rnd(0, 0.08),
+          a: 0.92
         });
       }
     };
 
     FX.sigil = function (x, y, c, r, n, flat, dur) {
       _sigil2d(x, y, c, r, n, flat, dur);
-      GLFX.ring(x, y, c, Math.max(46, (r || 46) * 1.16), dur || 0.72, 0.65, flat ? 0.42 : 1);
+      GLFX.ring(x, y, c, Math.max(46, (r || 46) * 1.16), dur || 0.68, 0.62, flat ? 0.42 : 1);
     };
 
-    FX.miasma = function (x, y, n) {
-      _miasma2d(x, y, n);
-      FX.vortex(x, y, "#b84dff", 13);
+    FX.miasma = function (x, y) {
+      FX.vortex(x, y, "#b84dff", 10);
     };
 
-    FX.puff = function (x, y, c, n) {
-      _puff2d(x, y, c, n);
+    FX.puff = function (x, y, c) {
       FX.dust(x, y, c);
     };
 
@@ -1920,7 +1919,7 @@
       gate.className = "gpu-summon-gate";
       gate.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(96, r.width * 2.1)}px;height:${Math.max(96, r.width * 2.1)}px;--gc:${col}`;
       const g16 = typeof window.v16Html === "function" ? window.v16Html("cong", 540, 0, 15) : "";
-      gate.innerHTML = g16 || `<img src="img/v/v_cong.webp?v=gpu18" alt="">`;
+      gate.innerHTML = g16 || `<img src="img/v/v_cong.webp?v=gpu19" alt="">`;
       document.body.appendChild(gate);
       if (typeof window.v16Activate === "function") window.v16Activate(gate);
       gate.animate([
@@ -2283,19 +2282,19 @@
   /* ==================== HỆ THỐNG VFX CHIẾN ĐỊA ĐỘNG & HIỆU ỨNG TRỰC QUAN TRÊN 2 PHẦN SÂN ==================== */
   const LOC_FIELD_MAP = {};
   const LOC_FIELD_META = {
-    shield:      { col: "#6ef3ff", k16: "khien",    img: "img/v/v_khien.webp?v=gpu18",    sig: "img/v/v_an_khien.webp?v=gpu18", tag: "Khiên Bất Diệt" },
-    poison:      { col: "#62ff8e", k16: "no_doc",   img: "img/v/v_no_doc.webp?v=gpu18",   sig: "img/v/v_an_xich.webp?v=gpu18",  tag: "Chướng Khí Độc" },
-    frost:       { col: "#9eeeff", k16: "no_bang",  img: "img/v/v_no_bang.webp?v=gpu18",  sig: "img/v/v_khung_nuoc.webp?v=gpu18", tag: "Băng Sương Hàn" },
-    lava_kill:   { col: "#ff5436", k16: "so",       img: "img/v/v_so.webp?v=gpu18",       sig: "img/v/v_lua.webp?v=gpu18",      tag: "Hoả Ngục Huỷ" },
-    lock_chain:  { col: "#ffd269", k16: "xich",     img: "img/v/v_xich.webp?v=gpu18",     sig: "img/v/v_an_khoa.webp?v=gpu18",  tag: "Xiềng Phong Ấn" },
-    forge:       { col: "#ff9a3c", k16: "bua",      img: "img/v/v_bua_ren.webp?v=gpu18",  sig: "img/v/v_lua.webp?v=gpu18",      tag: "Lửa Rèn Thần" },
-    double_drum: { col: "#ffe066", k16: "trong",    img: "img/v/v_trong.webp?v=gpu18",    sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Cộng Hưởng ×2" },
-    wind_move:   { col: "#74ffdf", k16: "gio",      img: "img/v/v_gio.webp?v=gpu18",      sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Gió Dịch Chuyển" },
-    summon_gate: { col: "#95ff75", k16: "cong",     img: "img/v/v_cong.webp?v=gpu18",     sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Cổng Triệu Hồi" },
-    mirror_clone:{ col: "#86d8ff", k16: "guong",    img: "img/v/v_guong.webp?v=gpu18",    sig: "img/v/v_an_mat.webp?v=gpu18",   tag: "Gương Nhân Bản" },
-    energy_gem:  { col: "#4fd8ff", k16: "ngoc",     img: "img/v/v_ngoc.webp?v=gpu18",     sig: "img/v/v_an_ngoc.webp?v=gpu18",  tag: "Mạch Tinh Thể" },
-    blessing:    { col: "#ffd96a", k16: "sao_tang", img: "img/v/v_sao_tang.webp?v=gpu18", sig: "img/v/v_an_co.webp?v=gpu18",    tag: "Linh Khí Hộ Trì" },
-    cosmic_rule: { col: "#cf88ff", k16: "bua_chu",  img: "img/v/v_bua_chu.webp?v=gpu18",  sig: "img/v/v_an_vong.webp?v=gpu18",  tag: "Kỳ Giới Biến Luật" }
+    shield:      { col: "#6ef3ff", k16: "khien",    img: "img/v/v_khien.webp?v=gpu19",    sig: "img/v/v_an_khien.webp?v=gpu19", tag: "Khiên Bất Diệt" },
+    poison:      { col: "#62ff8e", k16: "no_doc",   img: "img/v/v_no_doc.webp?v=gpu19",   sig: "img/v/v_an_xich.webp?v=gpu19",  tag: "Chướng Khí Độc" },
+    frost:       { col: "#9eeeff", k16: "no_bang",  img: "img/v/v_no_bang.webp?v=gpu19",  sig: "img/v/v_khung_nuoc.webp?v=gpu19", tag: "Băng Sương Hàn" },
+    lava_kill:   { col: "#ff5436", k16: "so",       img: "img/v/v_so.webp?v=gpu19",       sig: "img/v/v_lua.webp?v=gpu19",      tag: "Hoả Ngục Huỷ" },
+    lock_chain:  { col: "#ffd269", k16: "xich",     img: "img/v/v_xich.webp?v=gpu19",     sig: "img/v/v_an_khoa.webp?v=gpu19",  tag: "Xiềng Phong Ấn" },
+    forge:       { col: "#ff9a3c", k16: "bua",      img: "img/v/v_bua_ren.webp?v=gpu19",  sig: "img/v/v_lua.webp?v=gpu19",      tag: "Lửa Rèn Thần" },
+    double_drum: { col: "#ffe066", k16: "trong",    img: "img/v/v_trong.webp?v=gpu19",    sig: "img/v/v_an_vong.webp?v=gpu19",  tag: "Cộng Hưởng ×2" },
+    wind_move:   { col: "#74ffdf", k16: "gio",      img: "img/v/v_gio.webp?v=gpu19",      sig: "img/v/v_an_vong.webp?v=gpu19",  tag: "Gió Dịch Chuyển" },
+    summon_gate: { col: "#95ff75", k16: "cong",     img: "img/v/v_cong.webp?v=gpu19",     sig: "img/v/v_an_vong.webp?v=gpu19",  tag: "Cổng Triệu Hồi" },
+    mirror_clone:{ col: "#86d8ff", k16: "guong",    img: "img/v/v_guong.webp?v=gpu19",    sig: "img/v/v_an_mat.webp?v=gpu19",   tag: "Gương Nhân Bản" },
+    energy_gem:  { col: "#4fd8ff", k16: "ngoc",     img: "img/v/v_ngoc.webp?v=gpu19",     sig: "img/v/v_an_ngoc.webp?v=gpu19",  tag: "Mạch Tinh Thể" },
+    blessing:    { col: "#ffd96a", k16: "sao_tang", img: "img/v/v_sao_tang.webp?v=gpu19", sig: "img/v/v_an_co.webp?v=gpu19",    tag: "Linh Khí Hộ Trì" },
+    cosmic_rule: { col: "#cf88ff", k16: "bua_chu",  img: "img/v/v_bua_chu.webp?v=gpu19",  sig: "img/v/v_an_vong.webp?v=gpu19",  tag: "Kỳ Giới Biến Luật" }
   };
 
   function classifyLocField(id) {
@@ -2369,14 +2368,19 @@
     const lobbyOn = $id("lobby") && $id("lobby").classList.contains("on");
     if (reduced || lobbyOn || !G || !G.locs) {
       host.style.display = "none";
+      window._gpuLaneRects = null;
       return;
     }
     host.style.display = "block";
+    const lrs = [null, null, null];
     for (let li = 0; li < 3; li++) {
       const L = G.locs[li];
       const kind = L && L.rvl && !L.gone ? classifyLocField(L.id) : "";
       const ln = document.querySelector(`#board [data-lane="${li}"]`);
-      if (ln) ln.dataset.lfx = kind || "";
+      if (ln) {
+        ln.dataset.lfx = kind || "";
+        lrs[li] = ln.getBoundingClientRect();
+      }
       for (let si = 0; si < 2; si++) {
         const sd = si === 0 ? "opp" : "me";
         const box = bfxBoxes[li * 2 + si];
@@ -2410,6 +2414,8 @@
         box.style.height = (r.height + 4).toFixed(1) + "px";
       }
     }
+    window._gpuLaneRects = lrs;
+    if (GLFX.wake) GLFX.wake();
   }
 
   function syncBoardFieldVfx() {
@@ -2449,7 +2455,7 @@
       seal.className = "gpu-loc-seal";
       seal.style.cssText = `left:${cx}px;top:${cy}px;width:${Math.max(126, lr.width * 1.42)}px;height:${Math.max(126, lr.width * 1.42)}px;--lc:${col}`;
       const ic16 = typeof window.v16Html === "function" ? window.v16Html((fMeta && fMeta.k16) || "bua_chu", 840, 0, 15, "ls-icon") : "";
-      seal.innerHTML = `<img class="ls-ring" src="img/v/v_an_vong.webp?v=gpu18" alt="">` + (ic16 || `<img class="ls-icon" src="${(fMeta && fMeta.img) || "img/v/v_bua_chu.webp?v=gpu18"}" alt="">`);
+      seal.innerHTML = `<img class="ls-ring" src="img/v/v_an_vong.webp?v=gpu19" alt="">` + (ic16 || `<img class="ls-icon" src="${(fMeta && fMeta.img) || "img/v/v_bua_chu.webp?v=gpu19"}" alt="">`);
       document.body.appendChild(seal);
       if (typeof window.v16Activate === "function") window.v16Activate(seal);
       seal.animate([
